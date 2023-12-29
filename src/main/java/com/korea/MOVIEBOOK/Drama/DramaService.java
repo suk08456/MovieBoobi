@@ -1,6 +1,5 @@
 package com.korea.MOVIEBOOK.Drama;
 
-import com.korea.MOVIEBOOK.dramaReview.Review;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +20,12 @@ public class DramaService {
                 .orElseThrow(() -> new RuntimeException("해당 드라마는 존재하지 않습니다. " + id));
     } // drama 에 특정 id 조회 만약 존재하지 않는다면 예외처리
 
-    public List<Review> getReviewsByDramaId(Long dramaId) {
-        Drama drama = dramaRepository.findById(dramaId)
-                .orElseThrow(() -> new RuntimeException("해당 드라마는 존재하지 않습니다. " + dramaId));
-        return drama.getReviews();
-    } // 특정 dramaId를 조회하여 List<Review>에 반환
-      // 존재 하지 않는다면 예외처리
+//    public List<Review> getReviewsByDramaId(Long dramaId) {
+//        Drama drama = dramaRepository.findById(dramaId)
+//                .orElseThrow(() -> new RuntimeException("해당 드라마는 존재하지 않습니다. " + dramaId));
+//        return drama.getReviews();
+//    } // 특정 dramaId를 조회하여 List<Review>에 반환
+//      // 존재 하지 않는다면 예외처리
 
 
 }

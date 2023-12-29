@@ -1,12 +1,9 @@
 package com.korea.MOVIEBOOK.Drama;
 
-import com.korea.MOVIEBOOK.dramaReview.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Getter
@@ -29,7 +26,7 @@ public class Drama {
     private int rating; // 평점
     private int rank; // 순위
 
-    @OneToMany(mappedBy = "drama", cascade = CascadeType.ALL)
-    private List<Review> reviews;
+//    @OneToMany(mappedBy = "drama", cascade = CascadeType.ALL)
+//    private List<Review> reviews;
 
 }
