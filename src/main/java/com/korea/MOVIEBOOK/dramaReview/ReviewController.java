@@ -65,6 +65,11 @@ public class ReviewController {
     public String showAllReviewForDrama(@PathVariable("id") Long id, @RequestParam(defaultValue = "1") int page,
                                         @RequestParam(defaultValue = "10") int size, Model model) {
         Page<Review> reviews = reviewService.getReviewsByDramaIdWithPagination(id, page, size);
+        if (reviews.isEmpty()) {
+            model.addAttribute("errorMessage", "더 이상 리뷰가 없습니다.");
+            // 다른 필요한 처리 로직...
+            return "drama/drama_detail"; // 또는 해당 페이지의 뷰 이름
+        }
         model.addAttribute("reviews", reviews.getContent());
         model.addAttribute("totalPages", reviews.getTotalPages());
         model.addAttribute("currentPage", page);

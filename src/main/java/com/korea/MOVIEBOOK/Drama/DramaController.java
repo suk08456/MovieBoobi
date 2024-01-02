@@ -32,6 +32,7 @@ public class DramaController {
         // dramaService 에서 DramaById를 조회하여 drama에 저장
         List<Review> reviews = dramaService.getReviewsByDramaId(id).stream().limit(10).collect(Collectors.toList());
         // dramaService 에서 reviewsByDramaId를 10개까지만 조회하여 reviews에 저장
+
         double avgRating = reviews.stream() // reviews에서 stream 생성
                 .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
                 .mapToInt(Review::getRating) // 리뷰 객체에서 평점만 추출하여 정수 스트림 생성
