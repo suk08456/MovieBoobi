@@ -9,16 +9,23 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 public class ReviewController {
-    @PostMapping("/review/create")
+    private final ReviewService reviewService;
+    @GetMapping("/review/create")
     public String createReview(){
         return "Review/review";
+    }
+
+    @GetMapping("/movie/review/create")
+    public String createMovieReview(@RequestParam("movieCD") String movieCD, @RequestParam("comment") String comment, @RequestParam("rating") Double rating){
+        this.reviewService.saveMovieReview(movieCD, comment, rating);
+        return  "redirect:/movie/detail?movieCD=" + movieCD;
     }
 
 
 //    @GetMapping("/reviews/create")
 //    public String showReviewForm(@RequestParam("dramaId") Long dramaId, Model model) {
 //        Drama drama = dramaService.getDramaById(dramaId);
-//        com.korea.MOVIEBOOK.dramaReview.Review newReview = new com.korea.MOVIEBOOK.dramaReview.Review();
+//        Review newReview = dramaReview.Review();
 //        model.addAttribute("drama", drama);
 //        model.addAttribute("newReview", newReview);
 //        return "/drama_review/review_form";
