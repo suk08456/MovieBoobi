@@ -2,9 +2,12 @@ package com.korea.MOVIEBOOK.Movie.Movie;
 
 import com.korea.MOVIEBOOK.Movie.Daily.MovieDaily;
 import com.korea.MOVIEBOOK.Movie.Weekly.MovieWeekly;
+import com.korea.MOVIEBOOK.Review.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -48,5 +51,8 @@ public class Movie {
 
     @OneToOne
     private MovieWeekly movieweekly;
+
+    @OneToMany(mappedBy = "movie")
+    private List<Review> reviewList;
 
 }
