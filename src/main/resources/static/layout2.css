@@ -22,7 +22,7 @@ body {
     display : flex;
     flex-direction: column;
     align-items : center;
-    max-height : 1610px;
+    /*max-height : 1610px;*/
     min-height : 1610px;
 }
 

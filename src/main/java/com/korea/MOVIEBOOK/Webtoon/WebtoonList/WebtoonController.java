@@ -17,87 +17,99 @@ public class WebtoonController {
 
     private final WebtoonService webtoonService;
 
-//    @GetMapping("/list")
-//    public String getApi(Model model) {
-//
-//        Day[] values = Day.values();
-//
-//        for (Day value : values) {
-//            List<Webtoon> mondayList = webtoonService.getWebtoonList("mon");
-//            model.addAttribute("mondayList", mondayList);
-//        }
-//        for (Day value : values) {
-//            List<Webtoon> tuesdayList  = webtoonService.getWebtoonList("tue");
-//            model.addAttribute("tuesdayList", tuesdayList);
-//        }for (Day value : values) {
-//            List<Webtoon> wednesdayList = webtoonService.getWebtoonList("wed");
-//            model.addAttribute("wednesdayList", wednesdayList);
-//        }for (Day value : values) {
-//            List<Webtoon> thursdayList  = webtoonService.getWebtoonList("thu");
-//            model.addAttribute("thursdayList", thursdayList);
-//        }for (Day value : values) {
-//            List<Webtoon> fridayList = webtoonService.getWebtoonList("fri");
-//            model.addAttribute("fridayList", fridayList);
-//        }for (Day value : values) {
-//            List<Webtoon> saturdayList = webtoonService.getWebtoonList("sat");
-//            model.addAttribute("saturdayList", saturdayList);
-//        }for (Day value : values) {
-//            List<Webtoon> sundayList = webtoonService.getWebtoonList("sun");
-//            model.addAttribute("sundayList", sundayList);
-//        }
-//
-//
-//        return "webtoon/webtoon_list";
-//    }
-
-
     @GetMapping("/list")
     public String WebtoonList(Model model) {
-        String[] Days = new String[]{"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
-        List<List<Webtoon>> allDaysListList = new ArrayList<>();
-        for(String day : Days) {
-            List<Webtoon> allDayList = webtoonService.getAllDayList(day);
-            allDayList.sort(Comparator.comparing(Webtoon::getFanCount, Comparator.nullsLast(Comparator.naturalOrder())));
+        List<Webtoon> mondayList = webtoonService.getWebtoonList("mon");
+        mondayList.sort(
+                Comparator.comparing(
+                        webtoon -> webtoon.getFanCount() == null ? 0 : webtoon.getFanCount(),
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                )
+        );
+        List<Webtoon> tuesdayList = webtoonService.getWebtoonList("tue");
+        tuesdayList.sort(
+                Comparator.comparing(
+                        webtoon -> webtoon.getFanCount() == null ? 0 : webtoon.getFanCount(),
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                )
+        );
+        List<Webtoon> wednesdayList = webtoonService.getWebtoonList("wed");
+        wednesdayList.sort(
+                Comparator.comparing(
+                        webtoon -> webtoon.getFanCount() == null ? 0 : webtoon.getFanCount(),
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                )
+        );
+        List<Webtoon> thursdayList = webtoonService.getWebtoonList("thu");
+        thursdayList.sort(
+                Comparator.comparing(
+                        webtoon -> webtoon.getFanCount() == null ? 0 : webtoon.getFanCount(),
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                )
+        );
+        List<Webtoon> fridayList = webtoonService.getWebtoonList("fri");
+        fridayList.sort(
+                Comparator.comparing(
+                        webtoon -> webtoon.getFanCount() == null ? 0 : webtoon.getFanCount(),
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                )
+        );
+        List<Webtoon> saturdayList = webtoonService.getWebtoonList("sat");
+        saturdayList.sort(
+                Comparator.comparing(
+                        webtoon -> webtoon.getFanCount() == null ? 0 : webtoon.getFanCount(),
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                )
+        );
+        List<Webtoon> sundayList = webtoonService.getWebtoonList("sun");
+        sundayList.sort(
+                Comparator.comparing(
+                        webtoon -> webtoon.getFanCount() == null ? 0 : webtoon.getFanCount(),
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                )
+        );
+
+        List<List<Webtoon>> mondayListList = getListList(mondayList);
+        List<List<Webtoon>> tuesdayListList = getListList(tuesdayList);
+        List<List<Webtoon>> wednesdayListList = getListList(wednesdayList);
+        List<List<Webtoon>> thursdayListList = getListList(thursdayList);
+        List<List<Webtoon>> fridayListList = getListList(fridayList);
+        List<List<Webtoon>> saturdayListList = getListList(saturdayList);
+        List<List<Webtoon>> sundayListList = getListList(sundayList);
+
+        List<List<List<Webtoon>>> allList = new ArrayList<>();
+        allList.add(mondayListList);
+        allList.add(tuesdayListList);
+        allList.add(wednesdayListList);
+        allList.add(thursdayListList);
+        allList.add(fridayListList);
+        allList.add(saturdayListList);
+        allList.add(sundayListList);
+        model.addAttribute("allList", allList);
 
 
-            int startIndex = 0;
-            int endIndex = 5;
-
-            for (int i = 1; i <= allDayList.size() / 5; i++) {
-                allDaysListList.add(allDayList.subList(startIndex, Math.min(endIndex, allDayList.size())));
-                startIndex += 5;
-                endIndex += 5;
-            }
-        }
         System.out.println("=================================== 새로고침 ===================================");
-        model.addAttribute("allDaysListList", allDaysListList);
         return "webtoon/webtoon_list";
     }
 
-//    @GetMapping("/list")
-//    public String WebtoonList(Model model) {
-//        List<Webtoon> allDayList = webtoonService.getAllDayList(Day.mon);
-//        allDayList.sort(Comparator.comparing(Webtoon::getFanCount));
-//        List<List<Webtoon>> allDaysListList = new ArrayList<>();
-//
-//            int startIndex = 0;
-//            int endIndex = 5;
-//
-//            for (int i = 1; i <= allDayList.size() / 5; i++) {
-//                allDaysListList.add(allDayList.subList(startIndex, Math.min(endIndex, allDayList.size())));
-//                startIndex += 5;
-//                endIndex += 5;
-//            }
-//        System.out.println("=================================== 새로고침 ===================================");
-//        model.addAttribute("allDaysListList", allDaysListList);
-//        return "webtoon/webtoon_list";
-//    }
 
     @GetMapping("/detail/{webtoonId}")
     public String WebtoonDetail(Model model, @PathVariable Long webtoonId) {
         Optional<Webtoon> webtoonDTO = webtoonService.createSampleWebtoonDetail(webtoonId);
         model.addAttribute("webtoonDTO", webtoonDTO);
         return "webtoon/webtoon_detail";
+    }
+
+    public List<List<Webtoon>> getListList(List<Webtoon> webtoonList) {
+        int startIndex = 0;
+        int endIndex = 5;
+        List<List<Webtoon>> webtoonListList = new ArrayList<>();
+        for (int i = 1; i <= webtoonList.size() / 5; i++) {
+            webtoonListList.add(webtoonList.subList(startIndex, Math.min(endIndex, webtoonList.size())));
+            startIndex += 5;
+            endIndex += 5;
+        }
+        return webtoonListList;
     }
 }
 

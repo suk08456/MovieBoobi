@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" layout:decorate="~{layout2}">
+<html lang="ko" layout:decorate="~{layout2}" >
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" th:href="@{/Webtoon/webtoon.css}">
@@ -7,302 +7,84 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 </head>
 <body>
-<div layout:fragment="content" style="width : 100%; height : 30%;">
-
-<!--    <div class="swiper-1">-->
-<!--        <div style="width : 1340px; margin : auto;">-->
-<!--            <div class="swiper-top" style="display : flex; white-space : nowrap;">-->
-<!--                <div style="text-align : left; margin-left : 8%;">-->
-<!--                    <span style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;">월요일</span>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="swiper mySwiper" style="width: 85%; margin-top: 10px;" th:each="dayList, dayIndex : ${allDaysListList}">-->
-<!--                <div style="margin-left : 85%; margin-top : -3px; display : flex;">-->
-<!--                    <div class="swiper-pagination swiper-pagination1"-->
-<!--                         style="position : relative; width : 55%; margin-top : 5px;"></div>-->
-<!--                </div>-->
-<!--                <div class="swiper-wrapper">-->
-<!--                    <div class="swiper-slide"-->
-<!--                         style="display:flex; font-size: 18px; align-items: center; height : 100%;"-->
-<!--                         th:each="webtoon : ${dayList}">-->
-<!--                        <div class="dailyMovie" style="display : grid;">-->
-<!--                            <div class="img" style="padding : 6px;">-->
-<!--                                <img th:src="${webtoon.img}" th:if="${not #strings.isEmpty(webtoon.img)}" style="width : 210px;">-->
-<!--                                <img src="/noimg.jpg" th:if="${#strings.isEmpty(webtoon.img)}" style="width : 213px; height : 303px;">-->
-<!--                            </div>-->
-<!--                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">-->
-<!--                                <span th:text="${#strings.length(webtoon.title) > 8 ? #strings.substring(webtoon.title, 0, 8) + '..' : webtoon.title}" style="font-size : 17px; margin-bottom : 5px;"></span>-->
-<!--                                <div class="short-kind">-->
-<!--                                    <span style="color : #868e96; font-size : 15px;">글,그림 :</span>-->
-<!--                                    <span th:text="${#strings.length(webtoon.author) > 7 ? #strings.substring(webtoon.author, 0, 7) + '..' : webtoon.author}" style="font-size : 17px; margin-bottom : 5px;"></span>-->
-<!--                                </div>-->
-<!--                                <div class="short-kind">-->
-<!--                                    <span style="color : #868e96; font-size : 15px;">연재일 :</span>-->
-<!--                                    <span th:text="${webtoon.getUpdateDays()}" style="font-size : 17px; margin-bottom : 5px;"></span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-        <div class="swiper-1">
-            <div style="width : 1340px; margin : auto;">
-                <div class="swiper-top" style="display : flex; white-space : nowrap;">
-                    <div style="text-align : left; margin-left : 8%;">
-                        <span style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;">월요일</span>
+<div layout:fragment="content" style="width : 100%; height: 100%; ">
+    <div class="swiper-1">
+        <div style="width : 1340px; margin : auto;">
+            <div class="swiper mySwiper" style="margin-top: 10px; margin-bottom: 55px; width: 95%;"
+                 th:each="webtoonListList, indexNum : ${allList}">
+                <div style="display : flex; flex-direction: column-reverse; padding:3px">
+                    <div class="swiper-pagination swiper-pagination"
+                         style="position:relative; margin-top:5px; display:flex; flex-direction:row; justify-content:flex-end;">
+                    </div>
+                    <div>
+                        <span th:if="${indexNum.index} == 0"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">월요일</span>
+                        <span th:if="${indexNum.index} == 1"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">화요일</span>
+                        <span th:if="${indexNum.index} == 2"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">수요일</span>
+                        <span th:if="${indexNum.index} == 3"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">목요일</span>
+                        <span th:if="${indexNum.index} == 4"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">금요일</span>
+                        <span th:if="${indexNum.index} == 5"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">토요일</span>
+                        <span th:if="${indexNum.index} == 6"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">일요일</span>
                     </div>
                 </div>
-                <div class="swiper mySwiper" style="width : 85%; margin-top : 10px;">
-                    <div style="margin-left : 85%; margin-top : -3px; display : flex;">
-                        <div class="swiper-pagination swiper-pagination1"
-                             style="position : relative; width : 55%; margin-top : 5px;"></div>
-                    </div>
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide" style="display:flex; font-size: 18px; align-items: center; height : 100%;" th:each="dayList, dayIndex : ${allDaysListList}">
-                            <div class="dailyMovie" style="display : grid;" th:each="webtoon : ${dayList}">
-                                <div class="img" style="padding : 6px;">
-                                    <img th:src="${webtoon.img}" th:if="${not #strings.isEmpty(webtoon.img)}" style="width : 210px;">
-                                    <img src="/noimg.jpg" th:if="${#strings.isEmpty(webtoon.img)}" style="width : 213px; height : 303px;">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"
+                         style="display:flex; font-size: 18px; align-items: center; height : 100%; margin-left: 5%;"
+                         th:each="webtoonList : ${webtoonListList}">
+                        <form style="display : grid; margin-left:15px;"
+                              th:action="@{/webtoon/detail}" method="post" th:each="webtoon : ${webtoonList}">
+                            <button>
+                                <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex;
+                        justify-content: center; align-items: center;">
+                                    <div class="fanCount" th:text="${webtoon.getFanCount()}"
+                                         style="position: absolute; width: 43px; height: 46px; text-align:
+                                  center; border-radius: 50%; font-size: 18px; font-weight: bold;
+                                  background: green; color: white; padding: 10px; margin-left: -12.5%; margin-top: -19%;"></div>
+                                    <img th:src="${webtoon.getImg}" style="max-height: 100%;">
                                 </div>
-                                <div class="short-info" style="display : inline-grid; margin-left : 5px;">
-                                    <span th:text="${#strings.length(webtoon.title) > 8 ? #strings.substring(webtoon.title, 0, 8) + '..' : webtoon.title}" style="font-size : 17px; margin-bottom : 5px;"></span>
+                                <div class="short-info" style="display : flex; flex-direction: column; align-items: flex-start;
+                        margin-left : 5px;">
+                                <span class="webToon-title"
+                                      th:text="${#strings.length(webtoon.getTitle) > 16 ? #strings.substring(webtoon.getTitle, 0, 16) + '..' : webtoon.getTitle}"
+                                      style="font-size : 17px;"></span>
                                     <div class="short-kind">
                                         <span style="color : #868e96; font-size : 15px;">글,그림 :</span>
-                                        <span th:text="${#strings.length(webtoon.author) > 7 ? #strings.substring(webtoon.author, 0, 7) + '..' : webtoon.author}" style="font-size : 17px; margin-bottom : 5px;"></span>
+                                        <span th:text="${#strings.length(webtoon.getAuthor()) > 7 ? #strings.substring(webtoon.getAuthor(), 0, 7) + '..' : webtoon.getAuthor()}"
+                                              style="font-size : 17px; margin-bottom : 5px;"></span>
                                     </div>
-                                    <div class="short-kind">
+                                    <div class="webToon-update">
                                         <span style="color : #868e96; font-size : 15px;">연재일 :</span>
-                                        <span th:text="${webtoon.getUpdateDays()}" style="font-size : 17px; margin-bottom : 5px;"></span>
+                                        <span th:text="${webtoon.getUpdateDays()}"
+                                              style="color: #868e96; font-size: 15px;"></span>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                                <input type="hidden" name="title" th:value="${webtoon.getTitle()}">
+                            </button>
+                        </form>
                     </div>
-
-                    <!--                    <div class="swiper-slide"-->
-    <!--                         style="display:flex; font-size: 18px; align-items: center; height : 100%;">-->
-    <!--                        <div class="dailyMovie" style="display : grid;"-->
-    <!--                             th:each="webtoonDTO : ${mondayList.subList(mondayList.size() - 5, mondayList.size())}">-->
-    <!--                            &lt;!&ndash;                            <div th:if="${webtoonDTO.updateDays.contains('tue')}">&ndash;&gt;-->
-    <!--                            <div class="img" style="padding : 6px;">-->
-    <!--                                <span class="fanCount" th:text="${webtoonDTO['fanCount']}"></span>-->
-    <!--                                <img th:src="${webtoonDTO.img}"-->
-    <!--                                     th:if="${not #strings.isEmpty(webtoonDTO.img)}" style="width : 210px;">-->
-    <!--                                <img src="/noimg.jpg" th:if="${#strings.isEmpty(webtoonDTO.img)}"-->
-    <!--                                     style="width : 213px; height : 303px;">-->
-    <!--                            </div>-->
-    <!--                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">-->
-    <!--                                <span th:text="${#strings.length(webtoonDTO.title) > 8 ? #strings.substring(webtoonDTO.title, 0, 8) + '..' : webtoonDTO.title}"-->
-    <!--                                      style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">글,그림 :</span>-->
-    <!--                                    <span th:text="${#strings.length(webtoonDTO.author) > 7 ? #strings.substring(webtoonDTO.author, 0, 7) + '..' : webtoonDTO.author}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">연재일 :</span>-->
-    <!--                                    <span th:text="${webtoonDTO.getUpdateDays()}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--        <div class="swiper-button-prev swiper-button-prev1"-->
-    <!--             style="left : 15%;  top : 30%; color : green;"></div>-->
-    <!--        <div class="swiper-button-next swiper-button-next1"-->
-    <!--             style="right : 15%; top : 30%; color : green;"></div>-->
-    <!--    </div>-->
-
-
-    <!--    <div class="swiper-2">-->
-    <!--        <div style="width : 1340px; margin : auto; margin-top: 40px">-->
-    <!--            <div class="swiper-top2" style="display : flex; white-space : nowrap;">-->
-    <!--                <div style="text-align : left; margin-left : 8%;">-->
-    <!--                    <span style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;">화요일</span>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--            <div class="swiper mySwiper2" style="width : 85%; margin-top : 10px;">-->
-    <!--                <div style="margin-left : 85%; margin-top : -3px; display : flex;">-->
-    <!--                    <div class="sswiper-pagination2"-->
-    <!--                         style="position : relative; width : 55%; margin-top : 5px;"></div>-->
-    <!--                </div>-->
-    <!--                <div class="swiper-wrapper">-->
-    <!--                    <div class="swiper-slide"-->
-    <!--                         style="display:flex; font-size: 18px; align-items: center; height : 100%;">-->
-    <!--                        <div class="dailyMovie" style="display : grid;"-->
-    <!--                             th:each="webtoonDTO : ${tuesdayList.subList(0, 5)}">-->
-    <!--                            <div class="img" style="padding : 6px;">-->
-    <!--                                <span class="fanCount" th:text="${webtoonDTO['fanCount']}"></span>-->
-    <!--                                <img th:src="${webtoonDTO.img}"-->
-    <!--                                     th:if="${not #strings.isEmpty(webtoonDTO.img)}" style="width : 210px;">-->
-    <!--                                <img src="/noimg.jpg" th:if="${#strings.isEmpty(webtoonDTO.img)}"-->
-    <!--                                     style="width : 213px; height : 303px;">-->
-    <!--                            </div>-->
-    <!--                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">-->
-    <!--                                <span th:text="${#strings.length(webtoonDTO.title) > 8 ? #strings.substring(webtoonDTO.title, 0, 8) + '..' : webtoonDTO.title}"-->
-    <!--                                      style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">글,그림 :</span>-->
-    <!--                                    <span th:text="${#strings.length(webtoonDTO.author) > 7 ? #strings.substring(webtoonDTO.author, 0, 7) + '..' : webtoonDTO.author}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">연재일 :</span>-->
-    <!--                                    <span th:text="${webtoonDTO.getUpdateDays()}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                    <div class="swiper-slide"-->
-    <!--                         style="display:flex; font-size: 18px; align-items: center; height : 100%;">-->
-    <!--                        <div class="dailyMovie" style="display : grid;"-->
-    <!--                             th:each="webtoonDTO : ${tuesdayList.subList(tuesdayList.size() - 5, tuesdayList.size())}">-->
-    <!--                            &lt;!&ndash;                            <div th:if="${webtoonDTO.updateDays.contains('tue')}">&ndash;&gt;-->
-    <!--                            <div class="img" style="padding : 6px;">-->
-    <!--                                <span class="fanCount" th:text="${webtoonDTO['fanCount']}"></span>-->
-    <!--                                <img th:src="${webtoonDTO.img}"-->
-    <!--                                     th:if="${not #strings.isEmpty(webtoonDTO.img)}" style="width : 210px;">-->
-    <!--                                <img src="/noimg.jpg" th:if="${#strings.isEmpty(webtoonDTO.img)}"-->
-    <!--                                     style="width : 213px; height : 303px;">-->
-    <!--                            </div>-->
-    <!--                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">-->
-    <!--                                <span th:text="${#strings.length(webtoonDTO.title) > 8 ? #strings.substring(webtoonDTO.title, 0, 8) + '..' : webtoonDTO.title}"-->
-    <!--                                      style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">글,그림 :</span>-->
-    <!--                                    <span th:text="${#strings.length(webtoonDTO.author) > 7 ? #strings.substring(webtoonDTO.author, 0, 7) + '..' : webtoonDTO.author}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">연재일 :</span>-->
-    <!--                                    <span th:text="${webtoonDTO.getUpdateDays()}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--        <div class="swiper-button-prev swiper-button-prev2" style="left : 15%; top : 730px; color : green;"></div>-->
-    <!--        <div class="swiper-button-next swiper-button-next2" style="right : 15%; top : 730px; color : green;"></div>-->
-    <!--    </div>-->
-
-
-    <!--    <div class="swiper-3">-->
-    <!--        <div style="width : 1340px; margin : auto; margin-top: 40px">-->
-    <!--            <div class="swiper-top3" style="display : flex; white-space : nowrap;">-->
-    <!--                <div style="text-align : left; margin-left : 8%;">-->
-    <!--                    <span style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;">수요일</span>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--            <div class="swiper mySwiper3" style="width : 85%; margin-top : 10px;">-->
-    <!--                <div style="margin-left : 85%; margin-top : -3px; display : flex;">-->
-    <!--                    <div class="sswiper-pagination3"-->
-    <!--                         style="position : relative; width : 55%; margin-top : 5px;"></div>-->
-    <!--                </div>-->
-    <!--                <div class="swiper-wrapper">-->
-    <!--                    <div class="swiper-slide"-->
-    <!--                         style="display:flex; font-size: 18px; align-items: center; height : 100%;">-->
-    <!--                        <div class="dailyMovie" style="display : grid;"-->
-    <!--                             th:each="webtoonDTO : ${wednesdayList.subList(0, 5)}">-->
-    <!--                            <div class="img" style="padding : 6px;">-->
-    <!--                                <span class="fanCount" th:text="${webtoonDTO['fanCount']}"></span>-->
-    <!--                                <img th:src="${webtoonDTO.img}"-->
-    <!--                                     th:if="${not #strings.isEmpty(webtoonDTO.img)}" style="width : 210px;">-->
-    <!--                                <img src="/noimg.jpg" th:if="${#strings.isEmpty(webtoonDTO.img)}"-->
-    <!--                                     style="width : 213px; height : 303px;">-->
-    <!--                            </div>-->
-    <!--                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">-->
-    <!--                                <span th:text="${#strings.length(webtoonDTO.title) > 8 ? #strings.substring(webtoonDTO.title, 0, 8) + '..' : webtoonDTO.title}"-->
-    <!--                                      style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">글,그림 :</span>-->
-    <!--                                    <span th:text="${#strings.length(webtoonDTO.author) > 7 ? #strings.substring(webtoonDTO.author, 0, 7) + '..' : webtoonDTO.author}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">연재일 :</span>-->
-    <!--                                    <span th:text="${webtoonDTO.getUpdateDays()}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                    <div class="swiper-slide"-->
-    <!--                         style="display:flex; font-size: 18px; align-items: center; height : 100%;">-->
-    <!--                        <div class="dailyMovie" style="display : grid;"-->
-    <!--                             th:each="webtoonDTO : ${wednesdayList.subList(wednesdayList.size() - 5, wednesdayList.size())}">-->
-    <!--                            &lt;!&ndash;                            <div th:if="${webtoonDTO.updateDays.contains('tue')}">&ndash;&gt;-->
-    <!--                            <div class="img" style="padding : 6px;">-->
-    <!--                                <span class="fanCount" th:text="${webtoonDTO['fanCount']}"></span>-->
-    <!--                                <img th:src="${webtoonDTO.img}"-->
-    <!--                                     th:if="${not #strings.isEmpty(webtoonDTO.img)}" style="width : 210px;">-->
-    <!--                                <img src="/noimg.jpg" th:if="${#strings.isEmpty(webtoonDTO.img)}"-->
-    <!--                                     style="width : 213px; height : 303px;">-->
-    <!--                            </div>-->
-    <!--                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">-->
-    <!--                                <span th:text="${#strings.length(webtoonDTO.title) > 8 ? #strings.substring(webtoonDTO.title, 0, 8) + '..' : webtoonDTO.title}"-->
-    <!--                                      style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">글,그림 :</span>-->
-    <!--                                    <span th:text="${#strings.length(webtoonDTO.author) > 7 ? #strings.substring(webtoonDTO.author, 0, 7) + '..' : webtoonDTO.author}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                                <div class="short-kind">-->
-    <!--                                    <span style="color : #868e96; font-size : 15px;">연재일 :</span>-->
-    <!--                                    <span th:text="${webtoonDTO.getUpdateDays()}"-->
-    <!--                                          style="font-size : 17px; margin-bottom : 5px;"></span>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--        <div class="swiper-button-prev swiper-button-prev3" style="left : 15%; top : 1130px; color : green;"></div>-->
-    <!--        <div class="swiper-button-next swiper-button-next3" style="right : 15%; top : 1130px; color : green;"></div>-->
-    <!--    </div>-->
+                </div>
+                <div class="swiper-button-next" style="color : green;"></div>
+                <div class="swiper-button-prev" style="color : green;"></div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        var swiper1 = new Swiper(".mySwiper", {
+        var swiper = new Swiper(".mySwiper", {
             spaceBetween: 30,
             pagination: {
-                el: ".swiper-pagination1",
+                el: ".swiper-pagination",
                 clickable: true,
             },
             navigation: {
-                nextEl: ".swiper-button-next1",
-                prevEl: ".swiper-button-prev1",
-            },
-        });
-
-        var swiper2 = new Swiper(".mySwiper2", {
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination2",
-                clickable: true,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next2",
-                prevEl: ".swiper-button-prev2",
-            },
-        });
-
-        var swiper3 = new Swiper(".mySwiper3", {
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination3",
-                clickable: true,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next3",
-                prevEl: ".swiper-button-prev3",
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
             },
         });
     </script>

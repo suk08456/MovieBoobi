@@ -87,15 +87,15 @@ public class WebtoonService {
 //        this.day = day;
 //    }
 
-    public List<Webtoon> getAllDayList(String day) {
-        List<Webtoon> allWebtoonList = webtoonRepository.findByUpdateDays(day);
+    public List<Webtoon> getWebtoonList(String day) {
+        List<Webtoon> webtoonList = webtoonRepository.findByUpdateDays(day);
 
-        if (allWebtoonList.isEmpty()) {
+        if (webtoonList.isEmpty()) {
             getWebtoonAPI(day);
         }
 //        allWebtoonList.addAll(webtoonRepository.findByUpdateDays(day));
-        allWebtoonList = webtoonRepository.findByUpdateDays(day);
-        return allWebtoonList;
+        webtoonList = webtoonRepository.findByUpdateDays(day);
+        return webtoonList;
     }
 
 
