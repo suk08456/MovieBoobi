@@ -1,4 +1,4 @@
-package com.korea.MOVIEBOOK.Webtoon;
+package com.korea.MOVIEBOOK.Webtoon.WebtoonList;
 
 public enum Day {
     mon,
@@ -6,5 +6,6 @@ public enum Day {
     wed,
     thu,
     fri,
-    sat
+    sat,
+    sun
 }

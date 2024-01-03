@@ -19,8 +19,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class WebtoonService {
     private final WebtoonRepository webtoonRepository;
-    private String day;
-
+    private Day day;
     public void getWebtoonAPI(String day) {
         List<WebtoonDTO> webtoonDTOList = new ArrayList<>();
 
@@ -49,7 +48,6 @@ public class WebtoonService {
     }
 
 
-
     private WebtoonDTO createWebtoonDTOFromMap(Map<String, Object> webtoonData) {
         try {
             return WebtoonDTO.builder()
@@ -60,8 +58,8 @@ public class WebtoonService {
                     .author((String) webtoonData.get("author"))
                     .img((String) webtoonData.get("img"))
                     .updateDays((List<String>) webtoonData.get("updateDays"))
-                    .searchKeyword((String)webtoonData.get("searchKeyword"))
-                    .detailUrl((String)webtoonData.get("detailUrl"))
+                    .searchKeyword((String) webtoonData.get("searchKeyword"))
+                    .detailUrl((String) webtoonData.get("detailUrl"))
                     .build();
         } catch (Exception e) {
             // 예외 처리
@@ -70,9 +68,9 @@ public class WebtoonService {
         }
     }
 
-    public void saveWebtoonFromDTO(WebtoonDTO webtoonDTO,String updateDays) {
+    public void saveWebtoonFromDTO(WebtoonDTO webtoonDTO, String updateDays) {
         Webtoon webtoon = new Webtoon();
-        webtoon.set_id(webtoonDTO.get_id());
+//        webtoon.setid(webtoonDTO.getid());
         webtoon.setFanCount(webtoonDTO.getFanCount());
         webtoon.setWebtoonId(webtoonDTO.getWebtoonId());
         webtoon.setTitle(webtoonDTO.getTitle());
@@ -85,15 +83,21 @@ public class WebtoonService {
     }
 
 
-    public List<Webtoon> getWebtoonList(String day) {
+//    public void setDay(Day day) {
+//        this.day = day;
+//    }
 
-        List<Webtoon> newWebtoonList = webtoonRepository.findByUpdateDays(day);
-        if(newWebtoonList.isEmpty()){
+    public List<Webtoon> getAllDayList(String day) {
+        List<Webtoon> allWebtoonList = webtoonRepository.findByUpdateDays(day);
+
+        if (allWebtoonList.isEmpty()) {
             getWebtoonAPI(day);
         }
-        newWebtoonList = webtoonRepository.findByUpdateDays(day);
-        return newWebtoonList;
+//        allWebtoonList.addAll(webtoonRepository.findByUpdateDays(day));
+        allWebtoonList = webtoonRepository.findByUpdateDays(day);
+        return allWebtoonList;
     }
+
 
     public Optional<Webtoon> createSampleWebtoonDetail(Long webtoonId) {
         return webtoonRepository.findById(webtoonId);

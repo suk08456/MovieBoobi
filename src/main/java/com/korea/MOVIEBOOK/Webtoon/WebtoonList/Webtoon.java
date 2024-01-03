@@ -14,7 +14,8 @@ public class Webtoon {
 
 
     @Id
-    private String _id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private Integer fanCount;
 

@@ -1,7 +1,6 @@
 package com.korea.MOVIEBOOK.Review;
 
 import com.korea.MOVIEBOOK.Drama.Drama;
-import com.korea.MOVIEBOOK.Movie.Daily.MovieDaily;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +24,7 @@ public class Review {
 
     private Long rating;            // 리뷰 평점
 
-    @ManyToOne
-    MovieDaily movieDaily;
+//    @ManyToOne
+//    MovieDaily movieDaily;
 
 }

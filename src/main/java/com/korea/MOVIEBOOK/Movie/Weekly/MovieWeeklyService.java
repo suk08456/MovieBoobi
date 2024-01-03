@@ -34,10 +34,10 @@ public class MovieWeeklyService {
     public void add(String date, Long rank, String title, Long audiAcc) throws ParseException {
         String week = weeklydate(date);
         String year = date.substring(0,4);
-        MovieWeekly movieWeekly = this.movieWeeklyRepository.findByYearAndWeekAndTitle(year,week,title);
-//        movieWeekly.setRank(rank);
-//        movieWeekly.setAudiAcc(audiAcc);
-        this.movieWeeklyRepository.save(movieWeekly);
+//        MovieWeekly movieWeekly = this.movieWeeklyRepository.findByYearAndWeekAndTitle(year,week,title);
+////        movieWeekly.setRank(rank);
+////        movieWeekly.setAudiAcc(audiAcc);
+//        this.movieWeeklyRepository.save(movieWeekly);
     }
 
     public void deleteWeeklyMovie(String weeks) throws ParseException {
