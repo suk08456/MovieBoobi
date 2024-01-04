@@ -37,7 +37,6 @@ public class MovieWeeklyService {
     public MovieWeekly add(String movieCD, Long rank, String date) throws ParseException{
         String week = weeklydate(date);
         String year = date.substring(0,4);
-
         Movie movie = this.movieService.findMovieByCD(movieCD);
         MovieWeekly movieWeekly = new MovieWeekly();
         movieWeekly.setMovie(movie);
