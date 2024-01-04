@@ -1,11 +1,11 @@
 package com.korea.MOVIEBOOK.Webtoon.WebtoonList;
 
 
+import com.korea.MOVIEBOOK.Webtoon.WebtoonDayList.WebtoonDayList;
+import com.korea.MOVIEBOOK.Webtoon.Days.Day;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -27,11 +27,13 @@ public class Webtoon {
 
     private String img;
 
-    @Column(name = "update_days")
-    private String updateDays;
-
     private String searchKeyword;
 
     private String detailUrl;
 
+    @ManyToOne
+    private Day day;
+
+    @ManyToOne
+    private WebtoonDayList webtoonDayList;
 }

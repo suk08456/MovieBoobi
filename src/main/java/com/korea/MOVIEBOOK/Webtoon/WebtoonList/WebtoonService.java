@@ -1,6 +1,8 @@
 package com.korea.MOVIEBOOK.Webtoon.WebtoonList;
 
 
+import com.korea.MOVIEBOOK.Webtoon.Days.Day;
+import com.korea.MOVIEBOOK.Webtoon.Days.DayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +21,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class WebtoonService {
     private final WebtoonRepository webtoonRepository;
-    private Day day;
+    private final DayRepository dayRepository;
     public void getWebtoonAPI(String day) {
         List<WebtoonDTO> webtoonDTOList = new ArrayList<>();
 
@@ -69,17 +71,22 @@ public class WebtoonService {
     }
 
     public void saveWebtoonFromDTO(WebtoonDTO webtoonDTO, String updateDays) {
-        Webtoon webtoon = new Webtoon();
+       Day day = new Day();
+       day.setUpdateDays(updateDays);
+       this.dayRepository.save(day);
+
+       Webtoon webtoon = new Webtoon();
 //        webtoon.setid(webtoonDTO.getid());
-        webtoon.setFanCount(webtoonDTO.getFanCount());
-        webtoon.setWebtoonId(webtoonDTO.getWebtoonId());
-        webtoon.setTitle(webtoonDTO.getTitle());
-        webtoon.setAuthor(webtoonDTO.getAuthor());
-        webtoon.setImg(webtoonDTO.getImg());
-        webtoon.setUpdateDays(updateDays);
-        System.out.println("UpdateDays: " + webtoon.getUpdateDays()); // 디버깅용 로그
-        webtoon.setDetailUrl(webtoonDTO.getDetailUrl());
-        webtoonRepository.save(webtoon);
+       webtoon.setFanCount(webtoonDTO.getFanCount());
+       webtoon.setWebtoonId(webtoonDTO.getWebtoonId());
+       webtoon.setTitle(webtoonDTO.getTitle());
+       webtoon.setAuthor(webtoonDTO.getAuthor());
+       webtoon.setImg(webtoonDTO.getImg());
+       webtoon.setDay(day);
+//       System.out.println("UpdateDays: " + webtoon.getUpdateDays()); // 디버깅용 로그
+       webtoon.setDetailUrl(webtoonDTO.getDetailUrl());
+       webtoonRepository.save(webtoon);
+
     }
 
 
@@ -99,9 +106,11 @@ public class WebtoonService {
     }
 
 
-    public Optional<Webtoon> createSampleWebtoonDetail(Long webtoonId) {
-        return webtoonRepository.findById(webtoonId);
+    public Webtoon findWebtoonByWebtoonId(Long webtoonId) {
+        return this.webtoonRepository.findByWebtoonId(webtoonId);
     }
+
+
 }
 
 

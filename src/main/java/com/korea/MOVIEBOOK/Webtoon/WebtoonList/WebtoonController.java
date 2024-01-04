@@ -1,5 +1,7 @@
 package com.korea.MOVIEBOOK.Webtoon.WebtoonList;
 
+import com.korea.MOVIEBOOK.Webtoon.Days.Day;
+import com.korea.MOVIEBOOK.Webtoon.Days.DayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,10 +17,15 @@ import java.util.Optional;
 public class WebtoonController {
 
     private final WebtoonService webtoonService;
+    private final DayRepository dayRepository;
 
     @GetMapping("/list")
     public String WebtoonList(Model model) {
         List<Webtoon> mondayList = webtoonService.getWebtoonList("mon");
+        Day day = this.dayRepository.findByDay("mon");
+        day.setWebtoonList(mondayList);
+        this.dayRepository.save(day);
+
         mondayList.sort(
                 Comparator.comparing(
                         webtoon -> webtoon.getFanCount() == null ? 0 : webtoon.getFanCount(),
@@ -93,12 +99,6 @@ public class WebtoonController {
     }
 
 
-    @GetMapping("/detail/{webtoonId}")
-    public String WebtoonDetail(Model model, @PathVariable Long webtoonId) {
-        Optional<Webtoon> webtoonDTO = webtoonService.createSampleWebtoonDetail(webtoonId);
-        model.addAttribute("webtoonDTO", webtoonDTO);
-        return "webtoon/webtoon_detail";
-    }
 
     public List<List<Webtoon>> getListList(List<Webtoon> webtoonList) {
         int startIndex = 0;
@@ -110,6 +110,14 @@ public class WebtoonController {
             endIndex += 5;
         }
         return webtoonListList;
+    }
+
+    @PostMapping("/detail")
+    public String WebtoonDetail1(Model model, Long webtoonId){
+        Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
+
+        model.addAttribute("WebtoonDetail", webtoon);
+        return "webtoon/webtoon_detail";
     }
 }
 

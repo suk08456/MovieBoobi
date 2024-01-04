@@ -1,16 +1,9 @@
 package com.korea.MOVIEBOOK.Review;
 
-import com.korea.MOVIEBOOK.Drama.Drama;
-import com.korea.MOVIEBOOK.Movie.Daily.MovieDaily;
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
-import com.korea.MOVIEBOOK.Webtoon.WebtoonList.Webtoon;
-import com.korea.MOVIEBOOK.book.Book;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.w3c.dom.Text;
-
-import java.util.List;
 
 @Entity
 @Getter
