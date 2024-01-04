@@ -11,11 +11,12 @@
 <body>
 <div layout:fragment="content" style="width : 100%; height : 30%;">
     <div class="content-co" style="width : 1300px; height : 1540px; margin : auto; margin-top : -25px;">
-        <div class="post-co" style="  width : 100%; display : flex; margin-top : 50px;">
-            <div class="img-co" style="width : 260px;">
-                <img th:src="${movieDailyDetail.imageUrl}" style="width : 260px;">
+        <div class="post-co" style="display : flex; flex-direction : row; ">
+            <div style="margin-top : 30px; color : #868e96;">
+                <img th:src="${movieDailyDetail.imageUrl}" style="width : 300px;">
             </div>
-            <div style="display : flex; flex-direction : column;border-bottom : 3px solid #868e96; width : 75%; margin-left : 25px;">
+            <div style="display : flex; flex-direction : column; width : 75%; margin-left : 25px;">                <span th:text="${movieDailyDetail.title}"
+                      style="font-size : 33px; font-weight : bold;  margin-bottom : 5px; margin-top : 30px;"></span>
                 <div style="display : flex;">
                     <div style="flex-direction : column;">
                         <div class="rate" style="margin-top : 15px;">
@@ -77,29 +78,28 @@
                         </div>
                     </div>
                 </div>
+                <div style="width : 100%; margin-top : 41px; color : #868e96; margin-bottom : 10px;">
+                    <span th:text="${movieDailyDetail.genre}" style="margin-left : 5px;"></span>
+                    ·
+                    <span th:text="${movieDailyDetail.nations}"></span>
+                    ·
+                    <span th:text="${movieDailyDetail.viewingRating}"></span>
+                    (
+                    <span th:text="${movieruntime}"></span>
+                    )
+                </div>
+                <div class="movie-co"
+                     style="text-align : center; border : 3px dashed #868e96; padding : 22px; height : 182px; margin-bottom : 15px;">
+                    <span th:text="${#strings.length(movieDailyDetail.plot)> 300 ? #strings.substring(movieDailyDetail.plot, 0, 300) + '..' : movieDailyDetail.plot}" style="font-size : 17px"></span>
+                </div>
             </div>
         </div>
         <div class="movie-info">
-            <div style="width : 100%; margin-top : 10px; color : #868e96;">
-                <span th:text="${movieDailyDetail.title}"
-                      style="font-size : 40px; font-weight : bold;  margin-bottom : 5px;"></span>
-                <span th:text="${movieDailyDetail.genre}" style="margin-left : 5px;"></span>
-                ·
-                <span th:text="${movieDailyDetail.nations}"></span>
-                ·
-                <span th:text="${movieDailyDetail.viewingRating}"></span>
-                (
-                <span th:text="${movieruntime}"></span>
-                )
-                <div class="movie-co"
-                     style="text-align : center; border : 3px dashed #868e96; padding : 20px; height : 140px; margin-bottom : 15px;">
-                    <span th:text="${#strings.length(movieDailyDetail.plot)> 300 ? #strings.substring(movieDailyDetail.plot, 0, 300) + '..' : movieDailyDetail.plot}"></span>
-                </div>
-            </div>
             <div class="swiper mySwiper">
                 <span style="font-size : 20px; width : 80%; font-weight : bold; color : black;">출연/제작</span>
                 <div class="swiper-wrapper" style="margin-top : 20px; margin-bottom : 20px;">
-                    <div class="swiper-slide" th:each="actorList : ${actorListList}" style="display : flex;flex-direction : row;">
+                    <div class="swiper-slide" th:each="actorList : ${actorListList}"
+                         style="display : flex;flex-direction : row;">
                         <div th:each="actors : ${actorList}" style="width : 200px;">
                             <div class="actor-co" style="width :165px; align-items: center;">
                                 <img src="/imgs/profile_icon.png" style="width: 48px; height: 48px; margin : auto;">

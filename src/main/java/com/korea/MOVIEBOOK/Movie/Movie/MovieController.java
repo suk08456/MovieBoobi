@@ -107,9 +107,11 @@ public class MovieController {
         if(!movie.getDirector().isEmpty()) {
             director = movie.getDirector() + "(감독)";
         }
-
-        String[] actors = movie.getActor().split(",");
-
+        String actor = movie.getActor();
+        String[] actors = new String[]{};
+        if(!actor.isEmpty()) {
+           actors = actor.split(",");
+        }
         List<String> actorList = new ArrayList<>(Arrays.asList(actors));
 
         actorList.add(director);
