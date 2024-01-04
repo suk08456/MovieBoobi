@@ -30,7 +30,6 @@ public class Review {
 
 
 //    @ManyToOne
-//    MovieDaily movieDaily;
     @ManyToOne
     Movie movie;
 
