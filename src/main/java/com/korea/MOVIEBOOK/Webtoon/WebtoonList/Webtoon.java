@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -29,11 +31,12 @@ public class Webtoon {
 
     private String searchKeyword;
 
+//    @Column(name = "update_days")
+//    private String updateDays;
+
+
     private String detailUrl;
 
-    @ManyToOne
-    private Day day;
-
-    @ManyToOne
-    private WebtoonDayList webtoonDayList;
+    @OneToMany(mappedBy = "webtoonList")
+    private List<WebtoonDayList> webtoonDayLists;
 }

@@ -2,6 +2,10 @@ package com.korea.MOVIEBOOK.Webtoon.Days;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface DayRepository extends JpaRepository<Day, Long> {
-    Day findByDay(String day);
+    Day findByupdateDays(String updateDays);
+    Optional<Day> findByUpdateDays(String updateDays);
+    Optional<Day> findById(Long Id);
 }

@@ -19,12 +19,8 @@ public class Day {
     private Long id;
 
 
-    @Column(name = "update_days")
     private String updateDays;
 
     @OneToMany(mappedBy = "webtoonDay")
-    private List<Webtoon> webtoonList;
-
-    @ManyToOne
-    private WebtoonDayList webtoonDayList;
+    private List<WebtoonDayList> webtoonDayLists;
 }

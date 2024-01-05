@@ -18,9 +18,9 @@ public class WebtoonDayList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "webtoonDayList")
-    private List<Day> dayList;
+    @ManyToOne
+    private Day webtoonDay;
 
-    @OneToMany(mappedBy = "webtoonDayList")
-    private List<Webtoon> webtoonList;
+    @ManyToOne
+    private Webtoon webtoonList;
 }
