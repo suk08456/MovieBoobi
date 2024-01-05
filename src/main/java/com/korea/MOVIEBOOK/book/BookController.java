@@ -43,7 +43,6 @@ public class BookController {
         return "book/bookMainPage";
     }
 
-
     @GetMapping("/test")
     public String test(Model model) {
         List<Book> bestSellerList = bookService.getBestSellerList();

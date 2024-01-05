@@ -110,7 +110,7 @@ public class MovieController {
         String actor = movie.getActor();
         String[] actors = new String[]{};
         if(!actor.isEmpty()) {
-           actors = actor.split(",");
+            actors = actor.split(",");
         }
         List<String> actorList = new ArrayList<>(Arrays.asList(actors));
 
@@ -242,4 +242,3 @@ public class MovieController {
 
 
 }
-
