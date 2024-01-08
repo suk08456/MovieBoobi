@@ -21,5 +21,5 @@ public class BookDTO {
     private Boolean isNewBook;    //  신간인지 확인하는 변수
     private Integer priceStandard;   //  정가
     private Integer bestRank;  //  베스트셀러 순위
-    private LocalDate pubDate; //  출간일
+    private LocalDate pubDate; //  출간일.
 }
