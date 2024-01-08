@@ -15,7 +15,6 @@ import java.util.Optional;
 public class Oauth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
-    private final Member member;
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);

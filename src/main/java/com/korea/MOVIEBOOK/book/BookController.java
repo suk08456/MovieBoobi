@@ -44,9 +44,9 @@ public class BookController {
     }
 
     @PostMapping("/detail")
-    public String detailPage(String title, Model model) {
+    public String bookDetail(String title, Model model) {
         model.addAttribute("title", title);
         bookService.findByTitle(title);
-        return "book/testtest";
+        return "book/bookDetail";
     }
 }
