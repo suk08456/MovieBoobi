@@ -18,7 +18,8 @@ public class BookDTO {
     private String isbn13;  //  13자리 코드(가급적 13자리 코드사용)
     private String cover;   //  표지
     private String publisher;   //  출판사
+    private Boolean isNewBook;    //  신간인지 확인하는 변수
     private Integer priceStandard;   //  정가
     private Integer bestRank;  //  베스트셀러 순위
-    private LocalDate pubDate; //  출간일
+    private LocalDate pubDate; //  출간일.
 }

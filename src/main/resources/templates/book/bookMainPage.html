@@ -1,71 +1,73 @@
 <html layout:decorate="~{layout2}">
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <link rel="stylesheet" href="book/bookList.css">
-    <style>
-        .swiper {
-          width: 100%;
-          height: 100%;
-        }
-
-        .swiper-slide {
-          text-align: center;
-          font-size: 18px;
-          background: #fff;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        a {
-            color:inherit;
-	        text-decoration:none;
-        }
-    </style>
+    <link rel="stylesheet" href="/book/bookMainPage.css">
 </head>
 <body layout:fragment="content">
-<div class="swiper mySwiper">
-    <div class="swiper-wrapper">
-        <div class="swiper-slide" th:each="bestSellerList : ${bestSellerListList}">
-            <a th:each="bestSeller : ${bestSellerList}" th:href="@{/book/detail}">
-                <div>
-                    <img th:src="${bestSeller.getCover()}">
-                    <p th:text="${bestSeller.getTitle()}" class="bookTitle"></p>
+<div class="swiper-1">
+    <div style="width : 1340px; margin : auto;">
+        <div class="swiper mySwiper" style="margin-top: 10px; margin-bottom: 55px; width: 95%;" th:each="bookListList, indexNum : ${allList}">
+            <div style="display : flex; flex-direction: column-reverse; padding:5px">
+                <div class="swiper-pagination swiper-pagination"
+                     style="position:relative; margin-top:5px; display:flex; flex-direction:row; justify-content:flex-end;">
                 </div>
-            </a>
+                <div>
+                    <span th:if="${indexNum.index} == 0"
+                          style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">베스트 셀러</span>
+                    <span th:if="${indexNum.index} == 1"
+                          style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 7%">주목할 만한 신간</span>
+                </div>
+            </div>
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"
+                     style="display:flex; font-size: 18px; align-items: center; height : 100%;"
+                     th:each="bookList : ${bookListList}">
+                    <form style="display : grid; margin-left:15px;"
+                          th:action="@{/book/detail}" method="post" th:each="book : ${bookList}">
+                        <button>
+                            <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex;
+                        justify-content: center; align-items: center; border: solid 1px;">
+                                <div class="rank" th:if="${indexNum.index} == 0" th:text="${book.getBestRank}">
+                                </div>
+                                <div class="rank" th:if="${indexNum.index} == 1" th:text="신간"
+                                     style="font-size: 16px; letter-spacing: 2px;">
+                                </div>
+                                <img th:src="${book.getCover}" style="max-height: 100%;">
+                            </div>
+                            <div class="short-info" style="display : flex; flex-direction: column; align-items: flex-start;
+                        margin-left : 5px; padding-top: 16px;">
+                                <span class="mv-title"
+                                      th:text="${#strings.length(book.getTitle) > 16 ? #strings.substring(book.getTitle, 0, 16) + '..' : book.getTitle}"
+                                      style="font-size : 17px;"></span>
+                                <div class="short-kind">
+                                    <span style="color : #868e96; font-size : 15px;">출판일</span>
+                                    <span th:text="${book.getPubdate}" style="color: #868e96; font-size: 15px;"></span>
+<!--                                    <span th:text="${#dates.format(book.getPubdate, 'yyyy.MM.dd')}" style="color: #868e96; font-size: 15px;"></span>-->
+                                </div>
+                            </div>
+                            <input type="hidden" name="title" th:value="${book.getTitle}">
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="swiper-button-next" style="color : #3b3ff6;"></div>
+            <div class="swiper-button-prev" style="color : #3b3ff6;"></div>
         </div>
     </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-<!--    <div class="swiper-pagination"></div>-->
-</div>
-<div class="swiper mySwiper">
-    <div class="swiper-wrapper">
-        <div class="swiper-slide" th:each="bestSellerList : ${bestSellerListList}">
-            <a th:each="bestSeller : ${bestSellerList}" th:href="@{/book/detail}">
-                <div>
-                    <img th:src="${bestSeller.getCover()}">
-                    <p th:text="${bestSeller.getTitle()}" class="bookTitle"></p>
-                </div>
-            </a>
-        </div>
-    </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-    <!--    <div class="swiper-pagination"></div>-->
 </div>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     var swiper = new Swiper(".mySwiper", {
-      pagination: {
-        el: ".swiper-pagination",
-        type: "fraction",
-      },
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-    });
+            spaceBetween: 30,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
 </script>
 </body>
 </html>

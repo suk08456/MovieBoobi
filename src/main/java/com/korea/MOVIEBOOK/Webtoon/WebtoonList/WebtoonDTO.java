@@ -1,5 +1,9 @@
 package com.korea.MOVIEBOOK.Webtoon.WebtoonList;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,8 +15,9 @@ import java.util.List;
 @Builder
 public class WebtoonDTO {
 
-
     private String _id;
+
+    private Integer fanCount;
 
     private Long webtoonId;
 
@@ -22,6 +27,7 @@ public class WebtoonDTO {
 
     private String img;
 
+    @Column(name = "update_days")
     private List<String> updateDays;
 
     private String searchKeyword;

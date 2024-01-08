@@ -1,5 +1,7 @@
 package com.korea.MOVIEBOOK.Movie.Daily;
 
+import com.korea.MOVIEBOOK.Movie.Movie.Movie;
+import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
 import com.korea.MOVIEBOOK.Movie.MovieAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -23,25 +25,55 @@ public class MovieDailyAPI {
 
     private final MovieDailyService movieDailyService;
     private final MovieAPI movieAPI;
+    private final MovieService movieService;
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
     String date = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     Integer gubun = 0;  // MovieDaily, MovieWeekly 구분 변수
 
-    public void movieDaily(String date) {
+    // api n개 처리해주는 놈
+    public List<Map> saveDailyMovieDataByAPI(List<Map> movieList) {
+        List<Map> finalFailedMovieList = new ArrayList<>();
+        Map rData = null;
+        int i = 0;
 
+        for (Map movie : movieList) {
+
+            rData = this.movieAPI.movieDetail(movie);  // api2 호출
+            if(rData.get("failedMovieList") != null) {
+                finalFailedMovieList.addAll((List<Map>) rData.get("failedMovieList"));
+            }
+            else {
+                this.movieAPI.kmdb((String) movie.get("movieNm"), (String)rData.get("releaseDateAndNationNm"));
+                this.movieService.add((String) movie.get("movieNm"), Long.parseLong((String) movie.get("audiAcc")));
+                MovieDaily movieDaily = this.movieDailyService.add((String) movie.get("movieCd"), Long.parseLong((String) movie.get("rank")), date);
+                this.movieService.test(movieDaily,(String) movie.get("movieNm"));
+            }
+            i++;
+            System.out.println("=======i의값====" + i);
+            System.out.println("=======movie Code 의값 : " + movie.get("movieCd"));
+            System.out.println("=======movie Name 의값 : " + movie.get("movieNm"));
+            System.out.println("=======movie Rank 의값 : " + movie.get("rank"));
+            System.out.println("=======movie Acc 의값 : " + movie.get("audiAcc"));
+        }
+
+        System.out.println("failedSize : " + finalFailedMovieList.size());
+        return finalFailedMovieList;
+    }
+
+
+    public List<Map> movieDaily(String date) {
+        Map rData = null;
         HashMap<String, Object> result = new HashMap<String, Object>();
         String key = "f53a4247c0c7eda74780f0c0b855d761";
-
+        List<Map> finalFailedMovieList = new ArrayList<>();
         try {
-            RestTemplate restTemplate = new RestTemplate();
 
+            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders header = new HttpHeaders();
             HttpEntity<?> entity = new HttpEntity<>(header);
             String url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json";
 
             UriComponents uri = UriComponentsBuilder.fromHttpUrl(url + "?" + "key=" + key + "&targetDt=" + date).build();
-
-            ResponseEntity<String> df = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, String.class);
 
             //이 한줄의 코드로 API를 호출해 MAP타입으로 전달 받는다.
             ResponseEntity<Map> resultMap = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
@@ -53,16 +85,10 @@ public class MovieDailyAPI {
             ArrayList<Map> dboxoffList = (ArrayList<Map>) lm.get("dailyBoxOfficeList");
 
             if (dboxoffList.size() < 10) {
-                movieDaily(date);
+                movieDaily(date); // api1 호출
             }
-            int i = 0;
-            for (Map map : dboxoffList) {
-                String releaseDts = this.movieAPI.movieDetail((String) map.get("movieCd"), date, gubun);
-                this.movieAPI.kmdb((String) map.get("movieNm"), releaseDts, gubun);
-                this.movieDailyService.add(gubun, Long.parseLong((String) map.get("rank")), (String) map.get("movieNm"), Long.parseLong((String) map.get("audiAcc")), date);
-                i++;
-               System.out.println("=======i의값====" + i);
-            }
+
+            finalFailedMovieList = saveDailyMovieDataByAPI(dboxoffList);
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             result.put("statusCode", e.getRawStatusCode());
@@ -74,6 +100,7 @@ public class MovieDailyAPI {
             result.put("body", "excpetion오류");
             System.out.println(e.toString());
         }
+        return finalFailedMovieList;
     }
 
 }

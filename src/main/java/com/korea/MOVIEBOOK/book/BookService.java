@@ -23,8 +23,8 @@ import java.util.*;
 public class BookService {
     private final BookRepository bookRepository;
 
-    private void getAPI(String url, String command) {
-        //  기본 url에 덧붙일 url 명령어를 넣으면 api를 사용해서 이미 db에있는지 체크하고 없다면 db에 저장해주는 메서드.
+    private void getAPI(String url, String command, Boolean isNew) {
+        //  기본url과 명령어를 넣으면 api를 사용해서 이미 db에있는지 체크하고 없다면 db에 저장해주는 메서드.
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders header = new HttpHeaders();
@@ -35,10 +35,13 @@ public class BookService {
 
             ArrayList<Map<String, Object>> bookList = (ArrayList<Map<String, Object>>) resultMap.getBody().get("item");
             for (Map<String, Object> bookData : bookList) {
-                System.out.println("=============query==========>" + (String) bookData.get("query"));
                 if (checkDuplicate((String) bookData.get("isbn"))) {
-                    saveBook(bookData);
+                    saveBook(bookData, isNew);
                     System.out.println("============================= 책 추가됨 =============================");
+                } else if (!checkDuplicate((String) bookData.get("isbn")) &&
+                        !bookRepository.findByIsbn((String) bookData.get("isbn")).getAddDate().equals(LocalDate.now())) {
+                    updateBook(bookData, isNew);
+                    System.out.println("============================= 책 업데이트 됨 =============================");
                 }
             }
         } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -56,18 +59,24 @@ public class BookService {
     }
     public void getBestSeller() {
         String url = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbdlrjsrn81027001";
-        String command = "&QueryType=Bestseller&MaxResults=30&start=1&Cover=Big&SearchTarget=Book&output=JS&Version=20131101";
-        getAPI(url, command);
+        String command = "&QueryType=Bestseller&MaxResults=25&start=1&Cover=Big&SearchTarget=Book&output=JS&Version=20131101";
+        getAPI(url, command, false);
+        System.out.println("======================== 베스트셀러도서추가 ========================");
     }
-    public void getNewList() {
+    public void getNewSpecialBook() {
         String url = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbdlrjsrn81027001";
-        String command = "&QueryType=ItemNewAll&MaxResults=30&start=1&Cover=Big&SearchTarget=Book&output=JS&Version=20131101";
-        getAPI(url, command);
+        String command = "&QueryType=ItemNewSpecial&MaxResults=25&start=1&Cover=Big&SearchTarget=Book&output=JS&Version=20131101";
+        getAPI(url, command, true);
+        System.out.println("======================== 주목할만한신간도서추가 ========================");
     }
 
     public List<Book> getBestSellerList() {
-        //  db에 있는 책들중 bestSeller들만 추려서 List를 리턴하는 함수
-        List<Book> bookList = bookRepository.findAll();
+        //  db에 있는 오늘 추가된 책들 중 bestSeller들만 추려서 List를 리턴하는 함수
+        List<Book> bookList = bookRepository.findByAddDate(LocalDate.now());
+        if (bookList.isEmpty()) {
+            getBestSeller();
+        }
+        bookList = bookRepository.findByAddDate(LocalDate.now());
         List<Book> bestSellerList = new ArrayList<>();
         for (Book book : bookList) {
             if (book.getBestRank() != null) {
@@ -77,16 +86,15 @@ public class BookService {
         return bestSellerList;
     }
 
-    public List<Book> getNewBookList() {
-        //  db에 있는 책들중 NewBook들만 추려서 List를 리턴하는 함수
-        List<Book> bookList = bookRepository.findAll();
-        List<Book> bestSellerList = new ArrayList<>();
-        for (Book book : bookList) {
-            if (book.getBestRank() != null) {
-                bestSellerList.add(book);
-            }
+
+//    여기서부터 수정해야함 여기 bookList를 만드는데 AddDate로해서 신간도서를 추가안하게됨.
+    public List<Book> getNewSpecialBookList() {
+        //  db에 있는 책들중 NewSpecialBook 들만 추려서 List를 리턴하는 함수
+        List<Book> newSpecialBookList = bookRepository.findByIsNewBookAndAddDate(true, LocalDate.now());
+        if (newSpecialBookList.isEmpty()) {
+            getNewSpecialBook();
         }
-        return bestSellerList;
+        return newSpecialBookList;
     }
 
 
@@ -102,8 +110,8 @@ public class BookService {
         }
         return answer;
     }
-    private void saveBook(Map<String, Object> bookData) {
-        //  book객체를 db에 저장하는 함수
+    private void saveBook(Map<String, Object> bookData, Boolean isNew) {
+        //  book정보를 db에 저장하는 함수
         Book book = new Book();
         book.setTitle((String) bookData.get("title"));
         book.setAuthor((String) bookData.get("author"));
@@ -115,6 +123,26 @@ public class BookService {
         book.setPricestandard((Integer) bookData.get("priceStandard"));
         book.setBestRank((Integer) bookData.get("bestRank"));
         book.setPubdate(getLocalDate(bookData.get("pubDate")));
+        book.setAddDate(LocalDate.now());
+        book.setIsNewBook(isNew);
+        bookRepository.save(book);
+    }
+
+    private void updateBook(Map<String, Object> bookData, Boolean isNew) {
+        //  book정보를 오늘자 정보로 db에 업데이트 하는 함수
+        Book book = bookRepository.findByIsbn((String) bookData.get("isbn"));
+        book.setTitle((String) bookData.get("title"));
+        book.setAuthor((String) bookData.get("author"));
+        book.setDescription((String) bookData.get("description"));
+        book.setIsbn((String) bookData.get("isbn"));
+        book.setIsbn13((String) bookData.get("isbn13"));
+        book.setCover((String) bookData.get("cover"));
+        book.setPublisher((String) bookData.get("publisher"));
+        book.setPricestandard((Integer) bookData.get("priceStandard"));
+        book.setBestRank((Integer) bookData.get("bestRank"));
+        book.setPubdate(getLocalDate(bookData.get("pubDate")));
+        book.setAddDate(LocalDate.now());
+        book.setIsNewBook(isNew);
         bookRepository.save(book);
     }
     private BookDTO createBookDTO(Map<String, Object> bookData) {
@@ -144,5 +172,8 @@ public class BookService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate pubDate = LocalDate.parse(dateString, formatter);
         return pubDate;
+    }
+    public Book findByTitle(String title) {
+        return bookRepository.findByTitle(title);
     }
 }

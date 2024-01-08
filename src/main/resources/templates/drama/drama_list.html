@@ -23,8 +23,8 @@
                         <div class="img" style="padding : 6px;">
                             <span class="rank" th:text="${drama.rank}"></span>
                             <a th:href="@{/drama/{id}(id=${drama.id})}">
-                                <img th:src="${drama.imageUrl}" th:if="${not #strings.isEmpty(drama.imageUrl)}">
-                                <img src="/no-img.png" th:if="${#strings.isEmpty(drama.imageUrl)}"
+                                <img th:src="${'/imgs' + drama.imageUrl}" th:if="${not #strings.isEmpty(drama.imageUrl)}">
+                                <img src="/imgs/no-img.png" th:if="${#strings.isEmpty(drama.imageUrl)}"
                                      style="width : 213px; height : 303px;">
                             </a>
                         </div>
@@ -44,8 +44,8 @@
                             <span class="rank" th:text="${drama.rank}"></span>
                             <span class="rank" th:text="${drama.rank}"></span>
                             <a th:href="@{/drama/{id}(id=${drama.id})}">
-                                <img th:src="${drama.imageUrl}" th:if="${not #strings.isEmpty(drama.imageUrl)}">
-                                <img src="/no-img.png" th:if="${#strings.isEmpty(drama.imageUrl)}"
+                                <img th:src="${'/imgs' + drama.imageUrl}" th:if="${not #strings.isEmpty(drama.imageUrl)}">
+                                <img src="/imgs/no-img.png" th:if="${#strings.isEmpty(drama.imageUrl)}"
                                      style="width : 213px; height : 303px;">
                             </a>
                         </div>
