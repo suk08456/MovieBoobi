@@ -1,16 +1,25 @@
 package com.korea.MOVIEBOOK.member;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.HttpServletBean;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Controller
@@ -70,6 +79,11 @@ public class MemberController {
     @GetMapping("/login")
     public String login() {
         return "member/login_form";
+    }
+
+    @GetMapping("/login/kakao")
+    public String kakaoLogin() {
+        return "redirect:/oauth2/authorization/kakao";
     }
 
 }

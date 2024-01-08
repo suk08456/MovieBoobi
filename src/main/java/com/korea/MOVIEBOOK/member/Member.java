@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.member;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +31,9 @@ public class Member {
 
     private boolean isVerified = false;  // 이메일 인증 상태를 나타내는 필드
 
+    private String provider;
+
+    private String providerId;
 
 
 }
