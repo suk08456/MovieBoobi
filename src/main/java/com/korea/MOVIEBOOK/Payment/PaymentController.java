@@ -14,7 +14,7 @@ public class PaymentController {
 
     @GetMapping("/kakaoPay")
     public String kakao() {
-        return "payment";
+        return "Payment/payment";
     }
 
     @PostMapping("placeorder.do")

@@ -1,6 +1,13 @@
 package com.korea.MOVIEBOOK.Payment;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
