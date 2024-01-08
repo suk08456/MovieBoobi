@@ -1,6 +1,9 @@
 package com.korea.MOVIEBOOK.Webtoon.WebtoonList;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +14,6 @@ import java.util.List;
 @Setter
 @Builder
 public class WebtoonDTO {
-
 
     private String _id;
 

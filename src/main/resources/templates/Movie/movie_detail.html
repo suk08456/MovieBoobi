@@ -15,9 +15,15 @@
             <div style="margin-top : 30px; color : #868e96;">
                 <img th:src="${movieDailyDetail.imageUrl}" style="width : 300px;">
             </div>
+<<<<<<< HEAD
             <div style="display : flex; flex-direction : column; width : 75%; margin-left : 25px;">
                 <span th:text="${movieDailyDetail.title}"
                       style="font-size : 33px; font-weight : bold;  margin-bottom : 5px; margin-top : 30px;"></span>
+=======
+            <div style="display : flex; flex-direction : column; width : 75%; margin-left : 25px;">                <span
+                    th:text="${movieDailyDetail.title}"
+                    style="font-size : 33px; font-weight : bold;  margin-bottom : 5px; margin-top : 30px;"></span>
+>>>>>>> main
                 <div style="display : flex;">
                     <div style="flex-direction : column;">
                         <div class="rate" style="margin-top : 15px;">
@@ -131,35 +137,35 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         function updateRating(rating) {
-            document.getElementById("Rating").innerText = "⭐"+ rating;
+            document.getElementById("Rating").innerText = "⭐" + rating;
         }
 
-        $('.btn-show-popup-1').click(function() {
+        $('.btn-show-popup-1').click(function () {
             $('html').addClass('popup-1-active');
             $('textarea.body').focus();
             swiper.detachEvents();
         });
 
 
-        $('.popup-box-1, .popup-box-1 > .popup > .head > .btn-close').click(function() {
+        $('.popup-box-1, .popup-box-1 > .popup > .head > .btn-close').click(function () {
             $('html').removeClass('popup-1-active');
             swiper.attachEvents();
 
         });
 
 
-        $('.popup-box-1 > .popup').click(function(e) {
+        $('.popup-box-1 > .popup').click(function (e) {
             e.stopPropagation();
             swiper.detachEvents();
         });
 
-        function saveComment(){
+        function saveComment() {
             var commentValue = $('textarea.body').val();
             var movieCD = $('input.movieCD').val();
             var rating = document.getElementById("Rating").innerText.replace("⭐", "");
-            if(rating == "" ){
-               alert("별점을 선택해주세요");
-               return;
+            if (rating == "") {
+                alert("별점을 선택해주세요");
+                return;
             }
             window.location.href = '/movie/review/create?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
         }
@@ -175,14 +181,12 @@
         }
 
         var swiper = new Swiper(".mySwiper", {
-          scrollbar: {
-            el: ".swiper-scrollbar",
-            hide: true,
-          },
+            scrollbar: {
+                el: ".swiper-scrollbar",
+                hide: true,
+            },
         });
     </script>
 </div>
 </body>
 </html>
-
-

@@ -68,6 +68,8 @@ public class MovieService {
     public Movie findMovie(String title){
         return this.movieRepository.findByTitle(title);
     }
+
+
     public Movie findMovieByCD(String movieCode){
         return this.movieRepository.findBymovieCode(movieCode);
     }

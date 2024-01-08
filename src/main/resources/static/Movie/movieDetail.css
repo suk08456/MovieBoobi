@@ -41,6 +41,7 @@ p {
     left: 0;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0);
     background-color: rgba(0, 0, 0, 0.5);
     transition: background-color .5s;
     visibility: hidden;
@@ -52,6 +53,7 @@ p {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 420px;
+    height : 513px;
     height : 496px;
     background-color: #fff;
     padding: 20px;
@@ -105,6 +107,7 @@ html.popup-1-active > body {
     z-index: 50;
 }
 
+
 .btn {
   border: none;
   display: block;
@@ -149,6 +152,7 @@ html.popup-1-active > body {
   transform: translateX(-9%) translateY(-25%) rotate(45deg);
 }
 
+
 .swiper {
    width: 100%;
    height: 100%;
@@ -174,4 +178,5 @@ html.popup-1-active > body {
    margin-left: auto;
    margin-right: auto;
  }
+
 

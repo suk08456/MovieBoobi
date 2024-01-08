@@ -1,6 +1,8 @@
 package com.korea.MOVIEBOOK.Webtoon.WebtoonList;
 
 
+import com.korea.MOVIEBOOK.Webtoon.WebtoonDayList.WebtoonDayList;
+import com.korea.MOVIEBOOK.Webtoon.Days.Day;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +16,8 @@ public class Webtoon {
 
 
     @Id
-    private String _id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private Integer fanCount;
 
@@ -26,11 +29,14 @@ public class Webtoon {
 
     private String img;
 
-    @Column(name = "update_days")
-    private String updateDays;
-
     private String searchKeyword;
+
+//    @Column(name = "update_days")
+//    private String updateDays;
+
 
     private String detailUrl;
 
+    @OneToMany(mappedBy = "webtoonList")
+    private List<WebtoonDayList> webtoonDayLists;
 }
