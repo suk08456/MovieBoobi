@@ -1,11 +1,13 @@
 package com.korea.MOVIEBOOK.member;
 
+import com.korea.MOVIEBOOK.Payment.Payment;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,5 +37,6 @@ public class Member {
 
     private String providerId;
 
-
+    @OneToMany(mappedBy = "member")
+    private List<Payment> paymentList;
 }
