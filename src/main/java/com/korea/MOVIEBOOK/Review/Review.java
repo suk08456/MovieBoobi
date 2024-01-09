@@ -1,11 +1,8 @@
 package com.korea.MOVIEBOOK.Review;
 
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
-<<<<<<< HEAD
 import com.korea.MOVIEBOOK.book.Book;
-=======
 import com.korea.MOVIEBOOK.Webtoon.WebtoonList.Webtoon;
->>>>>>> 4ef340bfc4f6dca1be1d580eb15b1dafa1fa88be
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
