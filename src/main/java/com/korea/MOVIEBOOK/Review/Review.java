@@ -2,6 +2,7 @@ package com.korea.MOVIEBOOK.Review;
 
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
 import com.korea.MOVIEBOOK.Webtoon.WebtoonList.Webtoon;
+import com.korea.MOVIEBOOK.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,9 @@ public class Review {
     private String comment;         // 리뷰 내용
 
     private Double rating;            // 리뷰 평점
+
+    @ManyToOne
+    private Member member;
 
 
     //    @ManyToOne

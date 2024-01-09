@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.Review;
 
+import com.korea.MOVIEBOOK.member.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findReviewsByMovieId(Long id);
 
     List<Review> findReviewsByWebtoonId(Long webtoonId);
+
+    Long countByMember(Member member);
 }

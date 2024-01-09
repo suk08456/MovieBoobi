@@ -33,4 +33,16 @@ public class MemberService {
             memberRepository.save(member);  // 업데이트된 사용자 저장
         });
     }
+
+    public Member getmember(String username) {
+        Optional<Member> member = memberRepository.findByUsername(username);
+
+        if (member.isPresent()) {
+            return member.get();
+        } else {
+            // findByUsername으로 조회한 결과가 null일 때, providerId로 다시 조회
+            Member memberByProviderId = memberRepository.findByProviderId(username);  // 여기서 username을 providerId로 사용하였으므로 주의
+            return memberByProviderId;
+        }
+    }
 }
