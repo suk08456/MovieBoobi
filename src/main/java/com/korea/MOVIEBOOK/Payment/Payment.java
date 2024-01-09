@@ -30,6 +30,8 @@ public class Payment {
 //    private String email;           // 회원 email
 
 //    private String name;            // 회원 이름(= nickname)
+    @Column(columnDefinition = "text")
+    private String content;
 
     @ManyToOne
     private Member member;

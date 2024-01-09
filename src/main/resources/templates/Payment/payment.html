@@ -17,17 +17,20 @@
             <div style="margin-left : 50px; margin-top : 40px;">
                 <table>
                     <tr>
-                        <th>구분</th>
+                        <th>순번</th>
+                        <th>일자</th>
                         <th>내역</th>
                         <th>사용코인</th>
                         <th></th>
                     </tr>
-                    <tr th:if="${paymentList.size() > 0}" th:each="payment : ${paymentList}">
-                        <td><span th:text="${payment.paymentCompany}"></span></td>
+                    <tr th:if="${row > 1}" th:each="payment, row: ${paymentList}">
+                        <td><span th:text="${row.index + 1}"></span></td>
+                        <td><span th:text="${#temporals.format(payment.dateTime, 'yyyy-MM-dd HH:mm')}"></span></td>
+                        <td><span th:text="${payment.content}"></span></td>
                         <td><span th:text="${payment.paidAmount}"></span></td>
                     </tr>
-                    <tr th:if="${paymentList.size() <= 0}">
-                        <td colspan="3">데이터가 없습니다.</td>
+                    <tr th:if="${row < 1}">
+                        <td colspan="4" style="text-align : center;">데이터가 없습니다.</td>
                     </tr>
                 </table>
             </div>

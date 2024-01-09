@@ -2,16 +2,15 @@ package com.korea.MOVIEBOOK.Payment;
 
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
-import com.korea.MOVIEBOOK.member.Oauth2UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
 
 import java.security.Principal;
 import java.util.List;
@@ -24,24 +23,30 @@ public class PaymentController {
     private final MemberService memberService;
 
     @GetMapping("/payment")
-    public String kakao(Model model, Principal principal) {
+    public String kakao(Model model, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         List<Payment> payment = this.paymentService.findPaymentListByMember(member);
+
+        Page<Payment> paging = this.paymentService.getPaymentsByMember(member,page);
+
+
         model.addAttribute("member",member);
-        model.addAttribute("paymentList",payment);
+        model.addAttribute("paymentList",paging);
         return "Payment/payment";
     }
 
     @PostMapping("/kakaoPayCheck")
     public String kakaoPayCheck(@RequestBody PaymentDTO paymentDTO) {
-        this.paymentService.savePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone());
+        String content = paymentDTO.getO_paidAmount() + "Coin 충전";
+        this.paymentService.savePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content);
         return "redriect:/kakaoPay"; // 적절한 응답을 반환하도록 수정하세요.
     }
 
     @PostMapping("/tossPayCheck")
     public String tossPayCheck(@RequestBody PaymentDTO paymentDTO) {
-        this.paymentService.savePayment(paymentDTO.getM_id(), "toss", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone());
+        String content = paymentDTO.getO_paidAmount() + "Coin 충전";
+        this.paymentService.savePayment(paymentDTO.getM_id(), "toss", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content);
         return "redriect:/kakaoPay"; // 적절한 응답을 반환하도록 수정하세요.
     }
 //    @PostMapping("/kakaoPayCheck")

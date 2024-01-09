@@ -1,17 +1,12 @@
 package com.korea.MOVIEBOOK.Payment;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberRepository;
-import com.korea.MOVIEBOOK.member.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +17,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final MemberRepository memberRepository;
 
-    public void savePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, String phone){
+    public void savePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, String phone, String content){
         Member member = this.memberRepository.findById(id).get();
         Payment payment1 = new Payment();
         payment1.setPaymentCompany(payment);
@@ -32,10 +27,16 @@ public class PaymentService {
         payment1.setPhone(phone);
         payment1.setMember(member);
         payment1.setDateTime(LocalDateTime.now());
+        payment1.setContent(content);
         this.paymentRepository.save(payment1);
     }
 
     public List<Payment> findPaymentListByMember(Member member){
         return this.paymentRepository.findBymember(member);
+    }
+
+    public Page<Payment> getPaymentsByMember(Member member, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return paymentRepository.findByMember(member, pageable);
     }
 }
