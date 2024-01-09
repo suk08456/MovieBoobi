@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.Webtoon.WebtoonList;
 
 
+import com.korea.MOVIEBOOK.Review.Review;
 import com.korea.MOVIEBOOK.Webtoon.WebtoonDayList.WebtoonDayList;
 import com.korea.MOVIEBOOK.Webtoon.Days.Day;
 import jakarta.persistence.*;
@@ -19,6 +20,7 @@ public class Webtoon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
     private Integer fanCount;
 
     private Long webtoonId;
@@ -39,4 +41,7 @@ public class Webtoon {
 
     @OneToMany(mappedBy = "webtoonList")
     private List<WebtoonDayList> webtoonDayLists;
+
+    @OneToMany(mappedBy = "webtoon")
+    private List<Review> reviewList;
 }

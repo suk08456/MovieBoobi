@@ -21,6 +21,12 @@ public class ReviewController {
         return  "redirect:/movie/detail?movieCD=" + movieCD;
     }
 
+    @GetMapping("/webtoon/review/create")
+    public String createWebtoonReview(@RequestParam("webtoonId") Long webtoonId, @RequestParam("comment") String comment, @RequestParam("rating") Double rating){
+        this.reviewService.saveWebtoonReview(webtoonId, comment, rating);
+        return  "redirect:/webtoon/detail?webtoonId=" + webtoonId;
+    }
+
 
 //    @GetMapping("/reviews/create")
 //    public String showReviewForm(@RequestParam("dramaId") Long dramaId, Model model) {
