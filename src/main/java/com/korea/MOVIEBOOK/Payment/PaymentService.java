@@ -13,21 +13,29 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final MemberRepository memberRepository;
 
-    public void SavePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, String phone){
+    public void savePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, String phone){
         Member member = this.memberRepository.findById(id).get();
         Payment payment1 = new Payment();
-        payment1.setPayment(payment);
+        payment1.setPaymentCompany(payment);
         payment1.setPaidAmount(paidAmount);
         payment1.setPaymentNo(paymentNo);
         payment1.setPayType(payType);
         payment1.setPhone(phone);
         payment1.setMember(member);
+        payment1.setDateTime(LocalDateTime.now());
         this.paymentRepository.save(payment1);
+    }
+
+    public List<Payment> findPaymentListByMember(Member member){
+        return this.paymentRepository.findBymember(member);
     }
 }

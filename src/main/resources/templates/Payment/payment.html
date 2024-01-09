@@ -12,176 +12,276 @@
     <div style="display : flex; margin : auto; width : 1300px; height : 1500px; margin-top : 3px;">
         <input type="hidden" class="_csrf"
                value="ELCsIKgKv7yGzeFZsXxrCtAcVBiiS-lvBrP8b-1scsRpPlrWHJoKfFsw4ioyr-thtgFFfbLF6eSCUctFCYICYW2l4gC57o4W1"/>
-        <div style="width : 900px; background : yellow;">
-
-            <button onclick="cancelPay()">환불하기</button>
+        <div style="width : 900px; display : flex; flex-direction : column; padding : 22px;">
+            <span style="font-size: larger; font-weight: bold;"> 결제 및 구매 내역 </span>
+            <div style="margin-left : 50px; margin-top : 40px;">
+                <table>
+                    <tr>
+                        <th>구분</th>
+                        <th>내역</th>
+                        <th>사용코인</th>
+                        <th></th>
+                    </tr>
+                    <tr th:if="${paymentList.size() > 0}" th:each="payment : ${paymentList}">
+                        <td><span th:text="${payment.paymentCompany}"></span></td>
+                        <td><span th:text="${payment.paidAmount}"></span></td>
+                    </tr>
+                    <tr th:if="${paymentList.size() <= 0}">
+                        <td colspan="3">데이터가 없습니다.</td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <div style="width : 300px; background : green; display : flex; justify-content : center;">
-            <div style="margin-top : 30px;">
-                <div style="margin-bottom : 20px;">
+        <div style="width : 320px; display : flex; justify-content : center; border-left: 2.5px dotted #DEE2E6;">
+            <div style="margin-top : 30px; margin-bottom : 20px;">
+                <div style="display : flex;">
                     <img class="profile" sec:authorize="isAuthenticated()"
                          th:if="${not #strings.isEmpty(member.profileImage)}"
                          th:src="${member.profileImage}">
                     <img class="profile" th:if="${#strings.isEmpty(member.profileImage)}" src="/imgs/noimg.jpg">
+                    <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
+                          th:text="${member.nickname} + ' 님 안녕하세요'"
+                          style="font-size : large; width : 100%; height : 27px; margin-top : 60px; margin-left : 5px;"></span>
                 </div>
-                <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
-                      th:text="${member.nickname} + ' 님 안녕하세요'" style="font-size : large;"></span>
-                <input class="m_id" name="m_id" sec:authorize="isAuthenticated()" th:value="${member.id}" type="hidden">
+                <input class="m_id" name="m_id" sec:authorize="isAuthenticated()" th:value="${member.id}"
+                       type="hidden">
                 <input type="hidden" class="_csrf" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                <div style="margin-top: 20px;">
-                    <div class="email">
-                        <span>Email</span>
-                        <input class="m_email" name="m_email" th:if="${not #strings.isEmpty(member.email)}"
-                               th:value="${member.email}" style="text-align : center; margin-left : 5px;"/>
-                        <input class="m_email" name="m_email" th:if="${#strings.isEmpty(member.email)}"
-                               placeholder="이메일을 작성해주세요." style="text-align : center; margin-left : 5px;"/>
+                <div style=" margin-top : 20px;">
+                    <div style="display : flex; justify-content : space-between; padding : 5px;">
+                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 1,000Coin
+                        <button id="1000"
+                                style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
+                                onclick="clickCoin(1000)">
+                            1,000원
+                        </button>
                     </div>
-                    <div class="phone" style="margin-top : 15px;">
-                        <span>Phone</span>
-                        <input type="text" class="s_phone" id="s_phone" name="s_phone" maxlength="13"
-                               oninput="hypenTel(this)" placeholder="전화번호를 작성해주세요." style="text-align : center;"/>
+                    <div style="display : flex; justify-content : space-between; padding : 5px;">
+                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 5,000Coin
+                        <button id="5000"
+                                style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
+                                onclick="clickCoin(5000)">
+                            5,000원
+                        </button>
+                    </div>
+                    <div style="display : flex; justify-content : space-between; padding : 5px;">
+                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 10,000Coin
+                        <button id="10000"
+                                style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
+                                onclick="clickCoin(10000)">
+                            10,000원
+                        </button>
+                    </div>
+                    <div style="display : flex; justify-content : space-between; padding : 5px;">
+                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 30,000Coin
+                        <button id="30000"
+                                style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
+                                onclick="clickCoin(30000)">
+                            30,000원
+                        </button>
+                    </div>
+                    <div style="display : flex; justify-content : space-between; padding : 5px;">
+                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 50,000Coin
+                        <button id="50000"
+                                style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
+                                onclick="clickCoin(50000)">
+                            50,000원
+                        </button>
+                    </div>
+                    <div style="display : flex; justify-content : space-between; padding : 5px;">
+                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;">
+                        100,000Coin
+                        <button id="100000"
+                                style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
+                                onclick="clickCoin(100000)">
+                            100,000원
+                        </button>
+                    </div>
+                    <div style="margin-top: 20px; padding : 5px; margin-left : 8px;">
+                        <div class="email">
+                            <span>Email</span>
+                            <input class="m_email" name="m_email" th:if="${not #strings.isEmpty(member.email)}"
+                                   th:value="${member.email}" style="text-align : center; margin-left : 5px;"/>
+                            <input class="m_email" name="m_email" th:if="${#strings.isEmpty(member.email)}"
+                                   placeholder="이메일을 작성해주세요." style="text-align : center; margin-left : 5px;"/>
+                        </div>
+                        <div class="phone" style="margin-top : 15px;">
+                            <span>Phone</span>
+                            <input type="text" class="s_phone" id="s_phone" name="s_phone" maxlength="13"
+                                   oninput="hypenTel(this)" placeholder="전화번호를 작성해주세요."
+                                   style="text-align : center;"/>
+                        </div>
+                        <div style="display : flex; margin-top : 12px; margin-left : 113px; font-weight : bold;">
+                            <span>총  결제금액 : </span>
+                            <input class="totalAmount" id="totalAmount" style="width : 85px; text-align : right;" readonly>
+                        </div>
                     </div>
                 </div>
-                <button id="iamportPayment" onclick="payment()" style="margin-top: 30px;">
-                    <img src="/imgs/kakaopay.png" style="width : 95px;">
-                </button>
+                <div style="margin-top : -19px; margin-left : 2px; display : flex; justify-content : space-evenly; ">
+                    <button id="kakaoPayment" style="margin-top: 30px;">
+                        <img src="/imgs/kakaopay.png" style="width : 95px;">
+                    </button>
+                    <button id="TossPayment"style="margin-top: 30px;">
+                        <img src="/imgs/tossPay.png" style="width: 95px; margin-bottom : 8px;">
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-    <script>
-        ////////////////////////////////////////////////  결제 구현  ////////////////////////////////////////////////
-            var today = new Date();
-            var hours = today.getHours(); // 시
-            var minutes = today.getMinutes();  // 분
-            var seconds = today.getSeconds();  // 초
-            var milliseconds = today.getMilliseconds();
-            var makeMerchantUid = `${hours}` + `${minutes}` + `${seconds}` + `${milliseconds}`;
-            var csrfToken = $("input._csrf").val();
+        <script>
+            ////////////////////////////////////////////////  결제 구현  ////////////////////////////////////////////////
+                var today = new Date();
+                var hours = today.getHours(); // 시
+                var minutes = today.getMinutes();  // 분
+                var seconds = today.getSeconds();  // 초
+                var milliseconds = today.getMilliseconds();
+                var makeMerchantUid = `${hours}` + `${minutes}` + `${seconds}` + `${milliseconds}`;
+                var csrfToken = $("input._csrf").val();
+                var kakaoPg =  'kakaopay.TC0ONETIME';
+                var tossPg =  'tosspay.tosstest';
 
-            $(document).ready(function(){
-                $("#iamportPayment").click(function(){
-                    var m_email = $("input.m_email").val();
-                    var s_name = $('span.s_name').val();
-                    var s_phone = $('input.s_phone').val();
-                    var m_id = $('input.m_id').val();
-                    payment(m_email, s_name, m_id, s_phone);
-                });
-            })
-
-           function payment(m_email, s_name, m_id, s_phone){
-            IMP.init("imp08502572");
-            IMP.request_pay({
-                    pg : 'kakaopay.TC0ONETIME',
-                    pay_method : 'card',
-                    merchant_uid: "IMP" + makeMerchantUid,
-                    name : 'Movie-Boobi Coin Payment',
-                    amount : 1004,
-                    buyer_email : 'Iamport@chai.finance',
-                    buyer_name : '포트원 기술지원팀',
-                    buyer_tel : '010-1234-5678'
-                }, function (rsp) {
-                if(rsp.success){
-                    var msg = '결제가 완료되었습니다.';
-                    msg += '고유ID : ' + rsp.imp_uid;
-                    msg += '상점 거래ID : ' + rsp.merchant_uid;
-                    msg += '결제 금액 : ' + rsp.paid_amount;
-                    let paymentDTO = {
-                        m_id: m_id,
-                        m_email: m_email,
-                        s_name: s_name,
-                        s_phone: s_phone,
-                        o_shipno: rsp.merchant_uid,
-                        o_paidAmount: rsp.paid_amount,
-                        o_paytype: rsp.pay_method
-                    }
-
-                    console.log("paymentDTOid : " + paymentDTO.m_id + " / m_email : " + paymentDTO.m_email+ " / s_name : " + paymentDTO.s_name+ " / s_phone : " + paymentDTO.s_phone+ " / o_paidAmount : " + paymentDTO.o_paidAmount+ " / o_paytype : " + paymentDTO.o_paytype);
-
-                    $.ajax({
-                       url: "kakaoPayCheck",
-                       type: "post",
-                       data: JSON.stringify(paymentDTO),
-                       dataType: "text",
-                       contentType: "application/json",
-                       beforeSend: function(xhr) {
-                            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-                       },
-                       success: function (result) {
-                          console.log('2');
-                          if (result == "y") {
-                             alert(msg);
-                             location.href = "kakaoPayCheck";
-                          } else {
-                             alert("디비입력실패");
-                             return false;
-                          }
-                       },
-                       error: function (a, b, c) {}
+                $(document).ready(function(){
+                    $("#kakaoPayment").click(function(){
+                        var m_email = $("input.m_email").val();
+                        var s_name = $('span.s_name').val();
+                        var s_phone = $('input.s_phone').val();
+                        var m_id = $('input.m_id').val();
+                        var amount = $('input.totalAmount').val().replace(/,/g, '');
+                        var pg = kakaoPg;
+                        var url = 'kakaoPayCheck';
+                        payment(m_email, s_name, m_id, s_phone, pg, amount, url);
                     });
-                } else {
-                   var msg = '결제에 실패하였습니다.';
-                   msg += '에러내용 : ' + rsp.error_msg;
-                }
-                 alert(msg);
-            });
-           }
+                    $("#TossPayment").click(function(){
+                        var m_email = $("input.m_email").val();
+                        var s_name = $('span.s_name').val();
+                        var s_phone = $('input.s_phone').val();
+                        var m_id = $('input.m_id').val();
+                        var amount = $('input.totalAmount').val().replace(/,/g, '');
+                        var pg = tossPg;
+                        var url = 'tossPayCheck';
+                        payment(m_email, s_name, m_id, s_phone, pg, amount, url);
+                    });
+                })
 
-    <!--        function cancelPay() {-->
-    <!--           jQuery.ajax({ -->
-    <!--             "type": "POST",-->
-    <!--             "contentType": "application/json",-->
-    <!--             "data": JSON.stringify({-->
-    <!--               "merchant_uid": "{결제건의 주문번호}", // 예: ORD20180131-0000011-->
-    <!--               "cancel_request_amount": 2000,-->
-    <!--               "reason": "테스트 결제 환불"-->
-    <!--             }),-->
-    <!--             "dataType": "json"-->
-    <!--           });-->
-    <!--        }-->
-        ////////////////////////////////////////////////  결제 구현 끝  ////////////////////////////////////////////////
+               function payment(m_email, s_name, m_id, s_phone, pg, amount, url){
+                IMP.init("imp08502572");
+                IMP.request_pay({
+                        pg : pg,
+                        pay_method : 'card',
+                        merchant_uid: "IMP" + makeMerchantUid,
+                        name : 'Movie-Boobi Coin Payment',
+                        amount : amount,
+                        buyer_email : m_email,
+                        buyer_name : s_name,
+                        buyer_tel : s_phone
+                    }, function (rsp) {
+                    if(rsp.success){
+                        var msg = '결제가 완료되었습니다.';
+                        msg += '고유ID : ' + rsp.imp_uid;
+                        msg += '상점 거래ID : ' + rsp.merchant_uid;
+                        msg += '결제 금액 : ' + rsp.paid_amount;
+                        let paymentDTO = {
+                            m_id: m_id,
+                            m_email: m_email,
+                            s_name: s_name,
+                            s_phone: s_phone,
+                            o_shipno: rsp.merchant_uid,
+                            o_paidAmount: rsp.paid_amount,
+                            o_paytype: rsp.pay_method
+                        }
 
-        ////////////////////////////////////////////////  함수 구현  ///////////////////////////////////////////////////
-                      var autoHypenPhone = function(str){
-                          str = str.replace(/[^0-9]/g, '');
-                          var tmp = '';
+                        $.ajax({
+                           url: url,
+                           type: "post",
+                           data: JSON.stringify(paymentDTO),
+                           dataType: "text",
+                           contentType: "application/json",
+                           beforeSend: function(xhr) {
+                                xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                           },
+                           success: function (result) {
+                              console.log('2');
+                              if (result == "y") {
+                                 alert(msg);
+                                 location.href = "kakaoPayCheck";
+                              } else {
+                                 alert("디비입력실패");
+                                 return false;
+                              }
+                           },
+                           error: function (a, b, c) {}
+                        });
+                    } else {
+                       var msg = '결제에 실패하였습니다.';
+                       msg += '에러내용 : ' + rsp.error_msg;
+                    }
+                     alert(msg);
+                });
+               }
+            ////////////////////////////////////////////////  결제 구현 끝  ////////////////////////////////////////////////
 
-                          if( str.length < 4){
+            ////////////////////////////////////////////////  함수 구현  ///////////////////////////////////////////////////
+                          var autoHypenPhone = function(str){
+                              str = str.replace(/[^0-9]/g, '');
+                              var tmp = '';
+
+                              if( str.length < 4){
+                                  return str;
+                              }else if(str.length < 7){
+                                  tmp += str.substr(0, 3);
+                                  tmp += '-';
+                                  tmp += str.substr(3);
+                                  return tmp;
+                              }else if(str.length < 11){
+                                  tmp += str.substr(0, 3);
+                                  tmp += '-';
+                                  tmp += str.substr(3, 3);
+                                  tmp += '-';
+                                  tmp += str.substr(6);
+                                  return tmp;
+                              }else{
+                                  tmp += str.substr(0, 3);
+                                  tmp += '-';
+                                  tmp += str.substr(3, 4);
+                                  tmp += '-';
+                                  tmp += str.substr(7);
+                                  return tmp;
+                              }
+
                               return str;
-                          }else if(str.length < 7){
-                              tmp += str.substr(0, 3);
-                              tmp += '-';
-                              tmp += str.substr(3);
-                              return tmp;
-                          }else if(str.length < 11){
-                              tmp += str.substr(0, 3);
-                              tmp += '-';
-                              tmp += str.substr(3, 3);
-                              tmp += '-';
-                              tmp += str.substr(6);
-                              return tmp;
-                          }else{
-                              tmp += str.substr(0, 3);
-                              tmp += '-';
-                              tmp += str.substr(3, 4);
-                              tmp += '-';
-                              tmp += str.substr(7);
-                              return tmp;
                           }
 
-                          return str;
-                      }
 
+                         var phoneNum = document.getElementById('s_phone');
 
-                     var phoneNum = document.getElementById('s_phone');
+                         phoneNum.onkeyup = function(){
+                          this.value = autoHypenPhone( this.value ) ;
+                         }
 
-                     phoneNum.onkeyup = function(){
-                      this.value = autoHypenPhone( this.value ) ;
-                     }
+                         var previousButtonId = null;
 
-        ////////////////////////////////////////////////  함수 구현 끝  ////////////////////////////////////////////////////
+                         function clickCoin(id){
+                            var currentButton = document.getElementById(id);
+                            var totalAmountInput = document.getElementById("totalAmount");
 
-    </script>
-</div>
+                            if (previousButtonId !== null) {
+                                var previousButton = document.getElementById(previousButtonId);
+                                previousButton.style.background = "#FFD400";
+                            }
+
+                            currentButton.style.background = "#DAA520";
+
+                            previousButtonId = id;
+
+                            totalAmountInput.value = numberWithCommas(id);
+                         }
+
+                         function numberWithCommas(x) {
+                            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                         }
+
+            ////////////////////////////////////////////////  함수 구현 끝  ////////////////////////////////////////////////////
+
+        </script>
+    </div>
 </body>
 </html>
 

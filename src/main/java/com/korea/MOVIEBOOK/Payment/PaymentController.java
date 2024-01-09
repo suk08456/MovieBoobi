@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -22,18 +23,25 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final MemberService memberService;
 
-    @GetMapping("/kakaoPay")
+    @GetMapping("/payment")
     public String kakao(Model model, Principal principal) {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
+        List<Payment> payment = this.paymentService.findPaymentListByMember(member);
         model.addAttribute("member",member);
-
+        model.addAttribute("paymentList",payment);
         return "Payment/payment";
     }
 
     @PostMapping("/kakaoPayCheck")
     public String kakaoPayCheck(@RequestBody PaymentDTO paymentDTO) {
-        this.paymentService.SavePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone());
+        this.paymentService.savePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone());
+        return "redriect:/kakaoPay"; // 적절한 응답을 반환하도록 수정하세요.
+    }
+
+    @PostMapping("/tossPayCheck")
+    public String tossPayCheck(@RequestBody PaymentDTO paymentDTO) {
+        this.paymentService.savePayment(paymentDTO.getM_id(), "toss", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone());
         return "redriect:/kakaoPay"; // 적절한 응답을 반환하도록 수정하세요.
     }
 //    @PostMapping("/kakaoPayCheck")
