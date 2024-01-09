@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.Review;
 
 import com.korea.MOVIEBOOK.Drama.Drama;
+import com.korea.MOVIEBOOK.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,7 @@ public class ReviewController {
         this.reviewService.saveWebtoonReview(webtoonId, comment, rating);
         return  "redirect:/webtoon/detail?webtoonId=" + webtoonId;
     }
+
 
 
 //    @GetMapping("/reviews/create")

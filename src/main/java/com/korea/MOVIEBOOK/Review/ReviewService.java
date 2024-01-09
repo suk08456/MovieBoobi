@@ -4,6 +4,8 @@ import com.korea.MOVIEBOOK.Movie.Movie.Movie;
 import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
 import com.korea.MOVIEBOOK.Webtoon.WebtoonList.Webtoon;
 import com.korea.MOVIEBOOK.Webtoon.WebtoonList.WebtoonService;
+import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MovieService movieService;
     private final WebtoonService webtoonService;
+    private final MemberService memberService;
 
     public void saveMovieReview(String movieCD, String comment, Double rating){
         Movie movie =  this.movieService.findMovieByCD(movieCD);
@@ -46,6 +49,10 @@ public class ReviewService {
 //        WebtoonService.findById();
         List<Review> reviews = this.reviewRepository.findReviewsByWebtoonId(webtoon.getId());
         return reviews;
+    }
+
+    public Long getReiverCount(Member member) {
+        return reviewRepository.countByMember(member);
     }
 
 //    public List<com.korea.MOVIEBOOK.dramaReview.Review> getReviewsByDramaId(Long dramaId) {

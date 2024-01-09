@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.member;
 
 import com.korea.MOVIEBOOK.Payment.Payment;
+import com.korea.MOVIEBOOK.Review.Review;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +38,11 @@ public class Member {
 
     private String providerId;
 
+    private String photo;
+
     @OneToMany(mappedBy = "member")
     private List<Payment> paymentList;
+
+    @OneToMany(mappedBy = "member")
+    private List<Review> reviewList;
 }
