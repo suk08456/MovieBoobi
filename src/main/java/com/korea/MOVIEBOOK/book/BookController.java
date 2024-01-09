@@ -1,10 +1,12 @@
 package com.korea.MOVIEBOOK.book;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -44,9 +46,22 @@ public class BookController {
     }
 
     @PostMapping("/detail")
-    public String bookDetail(String title, Model model) {
-        Book book = bookService.findByTitle(title);
+    public String bookDetail(String isbn, Model model) {
+        Book book = bookService.findByIsbn(isbn);
+        List<List<String>> authorListList = bookService.getAuthorListList(book);
         model.addAttribute("book", book);
+        model.addAttribute("reviews", book.getReviewList());
+        model.addAttribute("authorListList", authorListList);
+        return "book/bookDetail";
+    }
+
+    @GetMapping("/detail/{isbn}")
+    public String bookDetail1(@PathVariable("isbn") String isbn, Model model) {
+        Book book = bookService.findByIsbn(isbn);
+        List<List<String>> authorListList = bookService.getAuthorListList(book);
+        model.addAttribute("book", book);
+        model.addAttribute("reviews", book.getReviewList());
+        model.addAttribute("authorListList", authorListList);
         return "book/bookDetail";
     }
 }

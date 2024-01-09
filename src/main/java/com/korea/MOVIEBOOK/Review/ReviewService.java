@@ -2,6 +2,9 @@ package com.korea.MOVIEBOOK.Review;
 
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
 import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
+import com.korea.MOVIEBOOK.book.Book;
+import com.korea.MOVIEBOOK.book.BookRepository;
+import com.korea.MOVIEBOOK.book.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import java.util.Optional;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MovieService movieService;
+    private final BookRepository bookRepository;
 
     public void saveMovieReview(String movieCD, String comment, Double rating){
         Movie movie =  this.movieService.findMovieByCD(movieCD);
@@ -20,6 +24,16 @@ public class ReviewService {
         review.setMovie(movie);
         review.setComment(comment);
         review.setCategory("movie");
+        review.setRating(rating);
+        this.reviewRepository.save(review);
+    }
+
+    public void saveBookReview(String isbn, String comment, Double rating){
+        Book book = bookRepository.findByIsbn(isbn);
+        Review review = new Review();
+        review.setBook(book);
+        review.setComment(comment);
+        review.setCategory("book");
         review.setRating(rating);
         this.reviewRepository.save(review);
     }

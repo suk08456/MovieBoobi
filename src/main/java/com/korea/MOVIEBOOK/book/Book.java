@@ -1,9 +1,7 @@
 package com.korea.MOVIEBOOK.book;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.korea.MOVIEBOOK.Review.Review;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +9,7 @@ import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +31,6 @@ public class Book {
     private Integer bestRank;  //  베스트셀러 순위
     private LocalDate pubdate; //  출간일
     private LocalDate addDate;  //  추가일자
+    @OneToMany(mappedBy = "book")
+    private List<Review> reviewList;
 }

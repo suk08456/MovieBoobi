@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.Review;
 
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
+import com.korea.MOVIEBOOK.book.Book;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,13 +22,11 @@ public class Review {
 
     private Double rating;            // 리뷰 평점
 
-
-//    @ManyToOne
     @ManyToOne
     Movie movie;
 
-//    @ManyToOne
-//    Book book;
+    @ManyToOne
+    Book book;
 //
 //    @ManyToOne
 //    Drama drama;

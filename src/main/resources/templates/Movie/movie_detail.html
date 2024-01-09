@@ -110,10 +110,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="swiper-scrollbar"></div>
+                <div class="swiper-scrollbar">
+                </div>
             </div>
             <span th:text="'코멘트 ' + ${#lists.size(reviews)}"
-                  style="font-size : 20px; width : 80%; font-weight : bold; color : black; margin-bottom : 8px;"></span>
+                  style="font-size : 20px; width : 80%; font-weight : bold; color : black; margin-bottom : 8px;">
+            </span>
             <div class="review-co" style="display : flex; flex-wrap : wrap; height : 500px;">
                 <div th:each="review : ${reviews}" style="padding : 7px; height : 250px;">
                     <div style="width : 170px; height : 10px;">
@@ -161,7 +163,7 @@
                 alert("별점을 선택해주세요");
                 return;
             }
-            window.location.href = '/movie/review/create?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
+            window.location.href = '/review/create/movie?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
         }
 
         function updateCharacterCount() {

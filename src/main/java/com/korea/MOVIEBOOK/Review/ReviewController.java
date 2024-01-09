@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.Review;
 
 import com.korea.MOVIEBOOK.Drama.Drama;
+import com.korea.MOVIEBOOK.book.BookController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,17 +9,25 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/review")
 public class ReviewController {
     private final ReviewService reviewService;
-    @GetMapping("/review/create")
+
+    @GetMapping("/create")
     public String createReview(){
         return "Review/review";
     }
 
-    @GetMapping("/movie/review/create")
+    @GetMapping("/create/movie")
     public String createMovieReview(@RequestParam("movieCD") String movieCD, @RequestParam("comment") String comment, @RequestParam("rating") Double rating){
         this.reviewService.saveMovieReview(movieCD, comment, rating);
         return  "redirect:/movie/detail?movieCD=" + movieCD;
+    }
+
+    @GetMapping("/create/book")
+    public String createBookReview(@RequestParam("isbn") String isbn, @RequestParam("comment") String comment, @RequestParam("rating") Double rating, Model model) {
+        reviewService.saveBookReview(isbn, comment, rating);
+        return "redirect:/book/detail/" + isbn;
     }
 
 

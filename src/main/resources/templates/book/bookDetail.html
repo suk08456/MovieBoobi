@@ -16,7 +16,8 @@
                 <img th:src="${book.cover}">
             </div>
             <div style="display : flex; flex-direction : column; width : 75%; margin-left : 25px;">
-                <span th:text="${book.title}" style="font-size : 33px; font-weight : bold;  margin-bottom : 5px; margin-top : 30px;">
+                <span th:text="${book.title}"
+                      style="font-size : 33px; font-weight : bold;  margin-bottom : 5px; margin-top : 30px;">
                 </span>
                 <div style="display : flex;">
                     <div style="flex-direction : column;">
@@ -62,10 +63,11 @@
                                         <span id="charCount" style="font-size : small;"></span>
                                     </div>
                                 </div>
-                                <textarea class="body" style="width : 100%; height : 369px; margin-bottom : 5px; background : white;"
+                                <textarea class="body"
+                                          style="width : 100%; height : 369px; margin-bottom : 5px; background : white;"
                                           oninput="updateCharacterCount()">
                                 </textarea>
-                                <input class="movieCD" th:value="${book.isbn}" type="hidden">
+                                <input class="isbn" th:value="${book.isbn}" type="hidden">
                                 <button class="btn" onclick="saveComment();"><span>저장</span></button>
                             </div>
                         </div>
@@ -81,19 +83,8 @@
                     </div>
                 </div>
                 <div style="width : 100%; margin-top : 41px; color : #868e96; margin-bottom : 10px;">
-                    <span style="margin-left : 5px;">여기여기</span>
-<!--                    <span th:text="${movieDailyDetail.genre}" style="margin-left : 5px;">-->
-<!--                    </span>-->
-<!--                    ·-->
-<!--                    <span th:text="${movieDailyDetail.nations}">-->
-<!--                    </span>-->
-<!--                    ·-->
-<!--                    <span th:text="${movieDailyDetail.viewingRating}">-->
-<!--                    </span>-->
-<!--                    (-->
-<!--                    <span th:text="${movieruntime}">-->
-<!--                    </span>-->
-<!--                    )-->
+                    <span style="margin-left : 5px;">출간일 : </span>
+                    <span style="margin-left : 5px;" th:text="${book.pubdate}"></span>
                 </div>
                 <div class="movie-co"
                      style="text-align : center; border : 3px dashed #868e96; padding : 35px; margin-bottom : 15px;">
@@ -104,35 +95,34 @@
             </div>
         </div>
         <div class="movie-info">
-<!--            <div class="swiper mySwiper">-->
-<!--                <span style="font-size : 20px; width : 80%; font-weight : bold; color : black;">출연/제작</span>-->
-<!--                <div class="swiper-wrapper" style="margin-top : 20px; margin-bottom : 20px;">-->
-<!--                    <div class="swiper-slide" th:each="actorList : ${actorListList}"-->
-<!--                         style="display : flex;flex-direction : row;">-->
-<!--                        <div th:each="actors : ${actorList}" style="width : 200px;">-->
-<!--                            <div class="actor-co" style="width :165px; align-items: center;">-->
-<!--                                <img src="/imgs/profile_icon.png" style="width: 48px; height: 48px; margin : auto;">-->
-<!--                                <span th:text="${actors}" style="font-size: 15px;"></span>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="swiper-scrollbar"></div>-->
-<!--            </div>-->
-<!--            <span th:text="'코멘트 ' + ${#lists.size(reviews)}"-->
-<!--                  style="font-size : 20px; width : 80%; font-weight : bold; color : black; margin-bottom : 8px;">-->
-<!--            </span>-->
-<!--            <div class="review-co" style="display : flex; flex-wrap : wrap; height : 500px;">-->
-<!--                <div th:each="review : ${reviews}" style="padding : 7px; height : 250px;">-->
-<!--                    <div style="width : 170px; height : 10px;">-->
-<!--                        <span th:text="${ '⭐' + review.rating}" style="font-size : 16px;"></span>-->
-<!--                    </div>-->
-<!--                    <div style="width: 170px; height: 215px; margin-top: 13px; overflow: hidden; border-top: 1px solid #868E96;">-->
-<!--                        <span th:text="${#strings.length(review.comment) > 100 ? #strings.substring(review.comment, 0, 100) + '..' : review.comment}"-->
-<!--                              style="display: inline-block; word-wrap: break-word; font-size : 14px;"></span>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <div class="swiper mySwiper">
+                <span style="font-size : 20px; width : 80%; font-weight : bold; color : black;">저자/역자</span>
+                <div class="swiper-wrapper" style="margin-top : 20px; margin-bottom : 20px;">
+                    <div class="swiper-slide" style="display : flex;flex-direction : row;" th:each="authorList : ${authorListList}">
+                        <div style="width : 200px;" th:each="author : ${authorList}">
+                            <div class="actor-co" style="width :165px; align-items: center;">
+                                <img src="/imgs/profile_icon.png" style="width: 48px; height: 48px; margin : auto;">
+                                <span th:text="${author}" style="font-size: 15px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-scrollbar"></div>
+            </div>
+            <span th:text="'코멘트 ' + ${#lists.size(reviews)}"
+                  style="font-size : 20px; width : 80%; font-weight : bold; color : black; margin-bottom : 8px;">
+            </span>
+            <div class="review-co" style="display : flex; flex-wrap : wrap; height : 500px;">
+                <div th:each="review : ${reviews}" style="padding : 7px; height : 250px;">
+                    <div style="width : 170px; height : 10px;">
+                        <span th:text="${ '⭐' + review.rating}" style="font-size : 16px;"></span>
+                    </div>
+                    <div style="width: 170px; height: 215px; margin-top: 13px; overflow: hidden; border-top: 1px solid #868E96;">
+                        <span th:text="${#strings.length(review.comment) > 100 ? #strings.substring(review.comment, 0, 100) + '..' : review.comment}"
+                              style="display: inline-block; word-wrap: break-word; font-size : 14px;"></span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -163,13 +153,13 @@
 
         function saveComment() {
             var commentValue = $('textarea.body').val();
-            var movieCD = $('input.movieCD').val();
+            var isbn = $('input.isbn').val();
             var rating = document.getElementById("Rating").innerText.replace("⭐", "");
             if (rating == "") {
                 alert("별점을 선택해주세요");
                 return;
             }
-            window.location.href = '/movie/review/create?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
+            window.location.href = '/review/create/book?isbn=' + isbn + '&comment=' + commentValue + '&rating=' + rating;
         }
 
         function updateCharacterCount() {

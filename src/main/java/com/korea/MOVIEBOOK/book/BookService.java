@@ -173,7 +173,31 @@ public class BookService {
         LocalDate pubDate = LocalDate.parse(dateString, formatter);
         return pubDate;
     }
+    public List<List<String>> getAuthorListList(Book book) {
+        String author = book.getAuthor();
+        String[] authors = new String[]{};
+        if(!author.isEmpty()) {
+            authors = author.split(",");
+        }
+        List<String> authorList = new ArrayList<>(Arrays.asList(authors));
+
+        List<List<String>> authorListList = new ArrayList<>();
+
+        Integer chunkSize = 8;
+        Integer totalElements = authorList.size();
+
+        for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
+            int start = i * chunkSize;
+            int end = Math.min((i + 1) * chunkSize, totalElements);
+            authorListList.add(authorList.subList(start, end));
+        }
+        return authorListList;
+    }
     public Book findByTitle(String title) {
         return bookRepository.findByTitle(title);
+    }
+
+    public Book findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn);
     }
 }
