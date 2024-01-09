@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.Review;
 
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
+import com.korea.MOVIEBOOK.Webtoon.WebtoonList.Webtoon;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,23 +17,23 @@ public class Review {
 
     private String Category;         // movie, tv, book, webtoon
 
-    @Column(length=1000)            // 1000 char로 제한
+    @Column(length = 1000)            // 1000 char로 제한
     private String comment;         // 리뷰 내용
 
     private Double rating;            // 리뷰 평점
 
 
-//    @ManyToOne
+    //    @ManyToOne
     @ManyToOne
     Movie movie;
 
-//    @ManyToOne
+    //    @ManyToOne
 //    Book book;
 //
 //    @ManyToOne
 //    Drama drama;
 //
-//    @ManyToOne
-//    Webtoon webtoon;
+    @ManyToOne
+    Webtoon webtoon;
 
 }
