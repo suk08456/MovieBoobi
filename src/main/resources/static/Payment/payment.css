@@ -1,0 +1,23 @@
+.profile{
+    width : 85px;
+    border-radius : 50%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+td {
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+}
+
+button {
+    margin: 5px;
+}
