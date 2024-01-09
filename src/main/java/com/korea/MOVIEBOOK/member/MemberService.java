@@ -33,4 +33,8 @@ public class MemberService {
             memberRepository.save(member);  // 업데이트된 사용자 저장
         });
     }
+
+    public Member findByproviderId(String id){
+        return this.memberRepository.findByproviderId(id);
+    }
 }

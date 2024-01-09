@@ -21,7 +21,7 @@ public class Payment {
 
     private String payType;         // 결제 타입
 
-    private Long phone;             // 회원 전화번호 (payment때 필수값으로 들어가야하기때문에 data에도 넣음)
+    private String phone;             // 회원 전화번호 (payment때 필수값으로 들어가야하기때문에 data에도 넣음)
 
 //    private String email;           // 회원 email
 

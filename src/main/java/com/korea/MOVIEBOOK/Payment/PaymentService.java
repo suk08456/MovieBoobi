@@ -19,9 +19,8 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final MemberRepository memberRepository;
 
-    public void SavePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, Long phone){
+    public void SavePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, String phone){
         Member member = this.memberRepository.findById(id).get();
-
         Payment payment1 = new Payment();
         payment1.setPayment(payment);
         payment1.setPaidAmount(paidAmount);
