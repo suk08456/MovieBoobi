@@ -33,7 +33,6 @@ public class DayService {
             calendar.set(Calendar.DAY_OF_WEEK, i);
             sdf.format(calendar.getTime());
 
-
             Day day1 = new Day();
             day1.setUpdateDays(sdf.format(calendar.getTime()));
             dayRepository.save(day1);

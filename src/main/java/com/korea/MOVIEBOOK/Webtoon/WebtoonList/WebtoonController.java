@@ -39,8 +39,6 @@ public class WebtoonController {
             dayService.FindByWeek();
         }
 
-
-
         List<Day> days = this.dayService.findAll();
         List<List<List<Webtoon>>> allList = new ArrayList<>();//  월,화,수,목,금,토,일이라는 값을 가져오기 위함
         List<Webtoon> webtoonList = new ArrayList<>();
@@ -55,6 +53,7 @@ public class WebtoonController {
                 List<Long> webtoon = webtoonService.getWebtoonAPI(day1.getUpdateDays());
                 webtoonDayListService.SaveWebtoonDayList(day1.getId(), webtoon);
             }
+            webtoonDayLists = webtoonDayListService.findBywebtoonDay(day1);
             for (WebtoonDayList webtoonDayList : webtoonDayLists) {
                 Webtoon webtoon2 = webtoonDayList.getWebtoonList();
                 webtoonList.add(webtoon2);
