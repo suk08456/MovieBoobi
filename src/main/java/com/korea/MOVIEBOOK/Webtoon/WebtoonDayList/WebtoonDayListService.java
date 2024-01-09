@@ -8,6 +8,7 @@ import com.korea.MOVIEBOOK.Webtoon.WebtoonList.WebtoonService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -29,9 +30,23 @@ public class WebtoonDayListService {
         }
     }
 
-    public List<WebtoonDayList> findBywebtoonDay(Day day){
-       return webtoonDayListRepository.findBywebtoonDay(day);
+
+    public List<WebtoonDayList> findBywebtoonDay(Day day) {
+        List<WebtoonDayList> webtoonDayLists = webtoonDayListRepository.findBywebtoonDay(day);
+
+        // 명시적으로 WebtoonDayList 타입으로 캐스팅
+        webtoonDayLists.sort(Comparator.comparingInt(
+                webtoonDayList -> {
+                    Integer fanCount = ((WebtoonDayList) webtoonDayList).getWebtoonList().getFanCount();
+                    return fanCount != null ? fanCount : 0;
+                }).reversed());
+
+        return webtoonDayLists;
     }
+
+//    public List<WebtoonDayList> findBywebtoonDay(Day day){
+//       return webtoonDayListRepository.findBywebtoonDay(day);
+//    }
 
 //    public List<WebtoonDayList> findBywebtoon(Webtoon webtoon){
 //        return webtoonDayListRepository.findByWebtoon(webtoon);

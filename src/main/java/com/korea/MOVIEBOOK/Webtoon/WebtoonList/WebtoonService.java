@@ -28,6 +28,7 @@ public class WebtoonService {
     private final DayService dayService;
     private final WebtoonDayListRepository webtoonDayListRepository;
 
+
     public List<Long> getWebtoonAPI(String day) {
         List<WebtoonDTO> webtoonDTOList = new ArrayList<>();
         List<Long> webtoonID = new ArrayList<>();
@@ -130,7 +131,6 @@ public class WebtoonService {
     public Webtoon findWebtoonByWebtoonId(Long webtoonId) {
         return this.webtoonRepository.findByWebtoonId(webtoonId);
     }
-
 
 }
 

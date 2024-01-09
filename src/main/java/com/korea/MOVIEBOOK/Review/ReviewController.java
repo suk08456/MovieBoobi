@@ -14,20 +14,27 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/create")
-    public String createReview(){
+    public String createReview() {
         return "Review/review";
     }
 
     @GetMapping("/create/movie")
-    public String createMovieReview(@RequestParam("movieCD") String movieCD, @RequestParam("comment") String comment, @RequestParam("rating") Double rating){
+    public String createMovieReview(@RequestParam("movieCD") String movieCD, @RequestParam("comment") String comment, @RequestParam("rating") Double rating) {
         this.reviewService.saveMovieReview(movieCD, comment, rating);
-        return  "redirect:/movie/detail?movieCD=" + movieCD;
+        return "redirect:/movie/detail?movieCD=" + movieCD;
     }
 
     @GetMapping("/create/book")
     public String createBookReview(@RequestParam("isbn") String isbn, @RequestParam("comment") String comment, @RequestParam("rating") Double rating, Model model) {
         reviewService.saveBookReview(isbn, comment, rating);
         return "redirect:/book/detail/" + isbn;
+    }
+
+    @GetMapping("/webtoon/review/create")
+    public String createWebtoonReview(@RequestParam("webtoonId") Long webtoonId, @RequestParam("comment") String
+            comment, @RequestParam("rating") Double rating) {
+        this.reviewService.saveWebtoonReview(webtoonId, comment, rating);
+        return "redirect:/webtoon/detail?webtoonId=" + webtoonId;
     }
 
 
