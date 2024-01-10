@@ -28,12 +28,23 @@ public class BookController {
             startIndex+=5;
             endIndex+=5;
         }
-        startIndex = 0;
-        endIndex = 5;
+
         List<Book> newSpecialBookList = bookService.getNewSpecialBookList();
         List<List<Book>> newSpecialBookListList = new ArrayList<>();
+        startIndex = 0;
+        endIndex = 5;
         for (int i = 1; i <= newSpecialBookList.size()/5; i++) {
             newSpecialBookListList.add(newSpecialBookList.subList(startIndex, Math.min(endIndex, newSpecialBookList.size())));
+            startIndex+=5;
+            endIndex+=5;
+        }
+
+        List<Book> recommendList = bookService.getRecommendationList();
+        List<List<Book>> recommendListList = new ArrayList<>();
+        startIndex = 0;
+        endIndex = 5;
+        for (int i = 1; i <= recommendList.size()/5; i++) {
+            recommendListList.add(recommendList.subList(startIndex, Math.min(endIndex, recommendList.size())));
             startIndex+=5;
             endIndex+=5;
         }
@@ -41,6 +52,7 @@ public class BookController {
         List<List<List<Book>>> allList = new ArrayList<>();
         allList.add(bestSellerListList);
         allList.add(newSpecialBookListList);
+        allList.add(recommendListList);
         model.addAttribute("allList", allList);
         return "book/bookMainPage";
     }

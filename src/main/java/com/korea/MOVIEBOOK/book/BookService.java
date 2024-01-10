@@ -14,6 +14,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -23,7 +26,7 @@ import java.util.*;
 public class BookService {
     private final BookRepository bookRepository;
 
-    private void getAPI(String url, String command, Boolean isNew) {
+    private void getAPI(String url, String command, Boolean isNew, Boolean recommend) {
         //  기본url과 명령어를 넣으면 api를 사용해서 이미 db에있는지 체크하고 없다면 db에 저장해주는 메서드.
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -36,11 +39,11 @@ public class BookService {
             ArrayList<Map<String, Object>> bookList = (ArrayList<Map<String, Object>>) resultMap.getBody().get("item");
             for (Map<String, Object> bookData : bookList) {
                 if (checkDuplicate((String) bookData.get("isbn"))) {
-                    saveBook(bookData, isNew);
+                    saveBook(bookData, isNew, recommend);
                     System.out.println("============================= 책 추가됨 =============================");
                 } else if (!checkDuplicate((String) bookData.get("isbn")) &&
                         !bookRepository.findByIsbn((String) bookData.get("isbn")).getAddDate().equals(LocalDate.now())) {
-                    updateBook(bookData, isNew);
+                    updateBook(bookData, isNew, recommend);
                     System.out.println("============================= 책 업데이트 됨 =============================");
                 }
             }
@@ -53,20 +56,21 @@ public class BookService {
         }
     }
 
-    public void getBook(String ketWord) {
-        String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=ttbdlrjsrn81027001";
-        String command = "&Query=" + ketWord + "&QueryType=Keyword&MaxResults=20&start=1&SearchTarget=Book&output=JS&Version=20131101";
+    public void getBook(String isbn) {
+        String url = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbdlrjsrn81027001&itemIdType=ISBN&ItemId=";
+        String command = isbn + "&output=JS&Cover=Big&Version=20131101";
+        getAPI(url, command, false, true);
     }
     public void getBestSeller() {
         String url = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbdlrjsrn81027001";
         String command = "&QueryType=Bestseller&MaxResults=25&start=1&Cover=Big&SearchTarget=Book&output=JS&Version=20131101";
-        getAPI(url, command, false);
+        getAPI(url, command, false, false);
         System.out.println("======================== 베스트셀러도서추가 ========================");
     }
     public void getNewSpecialBook() {
         String url = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=ttbdlrjsrn81027001";
         String command = "&QueryType=ItemNewSpecial&MaxResults=25&start=1&Cover=Big&SearchTarget=Book&output=JS&Version=20131101";
-        getAPI(url, command, true);
+        getAPI(url, command, true, false);
         System.out.println("======================== 주목할만한신간도서추가 ========================");
     }
 
@@ -94,7 +98,26 @@ public class BookService {
         if (newSpecialBookList.isEmpty()) {
             getNewSpecialBook();
         }
+        newSpecialBookList = bookRepository.findByIsNewBookAndAddDate(true, LocalDate.now());
         return newSpecialBookList;
+    }
+
+    public List<Book> getRecommendationList() {
+        List<Book> recommendationList = bookRepository.findByRecommended(true);
+        if (recommendationList.isEmpty()) {
+            getBook("9791197182204");
+            getBook("9788954614344");
+            getBook("9788960172586");
+            getBook("9791186757093");
+            getBook("9788954608640");
+            getBook("9788998274931");
+            getBook("9788956604992");
+            getBook("9788990982575");
+            getBook("9788925576459");
+            getBook("9788932916378");
+        }
+        recommendationList = bookRepository.findByRecommended(true);
+        return recommendationList;
     }
 
 
@@ -110,12 +133,15 @@ public class BookService {
         }
         return answer;
     }
-    private void saveBook(Map<String, Object> bookData, Boolean isNew) {
+    private void saveBook(Map<String, Object> bookData, Boolean isNew, Boolean recommend) {
         //  book정보를 db에 저장하는 함수
+        String description = (String) bookData.get("description");
+        String replacedText = description.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
+
         Book book = new Book();
+        book.setDescription(replacedText);
         book.setTitle((String) bookData.get("title"));
         book.setAuthor((String) bookData.get("author"));
-        book.setDescription((String) bookData.get("description"));
         book.setIsbn((String) bookData.get("isbn"));
         book.setIsbn13((String) bookData.get("isbn13"));
         book.setCover((String) bookData.get("cover"));
@@ -125,10 +151,11 @@ public class BookService {
         book.setPubdate(getLocalDate(bookData.get("pubDate")));
         book.setAddDate(LocalDate.now());
         book.setIsNewBook(isNew);
+        book.setRecommended(recommend);
         bookRepository.save(book);
     }
 
-    private void updateBook(Map<String, Object> bookData, Boolean isNew) {
+    private void updateBook(Map<String, Object> bookData, Boolean isNew, Boolean recommend) {
         //  book정보를 오늘자 정보로 db에 업데이트 하는 함수
         Book book = bookRepository.findByIsbn((String) bookData.get("isbn"));
         book.setTitle((String) bookData.get("title"));
@@ -143,6 +170,7 @@ public class BookService {
         book.setPubdate(getLocalDate(bookData.get("pubDate")));
         book.setAddDate(LocalDate.now());
         book.setIsNewBook(isNew);
+        book.setRecommended(recommend);
         bookRepository.save(book);
     }
     private BookDTO createBookDTO(Map<String, Object> bookData) {

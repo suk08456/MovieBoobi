@@ -30,4 +30,5 @@ public class Book {
     private LocalDate addDate;  //  추가일자
     @OneToMany(mappedBy = "book")
     private List<Review> reviewList;
+    private Boolean recommended;
 }
