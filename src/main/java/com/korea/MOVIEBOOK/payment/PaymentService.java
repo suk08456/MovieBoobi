@@ -40,7 +40,7 @@ public class PaymentService {
     public Page<Payment> getPaymentsByMember(Member member, int page) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("dateTime"));
-        Pageable pageable = PageRequest.of(page, 7,Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
         return paymentRepository.findByMember(member, pageable);
     }
 }
