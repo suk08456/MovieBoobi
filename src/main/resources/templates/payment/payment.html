@@ -15,13 +15,13 @@
         <div style="width : 900px; display : flex; flex-direction : column; padding : 22px;">
             <span style="font-size: larger; font-weight: bold;"> 결제 및 구매 내역 </span>
             <div style="margin-left : 50px; margin-top : 40px;">
-                <div style="min-height : 360px;">
+                <div style="min-height : 495px;">
                     <table>
                         <tr>
                             <th>순번</th>
                             <th>일자</th>
                             <th>내역</th>
-                            <th>사용코인</th>
+                            <th>코인</th>
                             <th></th>
                         </tr>
                         <tr th:if="${#lists.size(paging) > 0}" th:each="payment, row: ${paging}">
@@ -29,12 +29,8 @@
                             <td><span th:text="${#temporals.format(payment.dateTime, 'yyyy-MM-dd HH:mm')}"></span></td>
                             <td><span th:text="${payment.content}"></span></td>
                             <td><span
-                                    th:text="${#strings.contains(payment.content, '충전') ? '+ ' + payment.paidAmount  : '- ' + payment.paidAmount}"></span>
+                                    th:text="${#strings.contains(payment.content, '충전') ? '+ ' +  #numbers.formatDecimal(payment.paidAmount, 0, 'COMMA', 0, 'POINT')  : '- ' + #numbers.formatDecimal(payment.paidAmount, 0, 'COMMA', 0, 'POINT')}"></span>
                             </td>
-                            <td>
-                                <span th:text="${#numbers.formatInteger(#lists.sum({#strings.contains(payment.content, '충전') ? payment.paidAmount : -payment.paidAmount}))}"></span>
-                            </td>
-
                         </tr>
                         <tr th:if="${#lists.size(paging) == 0}">
                             <td colspan="4" style="text-align: center;">데이터가 없습니다.</td>
@@ -73,9 +69,17 @@
                          th:if="${not #strings.isEmpty(member.profileImage)}"
                          th:src="${member.profileImage}">
                     <img class="profile" th:if="${#strings.isEmpty(member.profileImage)}" src="/imgs/noimg.jpg">
+                    <div style="width : 100%; height : 27px; margin-top : 26px; margin-left : 5px;">
                     <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
-                          th:text="${member.nickname} + ' 님 안녕하세요'"
-                          style="font-size : large; width : 100%; height : 27px; margin-top : 60px; margin-left : 5px;"></span>
+                          th:text="${member.nickname} + ' 님 안녕하세요'" style="font-size : large;"></span>
+                        <div style="display : flex; font-weight : bold;">
+                            <img src="/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
+                            <span style="margin-right : 3px;">보유 코인 : </span>
+                            <span th:text="${#numbers.formatDecimal(sum, 0, 'COMMA', 0, 'POINT')}"
+                                  style="width : 95px; text-align : center;"></span>
+                            <span>Coin</span>
+                        </div>
+                    </div>
                 </div>
                 <input class="m_id" name="m_id" sec:authorize="isAuthenticated()" th:value="${member.id}"
                        type="hidden">
@@ -163,6 +167,23 @@
         </div>
     </div>
     <script>
+
+        function calcSum() {
+          const table = document.getElementById('payment-tb');
+          let sum = 0;
+
+          for(let i = 0; i < table.rows.length; i++)  {
+          let amount = parseInt(table.rows[i].cells[3].innerText.replace(/[^0-9-]/g, ''), 10);
+          if (!isNaN(amount)) {
+            sum += amount;
+        }
+          }
+
+          // 합계 출력
+          document.getElementById('sum').innerText = numberWithCommas(sum);
+
+        }
+
         ////////////////////////////////////////////////  결제 구현  ////////////////////////////////////////////////
             var today = new Date();
             var hours = today.getHours(); // 시
