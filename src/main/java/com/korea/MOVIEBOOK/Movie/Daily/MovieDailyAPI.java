@@ -1,6 +1,5 @@
 package com.korea.MOVIEBOOK.Movie.Daily;
 
-import com.korea.MOVIEBOOK.Movie.Movie.Movie;
 import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
 import com.korea.MOVIEBOOK.Movie.MovieAPI;
 import lombok.RequiredArgsConstructor;

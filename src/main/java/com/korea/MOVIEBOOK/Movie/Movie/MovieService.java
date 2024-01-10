@@ -1,12 +1,10 @@
 package com.korea.MOVIEBOOK.Movie.Movie;
 
 import com.korea.MOVIEBOOK.Movie.Daily.MovieDaily;
-import com.korea.MOVIEBOOK.Movie.Daily.MovieDailyAPI;
 import com.korea.MOVIEBOOK.Movie.Daily.MovieDailyRepository;
 import com.korea.MOVIEBOOK.Movie.MovieDTO;
 import com.korea.MOVIEBOOK.Movie.Weekly.MovieWeekly;
 import com.korea.MOVIEBOOK.Movie.Weekly.MovieWeeklyRepository;
-import com.korea.MOVIEBOOK.Movie.Weekly.MovieWeeklyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,5 @@
 package com.korea.MOVIEBOOK.Movie.Weekly;
 
-import com.korea.MOVIEBOOK.Movie.Daily.MovieDaily;
 import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
 import com.korea.MOVIEBOOK.Movie.MovieAPI;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component

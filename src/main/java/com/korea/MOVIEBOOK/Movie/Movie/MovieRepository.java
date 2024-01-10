@@ -1,6 +1,5 @@
 package com.korea.MOVIEBOOK.Movie.Movie;
 
-import com.korea.MOVIEBOOK.Movie.Weekly.MovieWeekly;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MovieRepository extends JpaRepository<Movie,Long> {

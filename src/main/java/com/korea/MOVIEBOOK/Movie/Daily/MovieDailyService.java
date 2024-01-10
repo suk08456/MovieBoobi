@@ -1,15 +1,9 @@
 package com.korea.MOVIEBOOK.Movie.Daily;
 
 import com.korea.MOVIEBOOK.Movie.Movie.Movie;
-import com.korea.MOVIEBOOK.Movie.Movie.MovieRepository;
 import com.korea.MOVIEBOOK.Movie.Movie.MovieService;
-import com.korea.MOVIEBOOK.Movie.MovieDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import java.util.*;
 
