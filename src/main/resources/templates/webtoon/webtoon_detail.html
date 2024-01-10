@@ -2,7 +2,7 @@
 <html layout:decorate="~{layout2}">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/Movie/movieDetail.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/Webtoon/webtoon.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
@@ -10,7 +10,7 @@
 </head>
 <body>
 <div layout:fragment="content" style="width : 100%; height : 30%;">
-    <div class="content-co" style="width : 1300px; height : 1540px; margin : auto; margin-top : -25px;">
+    <div class="content-co" style="width : 1300px; height : 500px; margin : auto; margin-top : -25px;">
         <div class="post-co" style="display : flex; flex-direction : row; ">
             <div style="margin-top : 30px; color : #868e96;">
                 <img th:src="${WebtoonDetail.getImg()}" style="width : 300px;">
