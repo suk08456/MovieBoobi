@@ -97,7 +97,7 @@ public class MemberController {
         }
         model.addAttribute("member", member);
 
-        Long reviewCount= reviewService.getReiverCount(member);
+        Long reviewCount= reviewService.getReivewCount(member);
         model.addAttribute("reviewCount", reviewCount);
 
         return "member/my_page";
