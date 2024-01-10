@@ -63,7 +63,7 @@ public class ReviewService {
         return reviews;
     }
 
-    public Long getReiverCount(Member member) {
+    public Long getReivewCount(Member member) {
         return reviewRepository.countByMember(member);
     }
 

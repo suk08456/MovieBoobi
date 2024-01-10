@@ -7,7 +7,24 @@
 <body>
 <div layout:fragment="content">
 
-</div>
+    <div style="height: 300px; width: 300px;">
+        <img th:src="${member.getProfileImage()}" alt="프로필 이미지">
+    </div>
 
+    <div class="info" style="font-size: 20px; margin-top: 40px;">
+        <div style="margin-bottom: 5px; border: solid 2px">
+            <span style="color : #868e96;">아이디 :</span>
+            <span th:text="${member.getUsername()}" style="color : #868e96;"></span>
+        </div>
+        <div style="margin-bottom: 5px; border: solid 2px">
+            <span style="color : #868e96;">닉네임 :</span>
+            <span th:text="${member.getNickname()}" style="color : #868e96;"></span>
+        </div>
+        <div style="margin-bottom: 5px; border: solid 2px">
+            <span style="color : #868e96;">이메일 :</span>
+            <span th:text="${member.getEmail()}" style="color : #868e96;"></span>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -28,7 +28,7 @@ public class Member {
 
     private String nickname; // 닉네임
 
-    private String profileImage = "/Member/defaultImage.jpg"; // 프로필 이미지
+    private String profileImage = "/member/defaultImage.jpg"; // 프로필 이미지
 
     private boolean isVerified = false;  // 이메일 인증 상태를 나타내는 필드
 
@@ -36,7 +36,7 @@ public class Member {
 
     private String providerId;
 
-    private String photo;
+//    private String photo;
 
     @OneToMany(mappedBy = "member")
     private List<Payment> paymentList;
