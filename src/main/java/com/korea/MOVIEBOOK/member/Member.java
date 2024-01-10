@@ -38,7 +38,7 @@ public class Member {
 
     private String providerId;
 
-    private String photo;
+//    private String photo;
 
     @OneToMany(mappedBy = "member")
     private List<Payment> paymentList;
