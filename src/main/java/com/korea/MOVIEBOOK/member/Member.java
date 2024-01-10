@@ -1,13 +1,11 @@
 package com.korea.MOVIEBOOK.member;
 
-import com.korea.MOVIEBOOK.Payment.Payment;
-import com.korea.MOVIEBOOK.Review.Review;
+import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.review.Review;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity

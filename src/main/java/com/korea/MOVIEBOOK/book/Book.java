@@ -1,14 +1,11 @@
 package com.korea.MOVIEBOOK.book;
 
-import com.korea.MOVIEBOOK.Review.Review;
+import com.korea.MOVIEBOOK.review.Review;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
