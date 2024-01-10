@@ -1,8 +1,7 @@
 package com.korea.MOVIEBOOK.movie.movie;
-
+import com.korea.MOVIEBOOK.movie.MovieDTO;
 import com.korea.MOVIEBOOK.movie.daily.MovieDaily;
 import com.korea.MOVIEBOOK.movie.daily.MovieDailyRepository;
-import com.korea.MOVIEBOOK.movie.MovieDTO;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeekly;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeeklyRepository;
 import lombok.RequiredArgsConstructor;

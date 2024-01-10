@@ -1,7 +1,7 @@
 package com.korea.MOVIEBOOK.movie.daily;
 
-import com.korea.MOVIEBOOK.movie.movie.MovieService;
 import com.korea.MOVIEBOOK.movie.MovieAPI;
+import com.korea.MOVIEBOOK.movie.movie.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
