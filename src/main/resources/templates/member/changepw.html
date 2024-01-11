@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{/member/my_page_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="profileContent" style="width: 85%; height: 100%">
+<!--    <div class="wrap">-->
+<!--        <h1>회원 정보 수정</h1>-->
+<!--    </div>-->
+    <div class="passwordch">
+        <form th:action="@{/member/changePw}" method="post" th:object="${passwordChangeForm}">
+            <div role="alert" th:if="${#fields.hasAnyErrors()}">
+                <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+            </div>
+            <div class="mb-3">
+                <label for="oldPassword" class="form-label">현재 비밀번호</label>
+                <input type="password" id="oldPassword" th:field="*{oldPassword}"
+                       name="oldPassword" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">새 비밀번호</label>
+                <input type="password" id="password" th:field="*{password}"
+                       name="password" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="passwordConfirm" class="form-label">비밀번호 확인</label>
+                <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}"
+                       name="passwordConfirm" class="form-control">
+            </div>
+            <input type="button" th:value="비밀번호변경" onclick="changepw(this)">
+        </form>
+    </div>
+
+    <script>
+        function changepw(input) {
+            if (confirm("비밀번호를 변경하시겠습니까?")) {
+                input.form.submit();
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

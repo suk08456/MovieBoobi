@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.member;
 
+import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -8,6 +9,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -27,6 +33,7 @@ public class MemberController {
     private final MemberService memberService;
     private final EmailService emailService;
     private final ReviewService reviewService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/signup")
     public String signup(MemberCreateForm memberCreateForm) {
@@ -65,6 +72,7 @@ public class MemberController {
         memberService.verifyEmail(userId);  // userId를 사용하여 이메일 인증 처리
         return "redirect:/member/emailVerificationSuccess";
     }
+
     @GetMapping("/emailVerificationSuccess")
     public String emailVerificationSuccess() {
         return "member/email_verification_success";
@@ -115,7 +123,6 @@ public class MemberController {
         return "member/reset_password"; // Thymeleaf 템플릿 이름 (reset_password.html)
     }
 
-
     // 마이페이지
     @GetMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
@@ -128,9 +135,79 @@ public class MemberController {
         }
         model.addAttribute("member", member);
 
-        Long reviewCount= reviewService.getReivewCount(member);
+        Long reviewCount = reviewService.getReivewCount(member);
         model.addAttribute("reviewCount", reviewCount);
-
+//
+//        List<Review> reviewList = reviewService.getAnswerTop5LatestByUser(user);
+//        model.addAttribute("answerList", answerList);
         return "member/my_page";
     }
+
+    @GetMapping("/changePw")
+    public String changePw(PasswordChangeForm passwordChangeForm) {
+        return "member/changepw";
+    }
+
+
+    @PostMapping("/changePw")
+    public String passwordChange(@Valid PasswordChangeForm passwordChangeForm, BindingResult bindingResult,
+                                 Principal principal) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GrantedAuthority authority = authentication.getAuthorities().iterator().next();
+
+        if (bindingResult.hasErrors()) {
+            return "member/changepw";
+        }
+
+        if (passwordChangeForm.getPassword().equals(passwordChangeForm.getPasswordConfirm())) {
+            if (authority.getAuthority().equals("ROLE_MEMBER")) {
+                Member member = memberService.findByusername(principal.getName());
+                if (passwordEncoder.matches(passwordChangeForm.getOldPassword(), member.getPassword())) {
+                    memberService.changePassword(member, passwordChangeForm.getPassword());
+                } else {
+                    bindingResultReject(bindingResult);
+                    return "member/changepw";
+                }
+            }
+        } else {
+            bindingResultReject(bindingResult);
+            return "member/changepw";
+        }
+        return "redirect:/member/logout";
+    }
+
+    private void bindingResultReject(BindingResult bindingResult) {
+        bindingResult.rejectValue("passwordConfirm", "passwordInCorrect",
+                "패스워드가 일치하지 않습니다.");
+    }
+
+
+    @GetMapping("/changeInformation")
+    public String updateNm(NicknameForm nicknameForm) {
+        return "member/changeinfor";
+    }
+
+    @PostMapping("/changeInformation")
+    public String updateNickname(@Valid NicknameForm nicknameForm, BindingResult bindingResult,
+                                 Principal principal) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GrantedAuthority authority = authentication.getAuthorities().iterator().next();
+
+        if (bindingResult.hasErrors()) {
+            return "member/changeinfor";
+        }
+
+        if (nicknameForm.getNewNickname().length() >= 3 || nicknameForm.getNewNickname().length() > 20) {
+                Member member = memberService.findByusername(principal.getName());
+                if(member == null){
+                    member = memberService.findByproviderId(principal.getName());
+                }
+                memberService.updateNickname(member, nicknameForm.getNewNickname());
+        }
+        return "redirect:/member/mypage";
+    }
+
+
 }
