@@ -1,11 +1,13 @@
 package com.korea.MOVIEBOOK.member;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -13,6 +15,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
 
     public Member create(String username, String password, String nickname, String email) {
@@ -32,6 +35,21 @@ public class MemberService {
             member.setVerified(true);  // 이메일 인증 완료
             memberRepository.save(member);  // 업데이트된 사용자 저장
         });
+    }
+
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+    }
+
+    public void resetPassword(Member member) throws MessagingException {
+        String temporaryPassword = UUID.randomUUID().toString().substring(0, 8); // 8자리 랜덤 문자열
+        String encodedPassword = passwordEncoder.encode(temporaryPassword);
+        member.setPassword(encodedPassword); // 임시 비밀번호 설정
+        memberRepository.save(member);
+
+        // 이메일 전송 로직에서 예외가 발생할 경우, 메서드를 호출한 곳으로 예외를 전파합니다.
+        emailService.sendTemporaryPassword(member.getEmail(), temporaryPassword);
     }
 
     public Member findByproviderId(String id){

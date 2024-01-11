@@ -23,7 +23,7 @@
                         <div class="img" style="padding : 6px;">
                             <span class="rank" th:text="${drama.rank}"></span>
                             <a th:href="@{/drama/{id}(id=${drama.id})}">
-                                <img th:src="${'/imgs' + drama.imageUrl}" th:if="${not #strings.isEmpty(drama.imageUrl)}">
+                                <img th:src="${'/dramaImage' + drama.imageUrl}" th:if="${not #strings.isEmpty(drama.imageUrl)}">
                                 <img src="/imgs/no-img.png" th:if="${#strings.isEmpty(drama.imageUrl)}"
                                      style="width : 213px; height : 303px;">
                             </a>

@@ -1,97 +1,189 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout2}">
+<html lang="ko" layout:decorate="~{layout2}">
 <head>
-    <meta charset="UTF-8">
-    <title>드라마 상세 정보</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/Movie/movieDetail.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
 </head>
-<link rel="stylesheet" type="text/css" th:href="@{/Drama/dramaDetail.css}">
-<head>
-    <meta charset="UTF-8">
-    <title>드라마 상세 정보</title>
-    <script type="text/javascript" src="/webjars/jquery/3.6.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome-stars.css}">
-    <script type="text/javascript" th:src="@{/jquery.barrating.min.js}"></script>
-</head>
+<body>
+<div layout:fragment="content" style="width : 100%; height : 30%;">
+    <div class="content-co" style="width : 1300px; height : 1540px; margin : auto; margin-top : -25px;">
+        <div class="post-co" style="display : flex; flex-direction : row; ">
+            <div style="margin-top: 30px; color: #868e96;">
+                <img th:src="${'/dramaImage' + drama.imageUrl}" alt="Drama Image" style="width: 300px;">
+            </div>
+            <div style="display : flex; flex-direction : column; width : 75%; margin-left : 25px;">
+                <span th:text="${drama.title}"
+                      style="font-size : 33px; font-weight : bold;  margin-bottom : 5px; margin-top : 30px;"></span>
+                <div style="display : flex;">
+                    <div style="flex-direction : column;">
+                        <div class="rate" style="margin-top : 15px;">
+                            <input type="radio" id="rating10" name="rating" value="10" onclick="updateRating(5)">
+                            <label for="rating10" title="5점"></label>
+                            <input type="radio" id="rating9" name="rating" value="9" onclick="updateRating(4.5)">
+                            <label class="half" for="rating9" title="4.5점"></label>
+                            <input type="radio" id="rating8" name="rating" value="8" onclick="updateRating(4)">
+                            <label for="rating8" title="4점"></label>
+                            <input type="radio" id="rating7" name="rating" value="7" onclick="updateRating(3.5)">
+                            <label class="half" for="rating7" title="3.5점"></label>
+                            <input type="radio" id="rating6" name="rating" value="6" onclick="updateRating(3)">
+                            <label for="rating6" title="3점"></label>
+                            <input type="radio" id="rating5" name="rating" value="5" onclick="updateRating(2.5)">
+                            <label class="half" for="rating5" title="2.5점"></label>
+                            <input type="radio" id="rating4" name="rating" value="4" onclick="updateRating(2)">
+                            <label for="rating4" title="2점"></label>
+                            <input type="radio" id="rating3" name="rating" value="3" onclick="updateRating(1.5)">
+                            <label class="half" for="rating3" title="1.5점"></label>
+                            <input type="radio" id="rating2" name="rating" value="2" onclick="updateRating(1)">
+                            <label for="rating2" title="1점"></label>
+                            <input type="radio" id="rating1" name="rating" value="1" onclick="updateRating(0.5)">
+                            <label class="half" for="rating1" title="0.5점" onclick="updateRating(0.5)"></label>
+                        </div>
+                        <p style="margin-top : -9px; text-align : center; color : #868e96; font-weight : bold;">평가하기</p>
+                    </div>
+                    <div class="event-co"
+                         style="display : flex; margin-left : 70px; margin-top : 33px; color : #868e96; font-weight : bold;">
+                        <button style="margin-right : 50px;">
+                            <img class="btn-show-popup-1" src="/imgs/writing.png" style="width : 40px; height : 40px; ">
+                            <p style="margin-top : 15px;">코멘트</p>
+                        </button>
+                        <div class="popup-box-1 popup-box-type-a" id="myModal" style="display : flex;">
+                            <div class="popup">
+                                <div class="head" style="display : flex;">
+                                    <span th:text="${drama.title}"
+                                          style="font-size : 16px; width : 80%; font-weight : bold; color : black; margin-bottom : 8px; height : 40px;"></span>
+                                    <button class="btn-close"></button>
+                                    <div>
+                                        <div id="Rating"></div>
+                                        <span id="charCount" style="font-size : small;"></span>
+                                    </div>
+                                </div>
+                                <textarea class="body"
+                                          style="width : 100%; height : 369px; margin-bottom : 5px; background : white;"
+                                          oninput="updateCharacterCount()"> </textarea>
+                                <input class="dramaId" th:value="${drama.id}" type="hidden">
+                                <button class="btn" onclick="saveComment();"><span>저장</span></button>
+                            </div>
+                        </div>
+                        <div class="like-co" style="margin-right : 50px;">
+                            <img class="likeit" src="/imgs/likeit.png" style="width : 40px; height : 40px; ">
+                            <p style="margin-top : 15px;">좋아요</p>
+                        </div>
+                        <div class="down-co">
+                            <img class="down" src="/imgs/buy.png"
+                                 style="width : 40px; height : 40px; margin-left : 7px;">
+                            <p style="margin-top : 15px;">구매하기</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="width : 100%; margin-top : 41px; color : #868e96; margin-bottom : 10px;">
+                    <span th:text="${drama.genre}" style="margin-left : 5px;"></span>
+                    ·
+                    <span th:text="${drama.director}"></span>
+                    ·
+                    <span th:text="${drama.viewingRating}"></span>
+                </div>
+                <div class="movie-co"
+                     style="text-align : center; border : 3px dashed #868e96; padding : 22px; height : 182px; margin-bottom : 15px;">
+                    <span th:text="${drama.plot}" style="font-size : 17px"></span>
+                </div>
+            </div>
+        </div>
+        <div class="movie-info">
+            <div class="swiper mySwiper">
+                <span style="font-size : 20px; width : 80%; font-weight : bold; color : black;">출연/제작</span>
+                <div class="swiper-wrapper" style="margin-top : 20px; margin-bottom : 20px;">
+                    <div class="swiper-slide" th:each="actorList : ${actorListList}"
+                         style="display : flex;flex-direction : row;">
+                        <div th:each="actors : ${actorList}" style="width : 200px;">
+                            <div class="actor-co" style="width :165px; align-items: center;">
+                                <img src="/imgs/profile_icon.png" style="width: 48px; height: 48px; margin : auto;">
+                                <span th:text="${actors}" style="font-size: 15px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <strong>평균 평점:</strong>
+                    <i class="fa fa-star"></i> <!-- 별 아이콘 하나 -->
+                    <span th:text="${avgRating}"></span>
+                </div>
+                <div class="swiper-scrollbar"></div>
+                <span th:text="'코멘트 ' + ${#lists.size(reviews)}"
+                      style="font-size : 20px; width : 80%; font-weight : bold; color : black; margin-bottom : 8px;"></span>
+                <div>
+                    <a th:href="@{/drama/{id}/review_list(id=${drama.id})}">더보기</a>
+                </div>
+                <div class="review-co" style="display : flex; flex-wrap : wrap; height : 500px;">
+                    <div th:each="review : ${reviews}" style="padding : 7px; height : 250px;">
+                        <div style="width : 170px; height : 10px;">
+                            <span th:text="${ '⭐' + review.rating}" style="font-size : 16px;"></span>
+                        </div>
+                        <div style="width: 170px; height: 215px; margin-top: 13px; overflow: hidden; border-top: 1px solid #868E96;">
+                        <span th:text="${#strings.length(review.comment) > 100 ? #strings.substring(review.comment, 0, 100) + '..' : review.comment}"
+                              style="display: inline-block; word-wrap: break-word; font-size : 14px;"></span>
+                        </div>
+                    </div>
+                </div>
 
-<body layout:fragment="content">
-<h2 th:text="${drama.title}"></h2>
-<<<<<<< HEAD
-<img th:src="@{${drama.imageUrl}}" alt="Drama Image">
-<div class="information" >
-    <div>
-        <strong>장르:</strong>
-        <span th:text="${drama.genre}"></span>
-    </div>
-    <div>
-        <strong>감독:</strong>
-        <span th:text="${drama.director}"></span>
-    </div>
-    <div>
-        <strong>연령 등급:</strong>
-        <span th:text="${drama.viewingRating}"></span> <!-- 여기에서 오타 수정 -->
-    </div>
-    <div>
-        <strong>평균 평점:</strong>
-        <i class="fa fa-star"></i> <!-- 별 아이콘 하나 -->
-        <span th:text="${avgRating}"></span>
-    </div>
-=======
-<img th:src="${'/imgs' +drama.imageUrl}" alt="Drama Image">
-<div>
-    <strong>장르:</strong>
-    <span th:text="${drama.genre}"></span>
-</div>
-<div>
-    <strong>감독:</strong>
-    <span th:text="${drama.director}"></span>
-</div>
-<div>
-    <strong>연령 등급:</strong>
-    <span th:text="${drama.viewingRating}"></span> <!-- 여기에서 오타 수정 -->
-</div>
-<div>
-    <strong>평균 평점:</strong>
-    <i class="fa fa-star"></i> <!-- 별 아이콘 하나 -->
-    <span th:text="${avgRating}"></span>
->>>>>>> 343c5499138ad90d26e7bf46d0ed866d1621e21a
-</div>
-<h3>리뷰</h3>
-<ul>
-    <li th:each="review : ${reviews}">
-        <p>
-            <a th:href="@{'/reviews/detail/' + ${review.id}}">
-                <span th:text="${review.title}"></span>
-            </a>
-            <th:block th:if="${review.rating != null}">
-                <span>
-                    <span th:text="'&#9733;'"></span>
-                    <span th:text="${review.rating}"></span>
-                </span>
-            </th:block>
-            <th:block th:if="${review.rating == null}">
-                아직 평가 없음
-            </th:block>
-            </span>
-        </p>
-    </li>
-    <li th:if="${reviews.size() == 0}">
-        <p>등록된 리뷰가 없습니다.</p>
-    </li>
-</ul>
-<div>
-    <a th:href="@{/drama/{id}/review_list(id=${drama.id})}">더보기</a>
-</div>
-<a th:href="@{/reviews/create(dramaId=${drama.id})}">등록하기</a>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#rating').barrating({
-            theme: 'fontawesome-stars',
-            initialRating: 1,  // 초기 평점 설정 (선택한 평점이 기본으로 표시됨)
-            showSelectedRating: true,  // 선택한 평점을 텍스트로 표시
-        });
-    });
-</script>
-<a th:href="@{/drama/dramaList}">드라마 목록</a>
+            </div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+            <script>
+                function updateRating(rating) {
+                    document.getElementById("Rating").innerText = "⭐" + rating;
+                }
+
+                $('.btn-show-popup-1').click(function () {
+                    $('html').addClass('popup-1-active');
+                    $('textarea.body').focus();
+                    swiper.detachEvents();
+                });
+
+
+                $('.popup-box-1, .popup-box-1 > .popup > .head > .btn-close').click(function () {
+                    $('html').removeClass('popup-1-active');
+                    swiper.attachEvents();
+
+                });
+
+
+                $('.popup-box-1 > .popup').click(function (e) {
+                    e.stopPropagation();
+                    swiper.detachEvents();
+                });
+
+                function saveComment() {
+                    var commentValue = $('textarea.body').val();
+                    var dramaId = $('input.dramaId').val();
+                    var rating = document.getElementById("Rating").innerText.replace("⭐", "");
+                    if (rating == "") {
+                        alert("별점을 선택해주세요");
+                        return;
+                    }
+                    window.location.href = '/review/create/drama?dramaId=' + dramaId + '&comment=' + commentValue + '&rating=' + rating;
+                }
+
+                function updateCharacterCount() {
+                    var charCount = $('textarea.body').val().length;
+
+                    var maxChar = 1000;
+
+                    var remainingChar = maxChar - charCount;
+
+                    $('#charCount').text(remainingChar + ' / ' + 1000);
+                }
+
+                var swiper = new Swiper(".mySwiper", {
+                    scrollbar: {
+                        el: ".swiper-scrollbar",
+                        hide: true,
+                    },
+                });
+            </script>
+        </div>
 </body>
 </html>
