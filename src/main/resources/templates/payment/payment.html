@@ -66,9 +66,8 @@
             <div style="margin-top : 30px; margin-bottom : 20px;">
                 <div style="display : flex;">
                     <img class="profile" sec:authorize="isAuthenticated()"
-                         th:if="${not #strings.isEmpty(member.profileImage)}"
+                         th:if="${not #strings.isEmpty(member?.profileImage)}"
                          th:src="${member.profileImage}">
-                    <img class="profile" th:if="${#strings.isEmpty(member.profileImage)}" src="/imgs/noimg.jpg">
                     <div style="width : 100%; height : 27px; margin-top : 26px; margin-left : 5px;">
                     <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
                           th:text="${member.nickname} + ' 님 안녕하세요'" style="font-size : large;"></span>
@@ -150,8 +149,7 @@
                         </div>
                         <div style="display : flex; margin-top : 12px; margin-left : 113px; font-weight : bold;">
                             <span>총  결제금액 : </span>
-                            <input class="totalAmount" id="totalAmount" style="width : 85px; text-align : right;"
-                                   readonly>
+                            <span class="totalAmount" id="totalAmount" style="width : 85px; text-align : right;"></span>
                         </div>
                     </div>
                 </div>
@@ -201,7 +199,7 @@
                     var s_name = $('span.s_name').val();
                     var s_phone = $('input.s_phone').val();
                     var m_id = $('input.m_id').val();
-                    var amount = $('input.totalAmount').val().replace(/,/g, '');
+                    var amount = $('span.totalAmount').val().replace(/,/g, '');
                     var pg = kakaoPg;
                     var url = 'kakaoPayCheck';
                     payment(m_email, s_name, m_id, s_phone, pg, amount, url);
@@ -211,7 +209,7 @@
                     var s_name = $('span.s_name').val();
                     var s_phone = $('input.s_phone').val();
                     var m_id = $('input.m_id').val();
-                    var amount = $('input.totalAmount').val().replace(/,/g, '');
+                    var amount = $('span.totalAmount').val().replace(/,/g, '');
                     var pg = tossPg;
                     var url = 'tossPayCheck';
                     payment(m_email, s_name, m_id, s_phone, pg, amount, url);
@@ -317,7 +315,6 @@
 
                      function clickCoin(id){
                         var currentButton = document.getElementById(id);
-                        var totalAmountInput = document.getElementById("totalAmount");
 
                         if (previousButtonId !== null) {
                             var previousButton = document.getElementById(previousButtonId);
@@ -328,7 +325,7 @@
 
                         previousButtonId = id;
 
-                        totalAmountInput.value = numberWithCommas(id);
+                        document.getElementById("totalAmount").innerText = numberWithCommas(id);
                      }
 
                      function numberWithCommas(x) {
@@ -345,7 +342,6 @@
                     });
 
         ////////////////////////////////////////////////  함수 구현 끝  ////////////////////////////////////////////////////
-
     </script>
 </div>
 </body>

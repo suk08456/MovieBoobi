@@ -1,0 +1,36 @@
+
+.w-btn {
+    position: relative;
+    border: none;
+    display: inline-block;
+    width : 92px;
+    height : 37px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.w-btn-outline {
+    position: relative;
+    padding: 15px 30px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.25s;
+}
+.w-btn {
+    border: 3px solid #fce205;
+    color: #6e6e6e;
+}
+.w-btn:hover {
+    background-color: #fce205;
+    color: #6e6e6e;
+}
+.w-btn:active {
+    transform: scale(1.5);
+}
+
+.w-btn-outline:active {
+    transform: scale(1.5);
+}
