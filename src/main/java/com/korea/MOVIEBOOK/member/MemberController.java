@@ -2,10 +2,12 @@ package com.korea.MOVIEBOOK.member;
 
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -86,11 +88,40 @@ public class MemberController {
         return "member/login_form";
     }
 
+    @GetMapping("/login/google")
+    public String googleLogin() {
+        return "redirect:/oauth2/authorization/google";
+    }
     @GetMapping("/login/kakao")
     public String kakaoLogin() {
         return "redirect:/oauth2/authorization/kakao";
     }
 
+    @GetMapping("/login/naver")
+    public String naverLogin() {
+        return "redirect:/oauth2/authorization/naver";
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestParam String username, @RequestParam String email) {
+        Member member = memberService.getMemberByEmail(email);
+        if (member != null && member.getUsername().equals(username)) {
+            try {
+                memberService.resetPassword(member);
+                return ResponseEntity.ok("당신 이메일로 임시번호 발송");
+            } catch (MessagingException e) {
+                // 여기서 예외를 처리하거나, 적절한 로깅 또는 알림을 구현할 수 있습니다.
+                e.printStackTrace();
+                return ResponseEntity.badRequest().body("이메일 전송 중 오류가 발생했습니다.");
+            }
+        }
+        return ResponseEntity.badRequest().body("Failed to reset password");
+    }
+
+    @GetMapping("/resetPassword")
+    public String showResetPasswordPage() {
+        return "member/reset_password"; // Thymeleaf 템플릿 이름 (reset_password.html)
+    }
 
     // 마이페이지
     @GetMapping("/mypage")

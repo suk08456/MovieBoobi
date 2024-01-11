@@ -27,12 +27,23 @@
 
   <!-- 로그인 버튼 -->
   <div class="form-group">
-    <button type="submit" class="btn btn-primary">로그인</button>
+    <button type="submit">로그인</button>
   </div>
 </form>
-<a href="/oauth2/authorization/google">Google로 로그인</a>
-<a th:href="@{/member/login/kakao}">Kakao 로그인</a>
-
+<div class="form-group">
+  <a th:href="@{/member/resetPassword}">비밀번호 찾기</a>
+</div>
+<div style="display:flex">
+  <a th:href="@{/member/login/google}">
+    <img src="/loginButton/btn_google.svg" alt="Google 로그인" style="width:100px; height:50px;">
+  </a>
+  <a th:href="@{/member/login/kakao}">
+    <img src="/loginButton/btn_kakao.svg" alt="Kakao 로그인" style="width:100px; height:50px;">
+  </a>
+  <a th:href="@{/member/login/naver}">
+    <img src="/loginButton/btn_naver.svg" alt="Naver 로그인" style="width:100px; height:50px;">
+  </a>
+</div>
 <!-- 추가적으로 스타일이나 스크립트를 필요에 따라 여기에 추가할 수 있습니다. -->
 
 </body>

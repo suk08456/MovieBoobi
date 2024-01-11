@@ -5,11 +5,11 @@
     <title>Review List</title>
 </head>
 <body>
-<h2>코멘트<span th:text="${reviews[0].drama.id}"></span></h2>
+<h2>코멘트<span th:text="${review[0].drama.id}"></span></h2>
 <ul>
-    <li th:each="review : ${reviews}">
-        <a th:href="@{/reviews/detail/{id}(id=${review.id})}">
-            <span th:text="${review.title}"></span>
+    <li th:each="review : ${review}">
+        <a th:href="@{/review/detail/{id}(id=${review.id})}">
+            <span th:text="${review.comment}"></span>
         </a>
     </li>
 </ul>

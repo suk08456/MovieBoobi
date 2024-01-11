@@ -22,17 +22,17 @@
         <label for="comment">리뷰 내용:</label>
         <textarea id="comment" th:field="*{comment}" rows="4" cols="50" required></textarea>
     </div>
-        <div>
-            <label for="rating">평점:</label>
-            <select id="rating" name="rating" th:field="*{rating}" required>
-                <option value="1" th:selected="${review.rating == 1}">1</option>
-                <option value="2" th:selected="${review.rating == 2}">2</option>
-                <option value="3" th:selected="${review.rating == 3}">3</option>
-                <option value="4" th:selected="${review.rating == 4}">4</option>
-                <option value="5" th:selected="${review.rating == 5}">5</option>
-            </select>
-        </div>
-        <button type="submit">수정</button>
+    <div>
+        <label for="rating">평점:</label>
+        <select id="rating" name="rating" th:field="*{rating}" required>
+            <option value="1" th:selected="${review.rating == 1}">1</option>
+            <option value="2" th:selected="${review.rating == 2}">2</option>
+            <option value="3" th:selected="${review.rating == 3}">3</option>
+            <option value="4" th:selected="${review.rating == 4}">4</option>
+            <option value="5" th:selected="${review.rating == 5}">5</option>
+        </select>
+    </div>
+    <button type="submit">수정</button>
 </form>
 <a href="/drama/dramaList">취소</a>
 <script type="text/javascript">

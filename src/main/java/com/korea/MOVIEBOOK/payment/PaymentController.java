@@ -26,7 +26,11 @@ public class PaymentController {
     @GetMapping("/payment")
     public String kakao(Model model, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
         String providerID = principal.getName();
+
         Member member = this.memberService.findByproviderId(providerID);
+        if(member == null){
+            member =  this.memberService.getmember(providerID);
+        }
         List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
         long sum = 0;
 

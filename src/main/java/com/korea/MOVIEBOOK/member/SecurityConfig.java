@@ -1,4 +1,5 @@
 package com.korea.MOVIEBOOK.member;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +25,6 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .formLogin(formLogin -> formLogin
@@ -54,7 +54,7 @@ public class SecurityConfig {
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
-        return new InMemoryClientRegistrationRepository(this.kakaoClientRegistration(), this.googleClientRegistration());
+        return new InMemoryClientRegistrationRepository(this.kakaoClientRegistration(), this.googleClientRegistration(), naverClientRegistration());
     }
 
     private ClientRegistration googleClientRegistration() {
@@ -73,6 +73,7 @@ public class SecurityConfig {
                 .clientName("Google")
                 .build();
     }
+
     private ClientRegistration kakaoClientRegistration() {
         return ClientRegistration.withRegistrationId("kakao")
                 .clientId("c85a61301f37545e9f8d0819abc77a8f")
@@ -89,5 +90,19 @@ public class SecurityConfig {
                 .build();
     }
 
-
+    private ClientRegistration naverClientRegistration() {
+        return ClientRegistration.withRegistrationId("naver")
+                .clientId("YbsKJH1dMFw8nSmVJKAV")
+                .clientSecret("dqHpkKMGPB")
+                .redirectUri("http://localhost:8888/login/oauth2/code/naver")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .scope("nickname", "email", "username", "profile_image")
+                .clientName("Naver")
+                .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
+                .tokenUri("https://nid.naver.com/oauth2.0/token")
+                .userInfoUri("https://openapi.naver.com/v1/nid/me")
+                .userNameAttributeName("response")
+                .build();
+    }
 }
