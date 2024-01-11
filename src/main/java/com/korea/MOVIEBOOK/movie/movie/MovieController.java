@@ -1,17 +1,23 @@
 package com.korea.MOVIEBOOK.movie.movie;
 
+import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.movie.daily.MovieDailyAPI;
 import com.korea.MOVIEBOOK.movie.MovieDTO;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeeklyAPI;
+import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -28,6 +34,8 @@ public class MovieController {
     private final MovieWeeklyAPI movieWeeklyAPI;
     private final MovieService movieService;
     private final ReviewService reviewService;
+    private final PaymentService paymentService;
+    private final MemberService memberService;
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
     String date = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     LocalDateTime weeksago = LocalDateTime.now().minusDays(7);
@@ -41,7 +49,7 @@ public class MovieController {
 
 
     @GetMapping("movie")
-    public String movie(Model model) throws ParseException {
+    public String movie(Model model, Principal principal) throws ParseException {
 
         List<MovieDTO> movieDTOS = this.movieService.listOfMovieDailyDTO();
         List<MovieDTO> movieDTOS2 = this.movieService.listOfMovieWeeklyDTO(weeks);
@@ -94,7 +102,7 @@ public class MovieController {
         return "Movie/movie";
     }
     @PostMapping("movie/detail")
-    public String movieDetail(Model model, String movieCD) {
+    public String movieDetail(Model model, String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
         List<Review> reviews = reviewService.findReviews(movie.getId());
 
@@ -132,6 +140,23 @@ public class MovieController {
         model.addAttribute("movieruntime", movieruntime);
         model.addAttribute("actorList", actorList);
         model.addAttribute("reviews", reviews);
+
+
+        String providerID = principal.getName();
+        Member member = this.memberService.findByproviderId(providerID);
+        List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+        long sum = 0;
+
+        for(int i  = 0 ; i < payments.size(); i++){
+            if(payments.get(i).getContent().contains("충전")){
+                sum += Long.valueOf(payments.get(i).getPaidAmount());
+            } else {
+                sum -= Long.valueOf(payments.get(i).getPaidAmount());
+            }
+        }
+
+        model.addAttribute("member",member);
+        model.addAttribute("sum",sum);
 
         return "Movie/movie_detail";
     }
