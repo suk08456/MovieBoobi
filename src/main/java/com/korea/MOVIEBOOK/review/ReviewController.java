@@ -4,9 +4,13 @@ import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.drama.DramaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,9 +42,10 @@ public class ReviewController {
         return "redirect:/book/detail/" + isbn;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/webtoon/review/create")
     public String createWebtoonReview(@RequestParam("webtoonId") Long webtoonId, @RequestParam("comment") String
-            comment, @RequestParam("rating") Double rating) {
+            comment, @RequestParam("rating") Double rating, Principal principal, BindingResult bindingResult) {
         this.reviewService.saveWebtoonReview(webtoonId, comment, rating);
         return "redirect:/webtoon/detail?webtoonId=" + webtoonId;
     }

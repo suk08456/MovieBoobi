@@ -9,12 +9,12 @@
 <div layout:fragment="profileContent" style="width: 85%; height: 100%">
 
     <div style="margin-top: 60px; text-align: center">
-        <div style="height: 270px; width: 340px; margin-left: 580px;">
+        <div style="height: 270px; width: 340px; margin-left: 500px;">
             <img th:src="${member.getProfileImage()}" alt="프로필 이미지"
-                 style="min-height: 360px; max-height: 360px; min-width: 440px; max-width: 440px">
+                 style="min-height: 427px; max-height: 427px; min-width: 640px; max-width: 640px">
         </div>
 
-        <div class="info" style="font-size: 20px; margin-top: 100px; margin-left: -210px;">
+        <div class="info" style="font-size: 20px; margin-top: 200px; margin-left: -150px;">
             <div style="margin-bottom: 5px;">
                 <span style="color : #868e96;">아이디 :</span>
                 <span th:text="${member.getUsername()}" style="color : #868e96;"></span>
