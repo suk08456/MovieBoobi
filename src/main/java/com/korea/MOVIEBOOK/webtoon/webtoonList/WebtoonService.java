@@ -78,7 +78,7 @@ public class WebtoonService {
                     .webtoonId((Long) webtoonData.get("webtoonId"))
                     .title((String) webtoonData.get("title"))
                     .author((String) webtoonData.get("author"))
-                    .img((String) webtoonData.get("img"))
+                    .imageUrl((String) webtoonData.get("imageUrl"))
                     .updateDays((List<String>) webtoonData.get("updateDays"))
                     .searchKeyword((String) webtoonData.get("searchKeyword"))
                     .detailUrl((String) webtoonData.get("detailUrl"))
@@ -98,7 +98,7 @@ public class WebtoonService {
         webtoon.setWebtoonId(webtoonDTO.getWebtoonId());
         webtoon.setTitle(webtoonDTO.getTitle());
         webtoon.setAuthor(webtoonDTO.getAuthor());
-        webtoon.setImg(webtoonDTO.getImg());
+        webtoon.setImageUrl(webtoonDTO.getImageUrl());
 //        webtoon.setWebtoonDay(day);
 //        System.out.println("UpdateDays: " + webtoon.getWebtoonDay()); // 디버깅용 로그
         webtoon.setDetailUrl(webtoonDTO.getDetailUrl());

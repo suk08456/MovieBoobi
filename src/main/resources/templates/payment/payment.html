@@ -15,13 +15,13 @@
         <div style="width : 900px; display : flex; flex-direction : column; padding : 22px;">
             <span style="font-size: larger; font-weight: bold;"> 결제 및 구매 내역 </span>
             <div style="margin-left : 50px; margin-top : 40px;">
-                <div style="min-height : 495px;">
+                <div style="min-height : 360px;">
                     <table>
                         <tr>
                             <th>순번</th>
                             <th>일자</th>
                             <th>내역</th>
-                            <th>코인</th>
+                            <th>사용코인</th>
                             <th></th>
                         </tr>
                         <tr th:if="${#lists.size(paging) > 0}" th:each="payment, row: ${paging}">
@@ -29,7 +29,7 @@
                             <td><span th:text="${#temporals.format(payment.dateTime, 'yyyy-MM-dd HH:mm')}"></span></td>
                             <td><span th:text="${payment.content}"></span></td>
                             <td><span
-                                    th:text="${#strings.contains(payment.content, '충전') ? '+ ' +  #numbers.formatDecimal(payment.paidAmount, 0, 'COMMA', 0, 'POINT')  : '- ' + #numbers.formatDecimal(payment.paidAmount, 0, 'COMMA', 0, 'POINT')}"></span>
+                                    th:text="${#strings.contains(payment.content, '충전') ? '+ ' + payment.paidAmount  : '- ' + payment.paidAmount}"></span>
                             </td>
                         </tr>
                         <tr th:if="${#lists.size(paging) == 0}">
@@ -66,18 +66,19 @@
             <div style="margin-top : 30px; margin-bottom : 20px;">
                 <div style="display : flex;">
                     <img class="profile" sec:authorize="isAuthenticated()"
-                         th:if="${not #strings.isEmpty(member?.profileImage)}"
+                         th:if="${not #strings.isEmpty(member.profileImage)}"
                          th:src="${member.profileImage}">
-                    <div style="width : 100%; height : 27px; margin-top : 26px; margin-left : 5px;">
+                    <div style="display : flex; flex-direction: column;">
                     <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
-                          th:text="${member.nickname} + ' 님 안녕하세요'" style="font-size : large;"></span>
-                        <div style="display : flex; font-weight : bold;">
-                            <img src="/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
-                            <span style="margin-right : 3px;">보유 코인 : </span>
-                            <span th:text="${#numbers.formatDecimal(sum, 0, 'COMMA', 0, 'POINT')}"
-                                  style="width : 95px; text-align : center;"></span>
-                            <span>Coin</span>
-                        </div>
+                          th:text="${member.nickname} + ' 님 안녕하세요'"
+                          style="font-size : large; width : 100%; height : 27px; margin-top : 33px; margin-left : 5px;"></span>
+                    <div style="display : flex; font-weight : bold;">
+                        <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
+                        <span style="margin-right : 3px;">보유 코인 : </span>
+                        <span th:text="${#numbers.formatDecimal(sum, 0,  'COMMA', 0, 'POINT')}"
+                              style="width : 95px; text-align : center;"></span>
+                        <span>Coin</span>
+                    </div>
                     </div>
                 </div>
                 <input class="m_id" name="m_id" sec:authorize="isAuthenticated()" th:value="${member.id}"
@@ -85,7 +86,7 @@
                 <input type="hidden" class="_csrf" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <div style=" margin-top : 20px;">
                     <div style="display : flex; justify-content : space-between; padding : 5px;">
-                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 1,000Coin
+                        <img src="/etc/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 1,000Coin
                         <button id="1000"
                                 style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
                                 onclick="clickCoin(1000)">
@@ -93,7 +94,7 @@
                         </button>
                     </div>
                     <div style="display : flex; justify-content : space-between; padding : 5px;">
-                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 5,000Coin
+                        <img src="/etc/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 5,000Coin
                         <button id="5000"
                                 style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
                                 onclick="clickCoin(5000)">
@@ -101,7 +102,7 @@
                         </button>
                     </div>
                     <div style="display : flex; justify-content : space-between; padding : 5px;">
-                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 10,000Coin
+                        <img src="/etc/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 10,000Coin
                         <button id="10000"
                                 style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
                                 onclick="clickCoin(10000)">
@@ -109,7 +110,7 @@
                         </button>
                     </div>
                     <div style="display : flex; justify-content : space-between; padding : 5px;">
-                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 30,000Coin
+                        <img src="/etc/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 30,000Coin
                         <button id="30000"
                                 style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
                                 onclick="clickCoin(30000)">
@@ -117,7 +118,7 @@
                         </button>
                     </div>
                     <div style="display : flex; justify-content : space-between; padding : 5px;">
-                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 50,000Coin
+                        <img src="/etc/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 50,000Coin
                         <button id="50000"
                                 style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
                                 onclick="clickCoin(50000)">
@@ -125,7 +126,7 @@
                         </button>
                     </div>
                     <div style="display : flex; justify-content : space-between; padding : 5px;">
-                        <img src="/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;">
+                        <img src="/etc/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;">
                         100,000Coin
                         <button id="100000"
                                 style="margin-left : 60px; background : #FFD400; padding : 2px; width : 100px; border-radius: 30px; font-weight : bold;"
@@ -149,7 +150,8 @@
                         </div>
                         <div style="display : flex; margin-top : 12px; margin-left : 113px; font-weight : bold;">
                             <span>총  결제금액 : </span>
-                            <span class="totalAmount" id="totalAmount" style="width : 85px; text-align : right;"></span>
+                            <input class="totalAmount" id="totalAmount" style="width : 85px; text-align : right;"
+                                   readonly>
                         </div>
                     </div>
                 </div>
@@ -165,23 +167,6 @@
         </div>
     </div>
     <script>
-
-        function calcSum() {
-          const table = document.getElementById('payment-tb');
-          let sum = 0;
-
-          for(let i = 0; i < table.rows.length; i++)  {
-          let amount = parseInt(table.rows[i].cells[3].innerText.replace(/[^0-9-]/g, ''), 10);
-          if (!isNaN(amount)) {
-            sum += amount;
-        }
-          }
-
-          // 합계 출력
-          document.getElementById('sum').innerText = numberWithCommas(sum);
-
-        }
-
         ////////////////////////////////////////////////  결제 구현  ////////////////////////////////////////////////
             var today = new Date();
             var hours = today.getHours(); // 시
@@ -199,7 +184,7 @@
                     var s_name = $('span.s_name').val();
                     var s_phone = $('input.s_phone').val();
                     var m_id = $('input.m_id').val();
-                    var amount = $('span.totalAmount').val().replace(/,/g, '');
+                    var amount = $('input.totalAmount').val().replace(/,/g, '');
                     var pg = kakaoPg;
                     var url = 'kakaoPayCheck';
                     payment(m_email, s_name, m_id, s_phone, pg, amount, url);
@@ -209,7 +194,7 @@
                     var s_name = $('span.s_name').val();
                     var s_phone = $('input.s_phone').val();
                     var m_id = $('input.m_id').val();
-                    var amount = $('span.totalAmount').val().replace(/,/g, '');
+                    var amount = $('input.totalAmount').val().replace(/,/g, '');
                     var pg = tossPg;
                     var url = 'tossPayCheck';
                     payment(m_email, s_name, m_id, s_phone, pg, amount, url);
@@ -315,6 +300,7 @@
 
                      function clickCoin(id){
                         var currentButton = document.getElementById(id);
+                        var totalAmountInput = document.getElementById("totalAmount");
 
                         if (previousButtonId !== null) {
                             var previousButton = document.getElementById(previousButtonId);
@@ -325,7 +311,7 @@
 
                         previousButtonId = id;
 
-                        document.getElementById("totalAmount").innerText = numberWithCommas(id);
+                        totalAmountInput.value = numberWithCommas(id);
                      }
 
                      function numberWithCommas(x) {
@@ -342,6 +328,7 @@
                     });
 
         ////////////////////////////////////////////////  함수 구현 끝  ////////////////////////////////////////////////////
+
     </script>
 </div>
 </body>

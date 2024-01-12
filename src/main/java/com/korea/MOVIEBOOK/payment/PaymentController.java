@@ -82,4 +82,17 @@ public class PaymentController {
 //        this.paymentService.SavePayment(id, "kakao", oPaidAmount, oPaidNo, oPayType, Long.valueOf(sPhone));
 //       return "redirect:/kakaoPay";
 //    }
+
+    @PostMapping("/payment/category")
+    public String paymentCatgory(Principal principal, @RequestParam("usedCoins") String paidAmount, @RequestParam("movieCD") String movieCD){
+        String providerID = principal.getName();
+        String content = paidAmount + "Coin 사용";
+
+        Member member = this.memberService.findByproviderId(providerID);
+        if(member == null){
+            member =  this.memberService.getmember(providerID);
+        }
+        this.paymentService.savePayment(member.getId(), "coin", paidAmount, "00000", "point", null, content);
+        return "redirect:/movie/detail?movieCD=" + movieCD;
+    }
 }

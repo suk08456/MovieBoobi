@@ -135,30 +135,36 @@ public class MovieController {
             actorListList.add(actorList.subList(start, end));
         }
 
-        model.addAttribute("movieDailyDetail", movie);
+        model.addAttribute("contentsDetail", movie);
         model.addAttribute("actorListList", actorListList);
         model.addAttribute("movieruntime", movieruntime);
         model.addAttribute("actorList", actorList);
         model.addAttribute("reviews", reviews);
 
 
-        String providerID = principal.getName();
-        Member member = this.memberService.findByproviderId(providerID);
-        List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
-        long sum = 0;
+        if(principal != null){
+            String providerID = principal.getName();
+            Member member = this.memberService.findByproviderId(providerID);
+            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            long sum = 0;
 
-        for(int i  = 0 ; i < payments.size(); i++){
-            if(payments.get(i).getContent().contains("충전")){
-                sum += Long.valueOf(payments.get(i).getPaidAmount());
-            } else {
-                sum -= Long.valueOf(payments.get(i).getPaidAmount());
+            for(int i  = 0 ; i < payments.size(); i++){
+                if(payments.get(i).getContent().contains("충전")){
+                    sum += Long.valueOf(payments.get(i).getPaidAmount());
+                } else {
+                    sum -= Long.valueOf(payments.get(i).getPaidAmount());
+                }
             }
+            model.addAttribute("login","true");
+            model.addAttribute("member",member);
+            model.addAttribute("sum",sum);
+        } else {
+            model.addAttribute("login","false");
+            model.addAttribute("member","");
+            model.addAttribute("sum","");
         }
 
-        model.addAttribute("member",member);
-        model.addAttribute("sum",sum);
-
-        return "Movie/movie_detail";
+        return "contents/contents_detail";
     }
 
     @GetMapping("movie/detail")

@@ -135,16 +135,16 @@ public class BookService {
     }
     private void saveBook(Map<String, Object> bookData, Boolean isNew, Boolean recommend) {
         //  book정보를 db에 저장하는 함수
-        String description = (String) bookData.get("description");
-        String replacedText = description.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
+        String plot = (String) bookData.get("plot");
+        String replacedText = plot.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
 
         Book book = new Book();
-        book.setDescription(replacedText);
+        book.setPlot(replacedText);
         book.setTitle((String) bookData.get("title"));
         book.setAuthor((String) bookData.get("author"));
         book.setIsbn((String) bookData.get("isbn"));
         book.setIsbn13((String) bookData.get("isbn13"));
-        book.setCover((String) bookData.get("cover"));
+        book.setImageUrl((String) bookData.get("imageUrl"));
         book.setPublisher((String) bookData.get("publisher"));
         book.setPricestandard((Integer) bookData.get("priceStandard"));
         book.setBestRank((Integer) bookData.get("bestRank"));
@@ -160,10 +160,10 @@ public class BookService {
         Book book = bookRepository.findByIsbn((String) bookData.get("isbn"));
         book.setTitle((String) bookData.get("title"));
         book.setAuthor((String) bookData.get("author"));
-        book.setDescription((String) bookData.get("description"));
+        book.setPlot((String) bookData.get("plot"));
         book.setIsbn((String) bookData.get("isbn"));
         book.setIsbn13((String) bookData.get("isbn13"));
-        book.setCover((String) bookData.get("cover"));
+        book.setImageUrl((String) bookData.get("ImageUrl"));
         book.setPublisher((String) bookData.get("publisher"));
         book.setPricestandard((Integer) bookData.get("priceStandard"));
         book.setBestRank((Integer) bookData.get("bestRank"));
@@ -178,10 +178,10 @@ public class BookService {
             return BookDTO.builder()
                     .title((String) bookData.get("title"))
                     .author((String) bookData.get("author"))
-                    .description((String) bookData.get("description"))
+                    .plot((String) bookData.get("plot"))
                     .isbn((String) bookData.get("isbn"))
                     .isbn13((String) bookData.get("isbn13"))
-                    .cover((String) bookData.get("cover"))
+                    .imageUrl((String) bookData.get("imageUrl"))
                     .publisher((String) bookData.get("publisher"))
                     .priceStandard((Integer) bookData.get("priceStandard"))
                     .bestRank((Integer) bookData.get("bestRank"))
