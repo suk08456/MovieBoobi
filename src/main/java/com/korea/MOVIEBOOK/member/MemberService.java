@@ -66,4 +66,22 @@ public class MemberService {
             return memberByProviderId;
         }
     }
+
+    public Member findByusername(String username) {
+        if (memberRepository.findByUsername(username).isPresent()) {
+            return memberRepository.findByUsername(username).get();
+        } else {
+            return null;
+        }
+    }
+
+    public void changePassword(Member member, String password) {
+        member.setPassword(passwordEncoder.encode(password));
+        memberRepository.save(member);
+    }
+
+    public void updateNickname(Member member, String nickname) {
+        member.setNickname(nickname);
+        memberRepository.save(member);
+    }
 }
