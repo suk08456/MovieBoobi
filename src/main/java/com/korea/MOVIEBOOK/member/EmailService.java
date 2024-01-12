@@ -37,4 +37,12 @@ public class EmailService {
         javaMailSender.send(message);
 
     }
+
+    public void sendTemporaryUsername(String to, String username) throws MessagingException {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("아이디 찾기 안내");
+        message.setText("당신 아이디 : " + username);
+        javaMailSender.send(message);
+    }
 }

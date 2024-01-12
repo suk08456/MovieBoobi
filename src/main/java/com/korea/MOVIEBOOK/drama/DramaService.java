@@ -24,7 +24,7 @@ public class DramaService {
     public List<Review> getReviewByDramaId(Long dramaId) {
         Drama drama = dramaRepository.findById(dramaId)
                 .orElseThrow(() -> new RuntimeException("해당 드라마는 존재하지 않습니다. " + dramaId));
-        return drama.getReview();
+        return drama.getReviewList();
     } // 특정 dramaId를 조회하여 List<Review>에 반환
     // 존재 하지 않는다면 예외처리
 

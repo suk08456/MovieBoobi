@@ -45,7 +45,7 @@ public class ReviewController {
         return "redirect:/webtoon/detail?webtoonId=" + webtoonId;
     }
 
-    @GetMapping("/review/detail/{id}")
+    @GetMapping("/detail/{id}")
     public String DramaReviewDetail(@PathVariable("id") Long reviewId, Model model) {
         // 리뷰 ID를 사용하여 리뷰 정보를 가져옵니다.
         Review review = reviewService.findReviewById(reviewId);
@@ -57,39 +57,39 @@ public class ReviewController {
         // 가져온 리뷰 정보를 모델에 추가하여 템플릿에 전달합니다.
         model.addAttribute("review", review);
         // 해당 리뷰의 상세 정보를 보여주는 템플릿 경로를 반환합니다.
-        return "/drama_review/review_detail";
+        return "/review/review_detail";
     }
 
-    @GetMapping("/drama/{id}/review_list")
-    public String showAllReviewForDrama(@PathVariable("id") Long id, @PathVariable("page") int page,
-                                        @PathVariable("size") int size, Model model) {
-        Page<Review> reviews = reviewService.getReviewByDramaIdWithPagination(id, page, size);
-        if (reviews.isEmpty()) {
-            model.addAttribute("errorMessage", "더 이상 리뷰가 없습니다.");
-            // 다른 필요한 처리 로직...
-            return "drama/drama_detail"; // 또는 해당 페이지의 뷰 이름
-        }
-        model.addAttribute("reviews", reviews.getContent());
-        model.addAttribute("totalPages", reviews.getTotalPages());
-        model.addAttribute("currentPage", page);
-        return "drama_review/review_list";
-    }
-    @GetMapping("/review/delete/{id}")
-    public String deleteDramaReview(@PathVariable("id") Long id) {
-        Long dramaId = reviewService.getDramaIdByReviewId(id); // ReviewService에서 해당 ID의 리뷰의 드라마 ID를 가져옵니다.
-        reviewService.deleteReviewById(id); // ReviewService에서 해당 ID의 리뷰를 삭제합니다.
-        return "redirect:/drama/" + dramaId; // 해당 드라마 상세 페이지로 리다이렉트합니다.
-    }
-    @GetMapping("/review/edit/{id}")
-    public String showEditDramaReviewForm(@PathVariable Long id, Model model) {
-        Review review = reviewService.findReviewById(id);
-        model.addAttribute("review", review);
-        return "drama_review/review_edit";
-    }
-
-    @PostMapping("/review/update")
-    public String updateDramaReview(@ModelAttribute Review updateReview) {
-        reviewService.updateReview(updateReview);
-        return "redirect:/review/detail/" + updateReview.getId();
-    }
+//    @GetMapping("/drama/{id}/review_list")
+//    public String showAllReviewForDrama(@PathVariable("id") Long id, @PathVariable("page") int page,
+//                                        @PathVariable("size") int size, Model model) {
+//        Page<Review> reviews = reviewService.getReviewByDramaIdWithPagination(id, page, size);
+//        if (reviews.isEmpty()) {
+//            model.addAttribute("errorMessage", "더 이상 리뷰가 없습니다.");
+//            // 다른 필요한 처리 로직...
+//            return "drama/drama_detail"; // 또는 해당 페이지의 뷰 이름
+//        }
+//        model.addAttribute("reviews", reviews.getContent());
+//        model.addAttribute("totalPages", reviews.getTotalPages());
+//        model.addAttribute("currentPage", page);
+//        return "drama_review/review_list";
+//    }
+//    @GetMapping("/review/delete/{id}")
+//    public String deleteDramaReview(@PathVariable("id") Long id) {
+//        Long dramaId = reviewService.getDramaIdByReviewId(id); // ReviewService에서 해당 ID의 리뷰의 드라마 ID를 가져옵니다.
+//        reviewService.deleteReviewById(id); // ReviewService에서 해당 ID의 리뷰를 삭제합니다.
+//        return "redirect:/drama/" + dramaId; // 해당 드라마 상세 페이지로 리다이렉트합니다.
+//    }
+//    @GetMapping("/review/edit/{id}")
+//    public String showEditDramaReviewForm(@PathVariable Long id, Model model) {
+//        Review review = reviewService.findReviewById(id);
+//        model.addAttribute("review", review);
+//        return "drama_review/review_edit";
+//    }
+//
+//    @PostMapping("/review/update")
+//    public String updateDramaReview(@ModelAttribute Review updateReview) {
+//        reviewService.updateReview(updateReview);
+//        return "redirect:/review/detail/" + updateReview.getId();
+//    }
 }

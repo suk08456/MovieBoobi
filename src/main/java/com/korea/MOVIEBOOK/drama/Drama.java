@@ -32,5 +32,5 @@ public class Drama {
     private double rating;
 
     @OneToMany(mappedBy = "drama", cascade = CascadeType.ALL)
-    private List<Review> review;
+    private List<Review> reviewList;
 }

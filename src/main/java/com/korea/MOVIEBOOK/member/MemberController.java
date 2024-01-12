@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
 @RequiredArgsConstructor
 @Controller
@@ -110,11 +113,31 @@ public class MemberController {
         return ResponseEntity.badRequest().body("Failed to reset password");
     }
 
+    @PostMapping("/findUsername")
+    public ResponseEntity<String> findUsername(@RequestParam String email) {
+        Member member = memberService.getMemberByEmail(email);
+        if (member != null) {
+            try {
+                emailService.sendTemporaryUsername(member.getEmail(), member.getUsername());
+                return ResponseEntity.ok("이메일로 아이디를 발송");
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                return ResponseEntity.badRequest().body("이메일 전송 중 오류 발생");
+            }
+        }
+        return ResponseEntity.badRequest().body("해당 이메일로 등록된 아이디 없음");
+    }
+
+
     @GetMapping("/resetPassword")
     public String showResetPasswordPage() {
         return "member/reset_password"; // Thymeleaf 템플릿 이름 (reset_password.html)
     }
 
+    @GetMapping("/findUsername")
+    public String findUsernamePage() {
+        return "/member/find_username";
+    }
 
     // 마이페이지
     @GetMapping("/mypage")

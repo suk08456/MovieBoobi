@@ -65,14 +65,10 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
                 if (properties != null) {
                     member.setNickname((String) properties.get("nickname"));
                     member.setProfileImage((String) properties.get("profile_image"));
-                    member.setUsername((String) properties.get("username"));
-                    member.setEmail((String) properties.get("email"));
                 }
             }
             memberRepository.save(member);
         }
-
-        // 여기서 OAuth2User 객체를 반환합니다.
         return oAuth2User;
     }
 }

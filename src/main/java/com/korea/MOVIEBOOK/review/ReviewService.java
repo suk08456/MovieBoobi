@@ -89,9 +89,6 @@ public class ReviewService {
     public Review findReviewById(Long id) {
         return reviewRepository.findById(id).orElse(null);
     }
-    public void addReview(Review review) {
-        reviewRepository.save(review);
-    }
     public void deleteReviewById(Long id) {
         reviewRepository.deleteById(id);
     }
@@ -115,7 +112,5 @@ public class ReviewService {
         existingReview.setRating(updateReview.getRating());
         reviewRepository.save(existingReview);
     }
-
-
 
 }
