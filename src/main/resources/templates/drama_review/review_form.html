@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script type="text/javascript" src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome-stars.css}">
+    <script type="text/javascript" th:src="@{/jquery.barrating.min.js}"></script></head>
+<body>
+<h2 th:text="${drama.title} + ' 리뷰 작성'"></h2>
+<form th:action="@{/reviews/save}" th:object="${newReview}" method="post">
+    <input type="hidden" id="dramaId" name="dramaId" th:value="${drama.id}">
+    <label for="title">제목:</label>
+    <input type="text" id="title" name="title" th:field="*{title}" required>
+    <label for="comment">리뷰 작성:</label>
+    <input type="text" id="comment" name="comment" th:field="*{comment}" required>
+    <label for="rating">평점:</label>
+    <select id="rating" name="rating" th:field="*{rating}" required>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+    </select>
+    <button type="submit">리뷰 등록</button>
+</form>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#rating').barrating({
+            theme: 'fontawesome-stars',
+            initialRating: 1,  // 초기 평점 설정 (선택한 평점이 기본으로 표시됨)
+            showSelectedRating: true,  // 선택한 평점을 텍스트로 표시
+        });
+    });
+</script>
+</body>
+</html>

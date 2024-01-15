@@ -1,0 +1,23 @@
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.rating input {
+    display: none;
+}
+
+.rating label {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    background-image: url('/star.png');
+    background-size: cover;
+
+.img {
+margin-left:0;}
+}
+
+

@@ -1,0 +1,34 @@
+a {
+    color:inherit;
+    text-decoration:none;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.rank {
+    position: absolute;
+    border-radius: 50%;
+    font-weight: bold;
+    background: #3b3ff6;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    margin-left: -11.7%;
+    margin-top: -19%;
+}

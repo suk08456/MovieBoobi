@@ -1,0 +1,84 @@
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SDSamliphopangche_Outline';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/SDSamliphopangche_Outline.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin : 0;
+    padding : 0;
+    font-family : 'SUITE-Regular',cursive;
+}
+
+.layout-co{
+    background : gray;
+    display : flex;
+    flex-direction: column;
+    align-items : center;
+    height : 1000px;
+}
+
+.layout{
+    position: relative;
+    border-bottom: 1.5px solid #FFF;
+    width : 940px;
+    display: inline-flex;
+    white-space: nowrap;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.logo{
+    font-family : 'SDSamliphopangche_Outline';
+}
+
+a {
+    text-decoration : none;
+}
+
+.category{
+    color : white;
+    display : block;
+    position : relative;
+    height : 40px;
+    line-height : 40px;
+    padding : 0 24px;
+    font-size : 17px;
+    letter-spacing : 0.1em;
+    white-space : nowrap;
+    text-align : center;
+}
+
+.category_bar{
+    color : white;
+    display : block;
+    position : relative;
+    height : 40px;
+    line-height : 40px;
+    padding : 0 24px;
+    font-size : 17px;
+    font-weight : bold;
+    letter-spacing : 0.1em;
+    white-space : nowrap;
+
+}
+
+.category:after {
+    display:block;
+    width:70px;
+    content: '';/*comtent안은 밑줄 디자인을 위해 비워두세요.*/
+    border-bottom: solid 2px red;
+    transform: scaleX(0);/*크기를 0으로 줌으로써 평상시엔 밑줄 없음*/
+    transition: transform 250ms ease-in-out; /*변형 방식*/
+}
+
+.category:hover:after {
+    transform: scaleX(1);/*a 속성에 hover시 after를 기존 크기로 변경*/
+}

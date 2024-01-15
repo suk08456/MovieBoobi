@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="~{layout2}">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/Drama/dramaList.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+</head>
+<body>
+<div layout:fragment="content" style="width : 100%; height : 30%;">
+    <div style="width : 70%; margin : auto;">
+        <div class="swiper-top" style="display : flex;">
+            <div style="text-align : left; ">
+                <span style="color : #000000; font-size : 18px; font-weight : bold; margin-bottom : 3px;">드라마 TOP 10</span>
+            </div>
+            <div class="swiper-pagination" style="position : relative; top : 0px; width : 5%;"></div>
+        </div>
+        <div class="swiper mySwiper" style="width : 95%; margin-top : 10px;">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"
+                     style="display:flex; font-size: 18px; align-items: center; height : 100%;">
+                    <div class="dramaList" th:each="drama : ${dramaList}" th:if="${drama.rank <= 5}">
+                        <div class="img" style="padding : 6px;">
+                            <span class="rank" th:text="${drama.rank}"></span>
+                            <a th:href="@{/drama/{id}(id=${drama.id})}">
+                                <img th:src="${'/imgs' + drama.imageUrl}" th:if="${not #strings.isEmpty(drama.imageUrl)}">
+                                <img src="/imgs/no-img.png" th:if="${#strings.isEmpty(drama.imageUrl)}"
+                                     style="width : 213px; height : 303px;">
+                            </a>
+                        </div>
+                        <div style="margin-left: 7px;">
+                            <a th:href="@{/drama/{id}(id=${drama.id})}">
+                                <p th:text="${drama.title}" style="font-size : 17px; margin-bottom : 5px;"></p>
+                            </a>
+                            <p th:text="${drama.genre}" style="color : #868e96; font-size : 15px;"></p>
+                            <p th:text="${drama.releaseDate}" style="color : #868e96; font-size : 15px;"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide"
+                     style="display:flex; font-size: 18px; align-items: center; height : 100%;">
+                    <div class="dramaList" th:each="drama : ${dramaList}" th:if="${5 < drama.rank}">
+                        <div class="img" style="padding : 6px;">
+                            <span class="rank" th:text="${drama.rank}"></span>
+                            <span class="rank" th:text="${drama.rank}"></span>
+                            <a th:href="@{/drama/{id}(id=${drama.id})}">
+                                <img th:src="${'/imgs' + drama.imageUrl}" th:if="${not #strings.isEmpty(drama.imageUrl)}">
+                                <img src="/imgs/no-img.png" th:if="${#strings.isEmpty(drama.imageUrl)}"
+                                     style="width : 213px; height : 303px;">
+                            </a>
+                        </div>
+                        <div style="margin-left: 7px;">
+                            <a th:href="@{/drama/{id}(id=${drama.id})}">
+                                <p th:text="${drama.title}" style="font-size : 17px; margin-bottom : 5px;"></p>
+                            </a>
+                            <p th:text="${drama.genre}" style="color : #868e96; font-size : 15px;"></p>
+                            <p th:text="${drama.releaseDate}" style="color : #868e96; font-size : 15px;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-button-prev" style="top : 30%; left : 15%;"></div>
+        <div class="swiper-button-next" style="top : 30%; right : 15%;"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+        spaceBetween: 30,
+        pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+        },
+        navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+        },
+        });
+    </script>
+</div>
+</body>
+</html>
+
