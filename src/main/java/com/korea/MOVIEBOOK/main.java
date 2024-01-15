@@ -42,8 +42,4 @@ public class main {
         return "test";
     }
 
-    @GetMapping("4")
-    public String test4() {
-        return "mainPage";
-    }
 }

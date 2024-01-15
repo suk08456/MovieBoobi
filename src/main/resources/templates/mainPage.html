@@ -55,44 +55,46 @@
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
-<div class="swiper mySwiper" style="width:100%; height: 700px;">
+<div class="swiper mySwiper" style="width: 70%;">
     <div class="swiper-wrapper">
         <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: blue;"></div>
+            <div style="display: flex; justify-content: center;">
+                <iframe width="800" height="450" src="https://www.youtube.com/embed/1QDMkG2kLXs?si=PT8cKl1bO_IKwKAZ?controls=0&autoplay=1&mute=0" title="YouTube video player"
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
         </div>
         <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: blue;"></div>
-        </div>
-        <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: blue;"></div>
-        </div>
-        <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: blue;"></div>
-        </div>
-        <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: blue;"></div>
+            <div style="display: flex; justify-content: center;">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/Lh0gDi-sQXg?si=sXP27-P_y7F8X65P" title="YouTube video player"
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>
     <div class="swiper-pagination"></div>
 </div>
-<div class="swiper mySwiperA" style="width:100%; height: 700px;">
+<div class="swiper mySwiperA" style="width: 65%;">
     <div class="swiper-wrapper">
         <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: green;"></div>
+            <div style="display: flex; justify-content: center;">
+                <div style="width: 400px; height: 400px; background: green;"></div>
+            </div>
         </div>
         <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: green;"></div>
+            <div style="display: flex; justify-content: center;">
+                <div style="width: 400px; height: 400px; background: green;"></div>
+            </div>
         </div>
         <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: green;"></div>
+            <div style="display: flex; justify-content: center;">
+                <div style="width: 400px; height: 400px; background: green;"></div>
+            </div>
         </div>
         <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: green;"></div>
-        </div>
-        <div class="swiper-slide">
-            <div style="width: 400px; height: 400px; background: green;"></div>
+            <div style="display: flex; justify-content: center;">
+                <div style="width: 400px; height: 400px; background: green;"></div>
+            </div>
         </div>
     </div>
     <div class="swiper-pagination"></div>
@@ -103,6 +105,7 @@
 <script>
     var swiper = new Swiper(".mySwiper", {
       cssMode: true,
+      loop: true,
       navigation: {
         nextEl: ".swiper-button-next",
         prevEl: ".swiper-button-prev",
