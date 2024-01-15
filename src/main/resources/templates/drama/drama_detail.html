@@ -115,7 +115,7 @@
                 <span th:text="'코멘트 ' + ${#lists.size(reviewList)}"
                       style="font-size : 20px; width : 80%; font-weight : bold; color : black; margin-bottom : 8px;"></span>
                 <div>
-                    <a th:href="@{/drama/{id}/review_list(id=${drama.id})}">더보기</a>
+                    <a th:href="@{/review/list/{dramaId}(dramaId=${drama.id})}">더보기</a>
                 </div>
                 <div class="review-co" style="display : flex; flex-wrap : wrap; height : 500px;">
                     <div th:each="review : ${reviewList}" style="padding : 7px; height : 250px;">
@@ -127,6 +127,7 @@
                         <span th:text="${#strings.length(review.comment) > 100 ? #strings.substring(review.comment, 0, 100) + '..' : review.comment}"
                               style="display: inline-block; word-wrap: break-word; font-size : 14px;"></span>
                         </div>
+                        </a>
                     </div>
                 </div>
 
