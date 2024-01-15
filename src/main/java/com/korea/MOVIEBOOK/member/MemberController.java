@@ -4,6 +4,7 @@ import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -44,13 +45,11 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid MemberCreateForm memberCreateForm, BindingResult bindingResult) {
-        if (!memberCreateForm.getPassword1().equals(memberCreateForm.getPassword2())) {
-            bindingResult.rejectValue("password2", "passwordInCorrect", "비밀번호가 일치하지 않습니다.");
-            // password1, 2 일치하는지 확인
+    public String signup(@Valid @NotNull MemberCreateForm memberCreateForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            // 검증에 실패한 경우
             return "member/signup_form";
         }
-
         try {
             Member member = memberService.create(memberCreateForm.getUsername(),
                     memberCreateForm.getPassword1(), memberCreateForm.getNickname(), memberCreateForm.getEmail());

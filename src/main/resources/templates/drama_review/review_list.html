@@ -5,7 +5,6 @@
     <title>Review List</title>
 </head>
 <body>
-<h2>코멘트<span th:text="${review[0].drama.id}"></span></h2>
 <ul>
     <li th:each="review : ${review}">
         <a th:href="@{/review/detail/{id}(id=${review.id})}">
@@ -13,18 +12,7 @@
         </a>
     </li>
 </ul>
-<div>
-    <div>
-        <a th:if="${currentPage > 1}" th:href="@{'/drama/' + ${id} + '/review_list?page=' + ${currentPage - 1} + '&size=10'}">이전</a>
-        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-            <a th:if="${i == currentPage}" th:text="${i}"></a>  <!-- 현재 페이지는 링크가 아닌 텍스트로 표시 -->
-            <a th:unless="${i == currentPage}" th:href="@{'/drama/' + ${id} + '/review_list?page=' + ${i} + '&size=10'}" th:text="${i}"></a>
-        </span>
-        <a th:href="@{'/drama/' + ${id} + '/review_list?page=' + ${currentPage + 1} + '&size=10'}">다음</a>
-    </div>
-    <p>현재 페이지: <span th:text="${currentPage}"></span></p>
-    <p>총 페이지: <span th:text="${totalPages}"></span></p>
-</div>
+
 </body>
 </html>
 

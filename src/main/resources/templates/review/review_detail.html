@@ -6,9 +6,6 @@
     <link rel="stylesheet" type="text/css" th:href="@{/fontawesome-stars.css}">
     <script type="text/javascript" th:src="@{/jquery.barrating.min.js}"></script>
 </head>
-<meta charset="UTF-8">
-<title>리뷰 상세 정보</title>
-</head>
 <body layout:fragment="content">
 <h2>리뷰 상세 정보</h2>
 <div>
@@ -22,6 +19,7 @@
         <span th:text="${review.rating}"></span>
     </span>
 </div>
+<a th:href="@{/review/delete/{id}(id=${review.id})}">삭제</a>
 <a th:href="@{/drama/dramaList}">드라마 목록으로 돌아가기</a>
 <script type="text/javascript">
     $(document).ready(function () {
