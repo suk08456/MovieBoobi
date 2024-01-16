@@ -119,74 +119,73 @@
                 <div class="review-co" style="display : flex; flex-wrap : wrap; height : 500px;">
                     <div th:each="review : ${reviewList}" style="padding : 7px; height : 250px;">
                         <a th:href="@{/review/detail/{id}(id=${review.id})}">
-                        <div style="width : 170px; height : 10px;">
-                            <span th:text="${ '⭐' + review.rating}" style="font-size : 16px;"></span>
-                        </div>
-                        <div style="width: 170px; height: 215px; margin-top: 13px; overflow: hidden; border-top: 1px solid #868E96;">
+                            <div style="width : 170px; height : 10px;">
+                                <span th:text="${ '⭐' + review.rating}" style="font-size : 16px;"></span>
+                            </div>
+                            <div style="width: 170px; height: 215px; margin-top: 13px; overflow: hidden; border-top: 1px solid #868E96;">
                         <span th:text="${#strings.length(review.comment) > 100 ? #strings.substring(review.comment, 0, 100) + '..' : review.comment}"
                               style="display: inline-block; word-wrap: break-word; font-size : 14px;"></span>
-                        </div>
+                            </div>
                         </a>
                     </div>
                 </div>
-
             </div>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-            <script>
-                function updateRating(rating) {
-                    document.getElementById("Rating").innerText = "⭐" + rating;
-                }
-
-                $('.btn-show-popup-1').click(function () {
-                    $('html').addClass('popup-1-active');
-                    $('textarea.body').focus();
-                    swiper.detachEvents();
-                });
-
-
-                $('.popup-box-1, .popup-box-1 > .popup > .head > .btn-close').click(function () {
-                    $('html').removeClass('popup-1-active');
-                    swiper.attachEvents();
-
-                });
-
-
-                $('.popup-box-1 > .popup').click(function (e) {
-                    e.stopPropagation();
-                    swiper.detachEvents();
-                });
-
-                function saveComment() {
-                    var commentValue = $('textarea.body').val();
-                    var dramaId = $('input.dramaId').val();
-                    var rating = document.getElementById("Rating").innerText.replace("⭐", "");
-                    if (rating == "") {
-                        alert("별점을 선택해주세요");
-                        return;
-                    }
-                    window.location.href = '/review/create/drama?dramaId=' + dramaId + '&comment=' + commentValue + '&rating=' + rating;
-                }
-
-                function updateCharacterCount() {
-                    var charCount = $('textarea.body').val().length;
-
-                    var maxChar = 1000;
-
-                    var remainingChar = maxChar - charCount;
-
-                    $('#charCount').text(remainingChar + ' / ' + 1000);
-                }
-
-                var swiper = new Swiper(".mySwiper", {
-                    scrollbar: {
-                        el: ".swiper-scrollbar",
-                        hide: true,
-                    },
-                });
-            </script>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        function updateRating(rating) {
+            document.getElementById("Rating").innerText = "⭐" + rating;
+        }
+
+        $('.btn-show-popup-1').click(function () {
+            $('html').addClass('popup-1-active');
+            $('textarea.body').focus();
+            swiper.detachEvents();
+        });
+
+
+        $('.popup-box-1, .popup-box-1 > .popup > .head > .btn-close').click(function () {
+            $('html').removeClass('popup-1-active');
+            swiper.attachEvents();
+
+        });
+
+
+        $('.popup-box-1 > .popup').click(function (e) {
+            e.stopPropagation();
+            swiper.detachEvents();
+        });
+
+        function saveComment() {
+            var commentValue = $('textarea.body').val();
+            var dramaId = $('input.dramaId').val();
+            var rating = document.getElementById("Rating").innerText.replace("⭐", "");
+            if (rating == "") {
+                alert("별점을 선택해주세요");
+                return;
+            }
+            window.location.href = '/review/create/drama?dramaId=' + dramaId + '&comment=' + commentValue + '&rating=' + rating;
+        }
+
+        function updateCharacterCount() {
+            var charCount = $('textarea.body').val().length;
+
+            var maxChar = 1000;
+
+            var remainingChar = maxChar - charCount;
+
+            $('#charCount').text(remainingChar + ' / ' + 1000);
+        }
+
+        var swiper = new Swiper(".mySwiper", {
+            scrollbar: {
+                el: ".swiper-scrollbar",
+                hide: true,
+            },
+        });
+    </script>
 </div>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.korea.MOVIEBOOK.movie.movie;
 
 import com.korea.MOVIEBOOK.ContentsController;
 import com.korea.MOVIEBOOK.ContentsDTO;
+import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.movie.daily.MovieDailyAPI;
@@ -14,9 +15,8 @@ import com.korea.MOVIEBOOK.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
+@RequestMapping("/movie")
 public class MovieController {
 
     private final MovieDailyAPI movieDailyAPI;
@@ -50,7 +51,7 @@ public class MovieController {
     String weekInfo = getCurrentWeekOfMonth(oneWeekAgoDate);
 
 
-    @GetMapping("movie")
+    @GetMapping("")
     public String movie(Model model, Principal principal) throws ParseException {
 
         List<MovieDTO> movieDTOS = this.movieService.listOfMovieDailyDTO();
@@ -95,15 +96,17 @@ public class MovieController {
             startIndex += 5;
             endIndex += 5;
         }
+        List<List<List<MovieDTO>>> allList = new ArrayList<>();
+        allList.add(movieListList);
+        allList.add(movieWeeklyListList);
 
         model.addAttribute("movieDailyDate", date);
-        model.addAttribute("movieListList", movieListList);
         model.addAttribute("movieWeeklyDate", weekInfo);
-        model.addAttribute("movieWeeklyListList", movieWeeklyListList);
+        model.addAttribute("allList", allList);
 
         return "Movie/movie";
     }
-    @PostMapping("movie/detail")
+    @PostMapping("/detail")
     public String movieDetail(Model model, String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
         List<Review> reviews = reviewService.findReviews(movie.getId()).stream().limit(10).collect(Collectors.toList());
@@ -155,8 +158,8 @@ public class MovieController {
         return "contents/contents_detail";
     }
 
-    @GetMapping("movie/detail")
-    public String movieDetail2(Model model, @RequestParam("movieCD") String movieCD, Principal principal) {
+    @GetMapping("/detail/{movieCD}")
+    public String movieDetail2(Model model, @PathVariable("movieCD") String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
         List<Review> reviews = reviewService.findReviews(movie.getId());
         ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
@@ -204,7 +207,7 @@ public class MovieController {
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
-        return "Movie/movie_detail";
+        return "contents/contents_detail";
     }
     //
     public void movieDailySize(List<Map> failedMovieList) {
