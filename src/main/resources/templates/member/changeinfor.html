@@ -24,8 +24,11 @@
                        style="height: 70px; width: 80%; margin-bottom: 30px;" name="newNickname"
                        class="input input-bordered"/>
             </label>
-            <input type="button" class="input input-bordered" th:value="변경하기" style="background: #D2E1FF; margin-left: 75%;" onclick="updatenm(this)">
+            <input type="button" class="input input-bordered" th:value="변경하기" style="background: #D2E1FF; margin-left: 74%; width: 110px;" onclick="updatenm(this)">
         </form>
+        <a th:href="@{/member/mypage}">
+            <input type="button" class="input input-bordered" th:value="취소" style="background: #D2E1FF; margin-top: 10px; margin-left: 57%; width: 110px;">
+        </a>
         <script>
             function updatenm(input) {
                 if (confirm("회원 정보를 변경하시겠습니까?")) {

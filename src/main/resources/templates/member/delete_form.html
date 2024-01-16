@@ -31,10 +31,12 @@
                    class="input input-bordered"/>
         </label>
 
-        <input type="button" class="input input-bordered" th:value="회원탈퇴" style="background: #D2E1FF; margin-left: 75%;"
+        <input type="button" class="input input-bordered" th:value="회원탈퇴" style="background: #D2E1FF; margin-left: 73%; width: 110px"
                onclick="deleteMember(this)">
     </form>
-
+    <a th:href="@{/member/mypage}">
+        <input type="button" class="input input-bordered" th:value="취소" style="background: #D2E1FF; margin-top: 10px; margin-left: 73.7%; width: 110px;">
+    </a>
     <script>
         function deleteMember(input) {
             if (confirm("정말 탈퇴하시겠습니까?")) {

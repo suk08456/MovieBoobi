@@ -39,7 +39,11 @@
                        style="height: 70px; width: 80%; margin-bottom: 30px;" name="passwordConfirm" class="input input-bordered"/>
             </label>
             <input type="button" class="input input-bordered" th:value="비밀번호변경" style="background: #D2E1FF; margin-top: 25px; margin-left: 74%;" onclick="changepw(this)">
+
         </form>
+        <a th:href="@{/member/mypage}">
+            <input type="button" class="input input-bordered" th:value="취소" style="background: #D2E1FF; margin-top: 10px; margin-left: 74%; width: 118px;">
+        </a>
     </div>
 
     <script>
