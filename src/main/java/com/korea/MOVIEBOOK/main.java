@@ -41,5 +41,4 @@ public class main {
     public String test3() {
         return "test";
     }
-
 }
