@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" th:href="@{/Movie/movieDetail.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/contents/contents_comment.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/contents/contents_payment.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/contents/contents_comment.css}">
 </head>
 <body>
 <div layout:fragment="content" style="width : 100%; height : 30%;">
     <div class="content-co" style="width : 1300px; height : 1540px; margin : auto; margin-top : -25px;">
         <div class="post-co" style="display : flex; flex-direction : row; ">
-            <div style="margin-top: 30px; color: #868e96;">
-                <img th:if="${contentsDetail.imageUrl}" th:src="${contentsDetail.imageUrl}" style="width: 300px;">
+            <div style="margin-top: 30px; color: #868e96;" th:if="${contentsDTOS != null}">
+                <img th:if="${contentsDTOS.imageUrl != null and gubun == 'drama'}" th:src="${'/dramaImage' + contentsDTOS.imageUrl}" style="width: 300px;">
+                <img th:if="${contentsDTOS.imageUrl != null and gubun != 'drama'}" th:src="${contentsDTOS.imageUrl}" style="width: 300px;">
             </div>
             <div style="display : flex; flex-direction : column; width : 75%; margin-left : 25px;">
-                <span th:text="${contentsDetail.title}"
+                <span th:if="${contentsDTOS.title}" th:text="${contentsDTOS.title}"
                       style="font-size : 33px; font-weight : bold;  margin-bottom : 5px; margin-top : 30px;"></span>
                 <div style="display : flex;">
                     <div style="flex-direction : column;">
@@ -44,43 +44,46 @@
                         </div>
                         <p style="margin-top : -9px; text-align : center; color : #868e96; font-weight : bold;">평가하기</p>
                     </div>
+                    <div style="display : flex; flex-direction : column; margin-top : 33px; margin-left : 70px; text-align : center;">
+                        <span th:text="${avgRating}" style="font-size : x-large;"></span>
+                        <span style="margin-top : 23px; font-weight : bold; color : #868E96;">평균 별점</span>
+                    </div>
                     <div class="event-co"
                          style="display : flex; margin-left : 70px; margin-top : 33px; color : #868e96; font-weight : bold;">
                         <nav th:replace="~{contents/contents_comment :: commentLayout}"></nav>
                         <div class="like-co" style="margin-right : 50px; margin-left : 50px;">
                             <img class="likeit" src="/imgs/likeit.png" style="width : 40px; height : 40px; ">
-                            <p style="margin-top : 15px;">좋아요</p>
+                            <p style="margin-top : 18px;">좋아요</p>
                         </div>
                         <nav th:replace="~{contents/contents_payment :: paymentLayout}"></nav>
                     </div>
                 </div>
                 <div style="width : 100%; margin-top : 41px; color : #868e96; margin-bottom : 10px;">
-                    <span th:text="${contentsDetail.genre}" style="margin-left : 5px;"></span>
-                    ·
-                    <span th:text="${contentsDetail.nations}"></span>
-                    ·
-                    <span th:text="${contentsDetail.viewingRating}"></span>
-                    (
-                    <span th:text="${movieruntime}"></span>
-                    )
+                    <span th:if="${contentsDTOS.genre}" th:text="${contentsDTOS.genre}" style="margin-left : 5px;"></span>
+                    <span th:if="${contentsDTOS.nations}" th:text="${'·' + contentsDTOS.nations}"></span>
+                    <span th:if="${contentsDTOS.viewingRating}" th:text="${'·' + contentsDTOS.viewingRating}"></span>
+                    <span th:if="${movieruntime}" th:text="${'(' + movieruntime + ')'}"></span>
+                    <span th:if="${contentsDTOS.pubdate}" th:text="${'출간일 : ' + #temporals.format(contentsDTOS.pubdate, 'yyyy-MM-dd') + '·'}"></span>
+                    <span th:if="${contentsDTOS.pricestandard}" th:text="${'소비자 가격 : ' + #numbers.formatDecimal(contentsDTOS.pricestandard, 0,  'COMMA', 0, 'POINT') + '₩' }"></span>
+                    <span th:if="${contentsDTOS.updateDays}" th:text="${'연재일 : ' + contentsDTOS.updateDays}"></span>
                 </div>
                 <div class="movie-co"
                      style="text-align : center; border : 3px dashed #868e96; padding : 22px; height : 182px; margin-bottom : 15px;">
-                    <span th:text="${#strings.length(contentsDetail.plot)> 300 ? #strings.substring(contentsDetail.plot, 0, 300) + '..' : contentsDetail.plot}"
+                    <span th:if="${contentsDTOS.plot}" th:text="${#strings.length(contentsDTOS.plot)> 300 ? #strings.substring(contentsDTOS.plot, 0, 300) + '..' : contentsDTOS.plot}"
                           style="font-size : 17px"></span>
                 </div>
             </div>
         </div>
         <div class="movie-info">
             <div class="swiper mySwiper">
-                <span style="font-size : 20px; width : 80%; font-weight : bold; color : black;">출연/제작</span>
+                <span th:text="${contentsDTOS.gubun}" style="font-size : 20px; width : 80%; font-weight : bold; color : black;"></span>
                 <div class="swiper-wrapper" style="margin-top : 20px; margin-bottom : 20px;">
-                    <div class="swiper-slide" th:each="actorList : ${actorListList}"
+                    <div class="swiper-slide" th:each="author_actor : ${author_actor_ListList}"
                          style="display : flex;flex-direction : row;">
-                        <div th:each="actors : ${actorList}" style="width : 200px;">
+                        <div th:each="author_actor : ${author_actor}" style="width : 200px;">
                             <div class="actor-co" style="width :165px; align-items: center;">
                                 <img src="/imgs/profile_icon.png" style="width: 48px; height: 48px; margin : auto;">
-                                <span th:text="${actors}" style="font-size: 15px;"></span>
+                                <span th:text="${author_actor}" style="font-size: 15px;"></span>
                             </div>
                         </div>
                     </div>
@@ -117,6 +120,14 @@
         function updateRating(rating) {
             document.getElementById("Rating").innerText = "⭐" + rating;
         }
+
+        var swiper = new Swiper(".mySwiper", {
+            scrollbar: {
+                el: ".swiper-scrollbar",
+                hide: true,
+            },
+        });
+
     </script>
 </div>
 </body>

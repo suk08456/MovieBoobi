@@ -9,7 +9,7 @@
         <button class="writing-co" id="comment_popup_open_btn" onclick="logincheck();">
             <img class="down" src="/imgs/writing.png"
                  style="width : 40px; height : 40px; margin-left : 7px;">
-            <p style="margin-top : 15px;" class="id=btn-modal">코멘트</p>
+            <p style="margin-top : 18px;" class="id=btn-modal">코멘트</p>
         </button>
         <div id="comment_modal" style="display: none; border-radius : 12px 0px 0px 0px;">
             <div class="modal-window">
@@ -19,7 +19,7 @@
                     <button class="modal_close_btn" style="color : red;">X</button>
                 </div>
                 <div style="display : flex; align-items : center;">
-                    <span id="movieTitle" th:text="${contentsDetail.title}"
+                    <span id="movieTitle" th:text="${contentsDTOS.title}"
                           style="text-align : center; font-weight: bold; color: black; white-space: nowrap; margin-top : 2px;"></span>
                     <button class="btn-close"></button>
                 </div>
@@ -28,7 +28,7 @@
                      <textarea class="body"
                                style="height : 369px; margin-bottom : 5px; background : white;"
                                oninput="updateCharacterCount()"> </textarea>
-                    <input class="movieCD" th:value="${contentsDetail.movieCode}" type="hidden">
+<!--                    <input class="movieCD" th:value="${contentsDetail.movieCode}" type="hidden">-->
                 </form>
                 <div style="margin-left : 74%; display : flex;">
                     <button class="w-btn" style="margin-right : 5px;" onclick="saveComment();"> 저장</button>
@@ -78,7 +78,7 @@
                 const titleElement = document.getElementById("movieTitle");
                 const containerWidth = 345;
 
-                let fontSize = 19;
+                let fontSize = 16;
                 titleElement.style.fontSize = fontSize + "px";
 
                 while (titleElement.offsetWidth > containerWidth) {

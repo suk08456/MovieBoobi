@@ -135,7 +135,7 @@ public class BookService {
     }
     private void saveBook(Map<String, Object> bookData, Boolean isNew, Boolean recommend) {
         //  book정보를 db에 저장하는 함수
-        String plot = (String) bookData.get("plot");
+        String plot = (String) bookData.get("description");
         String replacedText = plot.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
 
         Book book = new Book();
@@ -144,7 +144,7 @@ public class BookService {
         book.setAuthor((String) bookData.get("author"));
         book.setIsbn((String) bookData.get("isbn"));
         book.setIsbn13((String) bookData.get("isbn13"));
-        book.setImageUrl((String) bookData.get("imageUrl"));
+        book.setImageUrl((String) bookData.get("cover"));
         book.setPublisher((String) bookData.get("publisher"));
         book.setPricestandard((Integer) bookData.get("priceStandard"));
         book.setBestRank((Integer) bookData.get("bestRank"));

@@ -53,5 +53,9 @@ public class ContentsDTO {
 
     private Integer fanCount;           // 웹툰 팬
 
+    private String updateDays;;         // 웹툰 연재 일자
+
+    private String gubun;               // 구분 ( 출연/제작 or 글/그림 or 저자/역자 )
+
 
 }
