@@ -35,7 +35,6 @@ public class DramaController {
         // model 객체에 dramaList를 전달
         return "drama/drama_list";
     }
-
     @GetMapping("/drama/{id}")
     public String dramaDetail(@PathVariable Long id, Model model, Principal principal) {
         Drama drama = dramaService.getDramaById(id);
@@ -103,5 +102,4 @@ public class DramaController {
 //        model.addAttribute("actorListList", actorListList);
 //        return "drama/drama_detail";
 //    }
-
 }

@@ -1,5 +1,4 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
-
 import com.korea.MOVIEBOOK.ContentsController;
 import com.korea.MOVIEBOOK.ContentsDTO;
 import com.korea.MOVIEBOOK.member.Member;
