@@ -69,7 +69,7 @@
                 } else if(isbn != null){
                     window.location.href = '/review/create/book?isbn=' + isbn + '&comment=' + commentValue + '&rating=' + rating;
                 } else if(dramaCode != null){
-                    window.location.href = '/review/create/book?isbn=' + isbn + '&comment=' + commentValue + '&rating=' + rating;
+                    window.location.href = '/review/create/book?dramaId=' + dramaCode + '&comment=' + commentValue + '&rating=' + rating;
                 } else if(wetoonCode != null){
                     window.location.href = '/review/create/webtoon?wetoonCode=' + wetoonCode + '&comment=' + commentValue + '&rating=' + rating;
                 }
