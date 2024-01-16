@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Page;
-
+import java.awt.*;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,14 +25,28 @@ public class PaymentController {
     @GetMapping("/payment")
     public String kakao(Model model, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
         String providerID = principal.getName();
+
         Member member = this.memberService.findByproviderId(providerID);
-        List<Payment> payment = this.paymentService.findPaymentListByMember(member);
+        if(member == null){
+            member =  this.memberService.getmember(providerID);
+        }
+        List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+        long sum = 0;
+
+        for(int i  = 0 ; i < payments.size(); i++){
+            if(payments.get(i).getContent().contains("충전")){
+                sum += Long.valueOf(payments.get(i).getPaidAmount());
+            } else {
+                sum -= Long.valueOf(payments.get(i).getPaidAmount());
+            }
+        }
 
         Page<Payment> paging = this.paymentService.getPaymentsByMember(member,page);
 
 
         model.addAttribute("member",member);
         model.addAttribute("paging",paging);
+        model.addAttribute("sum",sum);
         return "Payment/payment";
     }
 
@@ -66,4 +81,17 @@ public class PaymentController {
 //        this.paymentService.SavePayment(id, "kakao", oPaidAmount, oPaidNo, oPayType, Long.valueOf(sPhone));
 //       return "redirect:/kakaoPay";
 //    }
+
+    @PostMapping("/payment/category")
+    public String paymentCatgory(Principal principal, @RequestParam("usedCoins") String paidAmount, @RequestParam("movieCD") String movieCD){
+        String providerID = principal.getName();
+        String content = paidAmount + "Coin 사용";
+
+        Member member = this.memberService.findByproviderId(providerID);
+        if(member == null){
+            member =  this.memberService.getmember(providerID);
+        }
+        this.paymentService.savePayment(member.getId(), "coin", paidAmount, "00000", "point", null, content);
+        return "redirect:/movie/detail?movieCD=" + movieCD;
+    }
 }

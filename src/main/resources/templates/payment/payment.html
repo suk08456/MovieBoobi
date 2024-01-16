@@ -31,10 +31,6 @@
                             <td><span
                                     th:text="${#strings.contains(payment.content, '충전') ? '+ ' + payment.paidAmount  : '- ' + payment.paidAmount}"></span>
                             </td>
-                            <td>
-                                <span th:text="${#numbers.formatInteger(#lists.sum({#strings.contains(payment.content, '충전') ? payment.paidAmount : -payment.paidAmount}))}"></span>
-                            </td>
-
                         </tr>
                         <tr th:if="${#lists.size(paging) == 0}">
                             <td colspan="4" style="text-align: center;">데이터가 없습니다.</td>
@@ -72,10 +68,18 @@
                     <img class="profile" sec:authorize="isAuthenticated()"
                          th:if="${not #strings.isEmpty(member.profileImage)}"
                          th:src="${member.profileImage}">
-                    <img class="profile" th:if="${#strings.isEmpty(member.profileImage)}" src="/imgs/noimg.jpg">
+                    <div style="display : flex; flex-direction: column;">
                     <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
                           th:text="${member.nickname} + ' 님 안녕하세요'"
-                          style="font-size : large; width : 100%; height : 27px; margin-top : 60px; margin-left : 5px;"></span>
+                          style="font-size : large; width : 100%; height : 27px; margin-top : 33px; margin-left : 5px;"></span>
+                    <div style="display : flex; font-weight : bold;">
+                        <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
+                        <span style="margin-right : 3px;">보유 코인 : </span>
+                        <span th:text="${#numbers.formatDecimal(sum, 0,  'COMMA', 0, 'POINT')}"
+                              style="width : 95px; text-align : center;"></span>
+                        <span>Coin</span>
+                    </div>
+                    </div>
                 </div>
                 <input class="m_id" name="m_id" sec:authorize="isAuthenticated()" th:value="${member.id}"
                        type="hidden">

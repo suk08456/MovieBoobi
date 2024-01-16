@@ -1,13 +1,22 @@
 package com.korea.MOVIEBOOK.book;
 
+import com.korea.MOVIEBOOK.ContentsController;
+import com.korea.MOVIEBOOK.ContentsDTO;
+import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.member.MemberService;
+import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.payment.PaymentService;
+import com.korea.MOVIEBOOK.review.Review;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.AbstractDocument;
 import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -15,6 +24,9 @@ import java.util.*;
 public class BookController {
 
     private final BookService bookService;
+    private final ContentsController contentsController;
+    private final MemberService memberService;
+    private final PaymentService paymentService;
 
     @GetMapping("")
     public String mainPage(Model model) {
@@ -58,22 +70,99 @@ public class BookController {
     }
 
     @PostMapping("/detail")
-    public String bookDetail(String isbn, Model model) {
+    public String bookDetail(String isbn, Model model, Principal principal) {
         Book book = bookService.findByIsbn(isbn);
+        ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
-        model.addAttribute("book", book);
-        model.addAttribute("reviews", book.getReviewList());
-        model.addAttribute("authorListList", authorListList);
-        return "book/bookDetail";
+        List<Review> reviews = book.getReviewList().stream().limit(10).collect(Collectors.toList());
+
+
+        double avgRating = reviews.stream() // reviews에서 stream 생성
+                .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
+                .mapToDouble(Review::getRating) // 리뷰 객체에서 평점만 추출하여 정수 스트림 생성
+                .average() // 평점의 평균값 계산
+                .orElse(0); // 리뷰가 없을 경우 0.0출력
+
+
+        model.addAttribute("contentsDTOS", contentsDTOS);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("author_actor_ListList", authorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
+
+        if(principal != null){
+            String providerID = principal.getName();
+            Member member = this.memberService.findByproviderId(providerID);
+            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            long sum = 0;
+
+            for(int i  = 0 ; i < payments.size(); i++){
+                if(payments.get(i).getContent().contains("충전")){
+                    sum += Long.valueOf(payments.get(i).getPaidAmount());
+                } else {
+                    sum -= Long.valueOf(payments.get(i).getPaidAmount());
+                }
+            }
+            model.addAttribute("login","true");
+            model.addAttribute("member",member);
+            model.addAttribute("sum",sum);
+        } else {
+            model.addAttribute("login","false");
+            model.addAttribute("member","");
+            model.addAttribute("sum","");
+        }
+
+        return "contents/contents_detail";
     }
+//
+//    @PostMapping("/detail")
+//    public String bookDetail(String isbn, Model model) {
+//        Book book = bookService.findByIsbn(isbn);
+//        List<List<String>> authorListList = bookService.getAuthorListList(book);
+//        model.addAttribute("book", book);
+//        model.addAttribute("reviews", book.getReviewList());
+//        model.addAttribute("authorListList", authorListList);
+//        return "category/bookDetail";
+//    }
 
     @GetMapping("/detail/{isbn}")
-    public String bookDetail1(@PathVariable("isbn") String isbn, Model model) {
+    public String bookDetail1(@PathVariable("isbn") String isbn, Model model,Principal principal) {
         Book book = bookService.findByIsbn(isbn);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
+        List<Review> reviews = book.getReviewList().stream().limit(10).collect(Collectors.toList());
+
+        double avgRating = reviews.stream() // reviews에서 stream 생성
+                .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
+                .mapToDouble(Review::getRating) // 리뷰 객체에서 평점만 추출하여 정수 스트림 생성
+                .average() // 평점의 평균값 계산
+                .orElse(0); // 리뷰가 없을 경우 0.0출력
+
         model.addAttribute("book", book);
-        model.addAttribute("reviews", book.getReviewList());
+        model.addAttribute("reviews", reviews);
         model.addAttribute("authorListList", authorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
+
+        if(principal != null){
+            String providerID = principal.getName();
+            Member member = this.memberService.findByproviderId(providerID);
+            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            long sum = 0;
+
+            for(int i  = 0 ; i < payments.size(); i++){
+                if(payments.get(i).getContent().contains("충전")){
+                    sum += Long.valueOf(payments.get(i).getPaidAmount());
+                } else {
+                    sum -= Long.valueOf(payments.get(i).getPaidAmount());
+                }
+            }
+            model.addAttribute("login","true");
+            model.addAttribute("member",member);
+            model.addAttribute("sum",sum);
+        } else {
+            model.addAttribute("login","false");
+            model.addAttribute("member","");
+            model.addAttribute("sum","");
+        }
+
         return "book/bookDetail";
     }
 }

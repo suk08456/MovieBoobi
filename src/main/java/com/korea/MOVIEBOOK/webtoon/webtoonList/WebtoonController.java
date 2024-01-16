@@ -1,5 +1,10 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
-
+import com.korea.MOVIEBOOK.ContentsController;
+import com.korea.MOVIEBOOK.ContentsDTO;
+import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.member.MemberService;
+import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import com.korea.MOVIEBOOK.webtoon.days.Day;
@@ -11,7 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,6 +29,9 @@ public class WebtoonController {
     private final DayService dayService;
     private final WebtoonDayListService webtoonDayListService;
     private final ReviewService reviewService;
+    private final ContentsController contentsController;
+    private final PaymentService paymentService;
+    private final MemberService memberService;
 
 
 
@@ -100,27 +110,106 @@ public class WebtoonController {
     }
 
     @PostMapping("/detail")
-    public String WebtoonDetail1(Model model, Long webtoonId) {
+    public String WebtoonDetail1(Model model, Long webtoonId, Principal principal) {
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-        List<Review> reviews = reviewService.findWebtoonReview(webtoon.getWebtoonId());
+        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(10).collect(Collectors.toList());
+        ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
+        List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
+
+        double avgRating = reviews.stream() // reviews에서 stream 생성
+                .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
+                .mapToDouble(Review::getRating) // 리뷰 객체에서 평점만 추출하여 정수 스트림 생성
+                .average() // 평점의 평균값 계산
+                .orElse(0); // 리뷰가 없을 경우 0.0출력
 
 
-//       List<WebtoonDayList> webtoonDayLists = this.webtoonDayListService.findBywebtoon(webtoon);
-//       webtoonDayLists.get(0).getWebtoonDay().getUpdateDays();
-
-        model.addAttribute("WebtoonDetail", webtoon);
+        model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
-        return "webtoon/webtoon_detail";
+        model.addAttribute("author_actor_ListList", authorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
+
+        if(principal != null){
+            String providerID = principal.getName();
+            Member member = this.memberService.findByproviderId(providerID);
+            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            long sum = 0;
+
+            for(int i  = 0 ; i < payments.size(); i++){
+                if(payments.get(i).getContent().contains("충전")){
+                    sum += Long.valueOf(payments.get(i).getPaidAmount());
+                } else {
+                    sum -= Long.valueOf(payments.get(i).getPaidAmount());
+                }
+            }
+            model.addAttribute("login","true");
+            model.addAttribute("member",member);
+            model.addAttribute("sum",sum);
+        } else {
+            model.addAttribute("login","false");
+            model.addAttribute("member","");
+            model.addAttribute("sum","");
+        }
+
+        return "contents/contents_detail";
     }
 
-    @GetMapping("/detail")
-    public String WebtoonDetail2(Model model, @RequestParam("webtoonId") Long webtoonId){
-        Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-        List<Review> reviews = reviewService.findWebtoonReview(webtoon.getWebtoonId());
 
-        model.addAttribute("WebtoonDetail", webtoon);
+//    @PostMapping("/detail")
+//    public String WebtoonDetail1(Model model, Long webtoonId) {
+//        Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
+//        List<Review> reviews = reviewService.findWebtoonReview(webtoon.getWebtoonId());
+//
+//
+////       List<WebtoonDayList> webtoonDayLists = this.webtoonDayListService.findBywebtoon(webtoon);
+////       webtoonDayLists.get(0).getWebtoonDay().getUpdateDays();
+//
+//        model.addAttribute("WebtoonDetail", webtoon);
+//        model.addAttribute("reviews", reviews);
+//        return "webtoon/webtoon_detail";
+//    }
+
+
+    @GetMapping("/detail")
+    public String WebtoonDetail2(Model model, @RequestParam("webtoonId") Long webtoonId, Principal principal){
+        Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
+        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(10).collect(Collectors.toList());
+        ContentsDTO contentsDTO = this.contentsController.setWetoonContentsDTO(webtoon);
+        List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
+
+        double avgRating = reviews.stream() // reviews에서 stream 생성
+                .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
+                .mapToDouble(Review::getRating) // 리뷰 객체에서 평점만 추출하여 정수 스트림 생성
+                .average() // 평점의 평균값 계산
+                .orElse(0); // 리뷰가 없을 경우 0.0출력
+
+        model.addAttribute("contentsDTO", contentsDTO);
         model.addAttribute("reviews", reviews);
-        return "webtoon/webtoon_detail";
+        model.addAttribute("author_actor_ListList", authorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
+
+        if(principal != null){
+            String providerID = principal.getName();
+            Member member = this.memberService.findByproviderId(providerID);
+            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            long sum = 0;
+
+            for(int i  = 0 ; i < payments.size(); i++){
+                if(payments.get(i).getContent().contains("충전")){
+                    sum += Long.valueOf(payments.get(i).getPaidAmount());
+                } else {
+                    sum -= Long.valueOf(payments.get(i).getPaidAmount());
+                }
+            }
+            model.addAttribute("login","true");
+            model.addAttribute("member",member);
+            model.addAttribute("sum",sum);
+        } else {
+            model.addAttribute("login","false");
+            model.addAttribute("member","");
+            model.addAttribute("sum","");
+        }
+
+        return "contents/contents_detail";
     }
 }
 

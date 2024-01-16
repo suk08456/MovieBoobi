@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout2}">
+<head>
+    <script type="text/javascript" src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome-stars.css}">
+    <script type="text/javascript" th:src="@{/jquery.barrating.min.js}"></script>
+</head>
+<body layout:fragment="content">
+<h2>리뷰 상세 정보</h2>
+<div>
+    <strong>코멘트</strong>
+    <span th:text="${review.comment}"></span>
+</div>
+<div>
+    <strong>평점:</strong>
+    <span id="rating">
+        <span th:text="'&#9733;'"></span>
+        <span th:text="${review.rating}"></span>
+    </span>
+</div>
+<a th:href="@{/review/delete/{id}(id=${review.id})}">삭제</a>
+<a th:href="@{/drama/dramaList}">드라마 목록으로 돌아가기</a>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#rating').barrating({
+            theme: 'fontawesome-stars',
+            initialRating: 1,  // 초기 평점 설정 (선택한 평점이 기본으로 표시됨)
+            showSelectedRating: true,  // 선택한 평점을 텍스트로 표시
+        });
+    });
+</script>
+</body>
+</html>

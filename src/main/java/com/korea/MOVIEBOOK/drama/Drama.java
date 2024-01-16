@@ -1,8 +1,9 @@
 package com.korea.MOVIEBOOK.drama;
-
+import com.korea.MOVIEBOOK.review.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
 
 
 @Entity
@@ -22,11 +23,11 @@ public class Drama {
     private String company; // 제작사
     private String director; // 감독
     private String viewingRating; // 연령등급
+    @Column(columnDefinition = "text")
     private String actor; // 배우
-    private int rating; // 평점
     private int rank; // 순위
-
-//    @OneToMany(mappedBy = "drama", cascade = CascadeType.ALL)
-//    private List<Review> reviews;
-
+    private String plot; // 줄거리
+    private double rating;
+    @OneToMany(mappedBy = "drama", cascade = CascadeType.ALL)
+    private List<Review> reviewList;
 }

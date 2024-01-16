@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,5 +27,22 @@ public class EmailService {
         helper.setText("<p>회원가입 인증절차를 완료하려면 다음 링크를 클릭하세요 : <a href='" + link + "'>회원가입 인증</a></p>",
                 true); // 이메일 내용을 html 형식으로 설정
         javaMailSender.send(message); // 이메일 전송
+    }
+
+    public void sendTemporaryPassword(String to, String temporaryPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("임시 비밀번호");
+        message.setText("임시 비멀번호는 : " + temporaryPassword);
+        javaMailSender.send(message);
+
+    }
+
+    public void sendTemporaryUsername(String to, String username) throws MessagingException {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("아이디 찾기 안내");
+        message.setText("당신 아이디 : " + username);
+        javaMailSender.send(message);
     }
 }

@@ -1,6 +1,4 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
-
-
 import com.korea.MOVIEBOOK.webtoon.days.Day;
 import com.korea.MOVIEBOOK.webtoon.days.DayService;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
@@ -78,7 +76,7 @@ public class WebtoonService {
                     .webtoonId((Long) webtoonData.get("webtoonId"))
                     .title((String) webtoonData.get("title"))
                     .author((String) webtoonData.get("author"))
-                    .img((String) webtoonData.get("img"))
+                    .imageUrl((String) webtoonData.get("img"))
                     .updateDays((List<String>) webtoonData.get("updateDays"))
                     .searchKeyword((String) webtoonData.get("searchKeyword"))
                     .detailUrl((String) webtoonData.get("detailUrl"))
@@ -98,7 +96,7 @@ public class WebtoonService {
         webtoon.setWebtoonId(webtoonDTO.getWebtoonId());
         webtoon.setTitle(webtoonDTO.getTitle());
         webtoon.setAuthor(webtoonDTO.getAuthor());
-        webtoon.setImg(webtoonDTO.getImg());
+        webtoon.setImageUrl(webtoonDTO.getImageUrl());
 //        webtoon.setWebtoonDay(day);
 //        System.out.println("UpdateDays: " + webtoon.getWebtoonDay()); // 디버깅용 로그
         webtoon.setDetailUrl(webtoonDTO.getDetailUrl());
@@ -130,6 +128,28 @@ public class WebtoonService {
         return this.webtoonRepository.findByWebtoonId(webtoonId);
     }
 
+    public List<List<String>> getAuthorListList(Webtoon webtoon) {
+
+        String author = webtoon.getAuthor();
+        String[] authors = new String[]{};
+        if(!author.isEmpty()) {
+            authors = author.split(",");
+        }
+        List<String> authorList = new ArrayList<>(Arrays.asList(authors));
+
+        List<List<String>>authorListList = new ArrayList<>();
+
+        Integer chunkSize = 8;
+        Integer totalElements = authorList.size();
+
+        for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
+            int start = i * chunkSize;
+            int end = Math.min((i + 1) * chunkSize, totalElements);
+            authorListList.add(authorList.subList(start, end));
+        }
+
+        return authorListList;
+    }
 }
 
 

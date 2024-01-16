@@ -15,9 +15,11 @@ import java.util.Optional;
 public class Oauth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
+        System.out.println("Attributes: " + oAuth2User.getAttributes().toString());
 
         String provider = userRequest.getClientRegistration().getRegistrationId();
         String providerId = "";
@@ -27,11 +29,18 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
             providerId = String.valueOf(id);
         } else if (provider.equals("google")) {
             providerId = oAuth2User.getAttribute("sub");
+        } else if (provider.equals("naver")) {
+            Map<String, Object> attributes = oAuth2User.getAttributes();
+            Map<String, Object> naverResponse = (Map<String, Object>) attributes.get("response");
+            if (naverResponse != null) {
+                providerId = (String) naverResponse.get("id");
+            }
         }
 
         String username = provider + "_" + providerId;
         Optional<Member> _member = memberRepository.findByUsername(username);
         Member member;
+
         if (_member.isPresent()) {
             member = _member.get();
             // 기존 사용자 정보 업데이트 로직 (필요한 경우 추가)
@@ -43,17 +52,23 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
             member.setNickname(oAuth2User.getAttribute("name"));
             member.setEmail(oAuth2User.getAttribute("email"));
             member.setProfileImage(oAuth2User.getAttribute("profileImage"));
-            Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttributes().get("properties");
-            if (properties != null) {
-                member.setNickname((String) properties.get("nickname"));
-                member.setProfileImage((String) properties.get("profile_image"));
+
+            if ("naver".equals(provider)) {
+                Map<String, Object> naverResponse = (Map<String, Object>) oAuth2User.getAttributes().get("response");
+                if (naverResponse != null) {
+                    member.setNickname((String) naverResponse.get("nickname"));
+                    member.setProfileImage((String) naverResponse.get("profile_image"));
+                    member.setEmail((String) naverResponse.get("email"));
+                }
+            } else {
+                Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttributes().get("properties");
+                if (properties != null) {
+                    member.setNickname((String) properties.get("nickname"));
+                    member.setProfileImage((String) properties.get("profile_image"));
+                }
             }
             memberRepository.save(member);
         }
-
-        // 여기서 OAuth2User 객체를 반환합니다.
         return oAuth2User;
     }
 }
-
-

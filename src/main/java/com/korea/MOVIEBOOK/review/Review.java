@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.review;
 
+import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
@@ -33,11 +34,9 @@ public class Review {
     @ManyToOne
     Book book;
 
+    @ManyToOne
+    Drama drama;
 
-//
-//    @ManyToOne
-//    Drama drama;
-//
     @ManyToOne
     Webtoon webtoon;
 

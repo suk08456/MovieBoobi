@@ -5,8 +5,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/Movie/movieDetail.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/contents/contents_payment.css}">
 </head>
 <body>
 <div layout:fragment="content" style="width : 100%; height : 30%;">
@@ -46,37 +45,12 @@
                     </div>
                     <div class="event-co"
                          style="display : flex; margin-left : 70px; margin-top : 33px; color : #868e96; font-weight : bold;">
-                        <button style="margin-right : 50px;">
-                            <img class="btn-show-popup-1" src="/imgs/writing.png" style="width : 40px; height : 40px; ">
-                            <p style="margin-top : 15px;">코멘트</p>
-                        </button>
-                        <div class="popup-box-1 popup-box-type-a" id="myModal" style="display : flex;">
-                            <div class="popup">
-                                <div class="head" style="display : flex;">
-                                    <span th:text="${movieDailyDetail.title}"
-                                          style="font-size : 16px; width : 80%; font-weight : bold; color : black; margin-bottom : 8px; height : 40px;"></span>
-                                    <button class="btn-close"></button>
-                                    <div>
-                                        <div id="Rating"></div>
-                                        <span id="charCount" style="font-size : small;"></span>
-                                    </div>
-                                </div>
-                                <textarea class="body"
-                                          style="width : 100%; height : 369px; margin-bottom : 5px; background : white;"
-                                          oninput="updateCharacterCount()"> </textarea>
-                                <input class="movieCD" th:value="${movieDailyDetail.movieCode}" type="hidden">
-                                <button class="btn" onclick="saveComment();"><span>저장</span></button>
-                            </div>
-                        </div>
-                        <div class="like-co" style="margin-right : 50px;">
+                        <nav th:replace="~{contents/contents_comment :: commentLayout}"></nav>
+                        <div class="like-co" style="margin-right : 50px; margin-left : 50px;">
                             <img class="likeit" src="/imgs/likeit.png" style="width : 40px; height : 40px; ">
                             <p style="margin-top : 15px;">좋아요</p>
                         </div>
-                        <div class="down-co">
-                            <img class="down" src="/imgs/buy.png"
-                                 style="width : 40px; height : 40px; margin-left : 7px;">
-                            <p style="margin-top : 15px;">구매하기</p>
-                        </div>
+                        <nav th:replace="~{contents/contents_payment :: paymentLayout}"></nav>
                     </div>
                 </div>
                 <div style="width : 100%; margin-top : 41px; color : #868e96; margin-bottom : 10px;">
@@ -132,6 +106,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
+        function adjustFontSize() {
+<!--            영화 - 6,500원-->
+<!--TV - 회당 1,500원-->
+<!--책 - 책가격-->
+<!--웹툰 - 회당 200원 -->
+        }
         function updateRating(rating) {
             document.getElementById("Rating").innerText = "⭐" + rating;
         }
@@ -139,7 +119,6 @@
         $('.btn-show-popup-1').click(function () {
             $('html').addClass('popup-1-active');
             $('textarea.body').focus();
-            swiper.detachEvents();
         });
 
 
@@ -148,7 +127,6 @@
             swiper.attachEvents();
 
         });
-
 
         $('.popup-box-1 > .popup').click(function (e) {
             e.stopPropagation();

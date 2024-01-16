@@ -1,13 +1,34 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout2}">
+<html layout:decorate="~{/member/my_page_layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{member/my_page.css}">
 </head>
 <body>
-<div layout:fragment="content">
+<div layout:fragment="profileContent" style="width: 85%; height: 100%">
 
+    <div style="margin-top: 60px; text-align: center">
+        <div style="height: 270px; width: 340px; margin-left: 500px;">
+            <img th:src="${member.getProfileImage()}" alt="프로필 이미지"
+                 style="min-height: 427px; max-height: 427px; min-width: 640px; max-width: 640px">
+        </div>
+
+        <div class="info" style="font-size: 20px; margin-top: 200px; margin-left: -150px;">
+            <div style="margin-bottom: 5px;">
+                <span style="color : #868e96;">아이디 :</span>
+                <span th:text="${member.getUsername()}" style="color : #868e96;"></span>
+            </div>
+            <div style="margin-bottom: 5px;">
+                <span style="color : #868e96;">닉네임 :</span>
+                <span th:text="${member.getNickname()}" style="color : #868e96;"></span>
+            </div>
+            <div style="margin-bottom: 5px;">
+                <span style="color : #868e96;">이메일 :</span>
+                <span th:text="${member.getEmail()}" style="color : #868e96;"></span>
+            </div>
+        </div>
+    </div>
 </div>
-
 </body>
 </html>
