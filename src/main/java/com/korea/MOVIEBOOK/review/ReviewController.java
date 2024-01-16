@@ -29,13 +29,13 @@ public class ReviewController {
     @GetMapping("/create/drama")
     public String createDramaReview(@RequestParam("dramaId") Long dramaId, @RequestParam("comment") String comment, @RequestParam("rating") Double rating) {
         this.reviewService.saveDramaReview(dramaId, comment, rating);
-        return "redirect:/drama/" + dramaId;  // 수정된 부분
+        return "redirect:/drama/detail/" + dramaId;
     }
 
     @GetMapping("/create/movie")
     public String createMovieReview(@RequestParam("movieCD") String movieCD, @RequestParam("comment") String comment, @RequestParam("rating") Double rating) {
         this.reviewService.saveMovieReview(movieCD, comment, rating);
-        return "redirect:/movie/detail?movieCD=" + movieCD;
+        return "redirect:/movie/detail/" + movieCD;
     }
 
     @GetMapping("/create/book")
@@ -47,7 +47,7 @@ public class ReviewController {
     @GetMapping("/create/webtoon")
     public String createWebtoonReview(@RequestParam("webtoonId") Long webtoonId, @RequestParam("comment") String comment, @RequestParam("rating") Double rating) {
         this.reviewService.saveWebtoonReview(webtoonId, comment, rating);
-        return "redirect:/webtoon/detail?webtoonId=" + webtoonId;
+        return "redirect:/webtoon/detail/" + webtoonId;
     }
 
 //<<<<<<< HEAD

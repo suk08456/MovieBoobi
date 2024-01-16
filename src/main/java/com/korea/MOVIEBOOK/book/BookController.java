@@ -28,7 +28,7 @@ public class BookController {
     private final MemberService memberService;
     private final PaymentService paymentService;
 
-    @GetMapping("/mainPage")
+    @GetMapping("")
     public String mainPage(Model model) {
         List<Book> bestSellerList = bookService.getBestSellerList();
         bestSellerList.sort(Comparator.comparing(Book::getBestRank));

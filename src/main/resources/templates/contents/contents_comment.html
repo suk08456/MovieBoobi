@@ -56,8 +56,8 @@
                 var commentValue = $('textarea.body').val();
                 var movieCD = $('input.movieCD').val();
                 var isbn = $('input.isbn').val();
-                var dramaCode = $('input.dramaCode').val();
-                var wetoonCode = $('input.wetoonCode').val();
+                var dramaId = $('input.dramaCode').val();
+                var webtoonId = $('input.wetoonCode').val();
 
                 var rating = document.getElementById("Rating").innerText.replace("⭐", "");
                 if (rating == "") {
@@ -68,10 +68,10 @@
                     window.location.href = '/review/create/movie?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
                 } else if(isbn != null){
                     window.location.href = '/review/create/book?isbn=' + isbn + '&comment=' + commentValue + '&rating=' + rating;
-                } else if(dramaCode != null){
-                    window.location.href = '/review/create/book?isbn=' + isbn + '&comment=' + commentValue + '&rating=' + rating;
-                } else if(wetoonCode != null){
-                    window.location.href = '/review/create/webtoon?wetoonCode=' + wetoonCode + '&comment=' + commentValue + '&rating=' + rating;
+                } else if(dramaId != null){
+                    window.location.href = '/review/create/drama?dramaId=' + dramaId + '&comment=' + commentValue + '&rating=' + rating;
+                } else if(webtoonId != null){
+                    window.location.href = '/review/create/webtoon?webtoonId=' + webtoonId + '&comment=' + commentValue + '&rating=' + rating;
                 }
 
             }
