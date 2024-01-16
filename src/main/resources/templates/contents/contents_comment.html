@@ -19,7 +19,7 @@
                     <button class="modal_close_btn" style="color : red;">X</button>
                 </div>
                 <div style="display : flex; align-items : center;">
-                    <span id="movieTitle" th:text="${contentsDTOS.title}"
+                    <span id="Title" th:text="${contentsDTOS.title}"
                           style="text-align : center; font-weight: bold; color: black; white-space: nowrap; margin-top : 2px;"></span>
                     <button class="btn-close"></button>
                 </div>
@@ -28,7 +28,10 @@
                      <textarea class="body"
                                style="height : 369px; margin-bottom : 5px; background : white;"
                                oninput="updateCharacterCount()"> </textarea>
-<!--                    <input class="movieCD" th:value="${contentsDetail.movieCode}" type="hidden">-->
+                    <input class="movieCD" th:if="${contentsDTOS.movieCode}"  th:value="${contentsDTOS.movieCode}" type="hidden">
+                    <input class="isbn" th:if="${contentsDTOS.isbn}"  th:value="${contentsDTOS.isbn}" type="hidden">
+                    <input class="dramaCode" th:if="${contentsDTOS.dramaCode}"  th:value="${contentsDTOS.dramaCode}" type="hidden">
+                    <input class="wetoonCode" th:if="${contentsDTOS.wetoonCode}"  th:value="${contentsDTOS.wetoonCode}" type="hidden">
                 </form>
                 <div style="margin-left : 74%; display : flex;">
                     <button class="w-btn" style="margin-right : 5px;" onclick="saveComment();"> 저장</button>
@@ -52,12 +55,25 @@
             function saveComment() {
                 var commentValue = $('textarea.body').val();
                 var movieCD = $('input.movieCD').val();
+                var isbn = $('input.isbn').val();
+                var dramaCode = $('input.dramaCode').val();
+                var wetoonCode = $('input.wetoonCode').val();
+
                 var rating = document.getElementById("Rating").innerText.replace("⭐", "");
                 if (rating == "") {
                     alert("별점을 선택해주세요");
                     return;
                 }
-                window.location.href = '/review/create/movie?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
+                if(movieCD != null){
+                    window.location.href = '/review/create/movie?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
+                } else if(isbn != null){
+                    window.location.href = '/review/create/book?isbn=' + isbn + '&comment=' + commentValue + '&rating=' + rating;
+                } else if(dramaCode != null){
+                    window.location.href = '/review/create/book?isbn=' + isbn + '&comment=' + commentValue + '&rating=' + rating;
+                } else if(wetoonCode != null){
+                    window.location.href = '/review/create/webtoon?wetoonCode=' + wetoonCode + '&comment=' + commentValue + '&rating=' + rating;
+                }
+
             }
 
             function updateCharacterCount() {
