@@ -6,20 +6,25 @@
 </head>
 <body>
 <div layout:fragment="profileContent" style="width: 85%; height: 100%">
-    <!--    <div>-->
-    <!--        <h1>회원 정보 수정</h1>-->
-    <!--    </div>-->
+
     <div class="updatenm" style="margin: 280px 0px 0px 740px;}">
-        <form th:action="@{/member/changeInformation}" method="post" th:object="${nicknameForm}">
+        <form th:action="@{/member/changeInformation}" method="post" th:object="${nicknameForm}" style="margin-left: -685px; margin-top: -210px;">
             <div role="alert" th:if="${#fields.hasAnyErrors()}">
                 <div th:replace="~{form_errors :: formErrorsFragment}"></div>
             </div>
-            <div class="mb-3">
-                <label for="newNickname" class="form-label">변경할 닉네임</label>
-                <input type="nickname" id="newNickname" th:field="*{newNickname}"
-                       name="newNickname" class="form-control">
-            </div>
-            <input type="button" th:value="변경하기" onclick="updatenm(this)">
+            <label class="form-control" style="margin-bottom: 30px;">
+                <span class="label-text" style="font-size: large; font-weight: bold;">현재 닉네임</span>
+                <input type="text" th:placeholder="${member.getNickname()}" class="input input-bordered" disabled />
+            </label>
+            <label class="form-control" style="margin-bottom: 30px;">
+                <div class="label">
+                    <span class="label-text"  style="font-size: large; font-weight: bold;">변경할 닉네임</span>
+                </div>
+                <input type="nickname" placeholder="변경할 닉네임을 입력해주세요." id="newNickname" th:field="*{newNickname}"
+                       style="height: 70px; width: 80%; margin-bottom: 30px;" name="newNickname"
+                       class="input input-bordered"/>
+            </label>
+            <input type="button" class="input input-bordered" th:value="변경하기" style="background: #D2E1FF; margin-left: 75%;" onclick="updatenm(this)">
         </form>
         <script>
             function updatenm(input) {

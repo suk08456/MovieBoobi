@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{/member/my_page_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="profileContent">
+
+    <form th:action="@{/member/delete}" method="post" th:object="${passwordResetForm}"
+          style="margin-left: 50px; margin-top: 60px;">
+
+        <div role="alert" th:if="${#fields.hasAnyErrors()}">
+            <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+        </div>
+        <label class="form-control" style="margin-bottom: 20px;">
+            <div class="label">
+                <span class="label-text" style="font-size: large; font-weight: bold;">비밀번호 확인</span>
+            </div>
+            <input type="password" placeholder="변경할 닉네임을 입력해주세요." id="password" th:field="*{password}"
+                   style="height: 70px; width: 80%; margin-bottom: 20px;" name="password"
+                   class="input input-bordered"/>
+        </label>
+
+        <label class="form-control" style="margin-bottom: 30px;">
+            <div class="label">
+                <span class="label-text" style="font-size: large; font-weight: bold;">비밀번호 재확인</span>
+            </div>
+            <input type="password" placeholder="변경할 닉네임을 입력해주세요." id="passwordConfirm" th:field="*{passwordConfirm}"
+                   style="height: 70px; width: 80%; margin-bottom: 30px;" name="passwordConfirm"
+                   class="input input-bordered"/>
+        </label>
+
+        <input type="button" class="input input-bordered" th:value="회원탈퇴" style="background: #D2E1FF; margin-left: 75%;"
+               onclick="deleteMember(this)">
+    </form>
+
+    <script>
+        function deleteMember(input) {
+            if (confirm("정말 탈퇴하시겠습니까?")) {
+                input.form.submit();
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

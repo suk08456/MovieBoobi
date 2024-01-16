@@ -30,7 +30,7 @@ body {
 .layout2{
     border-bottom: 2.5px solid #DEE2E6;
     margin-top : 13px;
-    margin-bottom : 25px;
+    /*margin-bottom : 25px;*/
     padding-top: 0.5%;
     padding-bottom: 0.5%;
     width : 100%;

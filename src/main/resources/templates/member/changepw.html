@@ -6,30 +6,39 @@
 </head>
 <body>
 <div layout:fragment="profileContent" style="width: 85%; height: 100%">
-<!--    <div class="wrap">-->
-<!--        <h1>회원 정보 수정</h1>-->
-<!--    </div>-->
-    <div class="passwordch">
+
+    <div class="passwordch" style="margin-left: 50px; margin-top: 60px;">
         <form th:action="@{/member/changePw}" method="post" th:object="${passwordChangeForm}">
             <div role="alert" th:if="${#fields.hasAnyErrors()}">
                 <div th:replace="~{form_errors :: formErrorsFragment}"></div>
             </div>
-            <div class="mb-3">
-                <label for="oldPassword" class="form-label">현재 비밀번호</label>
-                <input type="password" id="oldPassword" th:field="*{oldPassword}"
-                       name="oldPassword" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">새 비밀번호</label>
-                <input type="password" id="password" th:field="*{password}"
-                       name="password" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="passwordConfirm" class="form-label">비밀번호 확인</label>
-                <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}"
-                       name="passwordConfirm" class="form-control">
-            </div>
-            <input type="button" th:value="비밀번호변경" onclick="changepw(this)">
+            <label class="form-control">
+                <div class="label">
+                    <span class="label-text" style="font-size: large; font-weight: bold;">현재 비밀번호</span>
+                </div>
+                <input type="password" placeholder="현재 비밀번호를 입력해주세요." id="oldPassword" th:field="*{oldPassword}"
+                       style="height: 70px; width: 80%; margin-bottom: 30px;" name="oldPassword" class="input input-bordered"/>
+            </label>
+
+
+            <label class="form-control">
+                <div class="label">
+                    <span class="label-text" style="font-size: large; font-weight: bold;">변경할 비밀번호</span>
+                </div>
+                <input type="password" placeholder="변경할 비밀번호를 입력해주세요." id="password" th:field="*{password}"
+                       style="height: 70px; width: 80%; margin-bottom: 30px;" name="password" class="input input-bordered"/>
+            </label>
+
+
+            <label class="form-control">
+                <div class="label">
+                    <span class="label-text" style="font-size: large; font-weight: bold;">변경할 비밀번호 확인</span>
+                </div>
+                <input type="password" placeholder="변경할 비밀번호를 다시 입력해주세요." id="passwordConfirm"
+                       th:field="*{passwordConfirm}"
+                       style="height: 70px; width: 80%; margin-bottom: 30px;" name="passwordConfirm" class="input input-bordered"/>
+            </label>
+            <input type="button" class="input input-bordered" th:value="비밀번호변경" style="background: #D2E1FF; margin-top: 25px; margin-left: 74%;" onclick="changepw(this)">
         </form>
     </div>
 

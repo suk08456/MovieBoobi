@@ -35,7 +35,7 @@
                 </div>
                 <div class="swiper-wrapper">
                     <div class="swiper-slide"
-                         style="display:flex; font-size: 18px; align-items: center; height : 100%; margin-left: 5%;"
+                         style="display:flex; font-size: 18px; align-items: center; height : 100%;"
                          th:each="webtoonList : ${webtoonListList}">
                         <form style="display : grid; margin-left:15px;"
                               th:action="@{/webtoon/detail}" method="post" th:each="webtoon : ${webtoonList}">
