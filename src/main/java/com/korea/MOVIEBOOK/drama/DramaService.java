@@ -1,9 +1,12 @@
 package com.korea.MOVIEBOOK.drama;
 
+import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.review.Review;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -30,6 +33,35 @@ public class DramaService {
 
     public Drama findByDramaId(Long dramaId){
         return this.dramaRepository.findById(dramaId).get();
+    }
+
+    public List<List<String>> getActorListList(Drama drama) {
+
+        String director = "";
+        if(!drama.getDirector().isEmpty()) {
+            director = drama.getDirector() + "(감독)";
+        }
+        String actor = drama.getActor();
+        String[] actors = new String[]{};
+        if(!actor.isEmpty()) {
+            actors = actor.split(",");
+        }
+        List<String> actorList = new ArrayList<>(Arrays.asList(actors));
+
+        actorList.add(director);
+
+        List<List<String>>actorListList = new ArrayList<>();
+
+        Integer chunkSize = 8;
+        Integer totalElements = actorList.size();
+
+        for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
+            int start = i * chunkSize;
+            int end = Math.min((i + 1) * chunkSize, totalElements);
+            actorListList.add(actorList.subList(start, end));
+        }
+
+        return actorListList;
     }
 
 }

@@ -22,7 +22,7 @@ public class WebtoonDTO {
 
     private String author;
 
-    private String img;
+    private String imageUrl;
 
     @Column(name = "update_days")
     private List<String> updateDays;

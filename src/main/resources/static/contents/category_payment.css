@@ -34,3 +34,8 @@
 .w-btn-outline:active {
     transform: scale(1.5);
 }
+
+.writing-co:hover .writing{
+    transform : rotate(-10deg);
+    cursor : pointer;
+}
