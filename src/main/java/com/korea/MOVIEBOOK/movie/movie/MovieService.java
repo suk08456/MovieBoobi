@@ -159,7 +159,6 @@ public class MovieService {
         movie.setMovieweekly(movieWeekly);
         this.movieRepository.save(movie);
     }
-
     public List<List<String>> getActorListList(Movie movie) {
 
         String director = "";

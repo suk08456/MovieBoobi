@@ -1,7 +1,4 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
-
-
-import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.webtoon.days.Day;
 import com.korea.MOVIEBOOK.webtoon.days.DayService;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;

@@ -2,7 +2,6 @@ package com.korea.MOVIEBOOK.member;
 
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentService;
-import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -29,8 +28,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
-
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
 @RequiredArgsConstructor
 @Controller
@@ -254,7 +251,4 @@ public class MemberController {
         bindingResult.rejectValue("passwordConfirm", "passwordInCorrect",
                 "패스워드가 일치하지 않습니다.");
     }
-
-
-
 }
