@@ -51,7 +51,8 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
             member.setProviderId(providerId);
             member.setNickname(oAuth2User.getAttribute("name"));
             member.setEmail(oAuth2User.getAttribute("email"));
-            member.setProfileImage(oAuth2User.getAttribute("profileImage"));
+            String defaultImageUrl = getDefaultImageUrl(provider);
+            member.setProfileImage(defaultImageUrl);
 
             if ("naver".equals(provider)) {
                 Map<String, Object> naverResponse = (Map<String, Object>) oAuth2User.getAttributes().get("response");
@@ -70,5 +71,11 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
             memberRepository.save(member);
         }
         return oAuth2User;
+    }
+
+    private String getDefaultImageUrl(String provider) {
+        if (provider.equals("google")) {
+        }
+        return "/Member/defaultGoogleImage.jpg";
     }
 }
