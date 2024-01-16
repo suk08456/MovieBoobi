@@ -89,6 +89,11 @@ public class ReviewService {
     public Review findReviewById(Long id) {
         return reviewRepository.findById(id).orElse(null);
     }
+
+    public List<Review> getAllReview() {
+        return reviewRepository.findAll();
+    }
+
     public void deleteReviewById(Long id) {
         reviewRepository.deleteById(id);
     }

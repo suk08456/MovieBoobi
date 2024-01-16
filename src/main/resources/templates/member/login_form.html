@@ -7,7 +7,7 @@
 </head>
 <body layout:fragment="content">
 <div style="margin-top:10%; border:2px solid black; padding: 50px; border-radius: 10px">
-<form th:action="@{/member  /login}" method="post"  >
+<form th:action="@{/member/login}" method="post"  >
   <!-- 오류 메시지가 있다면 아래의 div에서 보여줍니다. -->
   <div th:if="${param.error}" class="alert alert-danger">
     사용자ID 또는 비밀번호를 확인해 주세요.

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<nav th:fragment="commentLayout">
+    <div class="comment_modal">
+        <button class="writing-co" id="comment_popup_open_btn" onclick="logincheck();">
+            <img class="down" src="/imgs/writing.png"
+                 style="width : 40px; height : 40px; margin-left : 7px;">
+            <p style="margin-top : 18px;" class="id=btn-modal">코멘트</p>
+        </button>
+        <div id="comment_modal" style="display: none; border-radius : 12px 0px 0px 0px;">
+            <div class="modal-window">
+                <div style="display : flex;">
+                    <div id="Rating"></div>
+                    <span id="charCount" style="margin-left : auto;"></span>
+                    <button class="modal_close_btn" style="color : red;">X</button>
+                </div>
+                <div style="display : flex; align-items : center;">
+                    <span id="movieTitle" th:text="${contentsDTOS.title}"
+                          style="text-align : center; font-weight: bold; color: black; white-space: nowrap; margin-top : 2px;"></span>
+                    <button class="btn-close"></button>
+                </div>
+                <form class="comment_area" id="comment_area" name="comment_area"
+                      style="display: flex; flex-direction: column;">
+                     <textarea class="body"
+                               style="height : 369px; margin-bottom : 5px; background : white;"
+                               oninput="updateCharacterCount()"> </textarea>
+<!--                    <input class="movieCD" th:value="${contentsDetail.movieCode}" type="hidden">-->
+                </form>
+                <div style="margin-left : 74%; display : flex;">
+                    <button class="w-btn" style="margin-right : 5px;" onclick="saveComment();"> 저장</button>
+                </div>
+            </div>
+        </div>
+        <script>
+
+            var login_check = [[${login}]] == true ? true : false;
+
+            function logincheck() {
+                if (login_check == false) {
+                    alert("로그인 후 사용해주세요");
+                } else {
+                    modal('comment_modal');
+                    calculateRemainingCoins();
+                    $('textarea.body').focus();
+                }
+            }
+
+            function saveComment() {
+                var commentValue = $('textarea.body').val();
+                var movieCD = $('input.movieCD').val();
+                var rating = document.getElementById("Rating").innerText.replace("⭐", "");
+                if (rating == "") {
+                    alert("별점을 선택해주세요");
+                    return;
+                }
+                window.location.href = '/review/create/movie?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
+            }
+
+            function updateCharacterCount() {
+                var charCount = $('textarea.body').val().length;
+
+                var maxChar = 1000;
+
+                var remainingChar = maxChar - charCount;
+
+                $('#charCount').text('('+ remainingChar + ' / ' + 1000 + ')');
+            }
+
+            var bg = document.createElement('div');
+            var form = document.querySelector('#comment_area');
+
+
+            function adjustFontSize() {
+                const titleElement = document.getElementById("movieTitle");
+                const containerWidth = 345;
+
+                let fontSize = 16;
+                titleElement.style.fontSize = fontSize + "px";
+
+                while (titleElement.offsetWidth > containerWidth) {
+                    fontSize--;
+                    titleElement.style.fontSize = fontSize + "px";
+                }
+            }
+
+            window.addEventListener("load", adjustFontSize);
+
+        //////////////////////////////////////////// 모달창 /////////////////////////////////////////////
+
+         function modal(id) {
+            var zIndex = 9999;
+            var modal = document.getElementById(id);
+
+            bg.setStyle({
+                position: 'fixed',
+                zIndex: zIndex,
+                left: '0px',
+                top: '0px',
+                width: '100%',
+                height: '100%',
+                overflow: 'auto',
+                backgroundColor: 'rgba(0,0,0,0.4)'
+            });
+            document.body.append(bg);
+
+            originalModalContent = modal.innerHTML;
+
+            modal.querySelector('.modal_close_btn').addEventListener('click', function() {
+                bg.remove();
+                modal.innerHTML = originalModalContent;
+                modal.style.display = 'none';
+            });
+
+            modal.setStyle({
+                position: 'fixed',
+                display: 'block',
+                boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                zIndex: zIndex + 1,
+                top: '50%',
+                left: '50%',
+                height : '500px',
+                width : '390px',
+                background : 'white',
+                padding : '10px',
+                transform: 'translate(-50%, -50%)',
+                msTransform: 'translate(-50%, -50%)',
+                webkitTransform: 'translate(-50%, -50%)'
+            });
+         }
+
+         Element.prototype.setStyle = function(styles) {
+            for (var k in styles) this.style[k] = styles[k];
+            return this;
+         };
+
+         var popup = document.getElementById('comment_popup_open_btn');
+         //////////////////////////////////////////////////////////////////////////////////////////
+        </script>
+    </div>
+</nav>
+</body>
+</html>

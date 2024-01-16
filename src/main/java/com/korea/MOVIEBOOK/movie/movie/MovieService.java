@@ -1,4 +1,5 @@
 package com.korea.MOVIEBOOK.movie.movie;
+import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.movie.MovieDTO;
 import com.korea.MOVIEBOOK.movie.daily.MovieDaily;
 import com.korea.MOVIEBOOK.movie.daily.MovieDailyRepository;
@@ -11,10 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -160,5 +158,34 @@ public class MovieService {
         Movie movie = this.movieRepository.findBymovieCode(movieCd);
         movie.setMovieweekly(movieWeekly);
         this.movieRepository.save(movie);
+    }
+
+    public List<List<String>> getActorListList(Movie movie) {
+
+        String director = "";
+        if(!movie.getDirector().isEmpty()) {
+            director = movie.getDirector() + "(감독)";
+        }
+        String actor = movie.getActor();
+        String[] actors = new String[]{};
+        if(!actor.isEmpty()) {
+            actors = actor.split(",");
+        }
+        List<String> actorList = new ArrayList<>(Arrays.asList(actors));
+
+        actorList.add(director);
+
+        List<List<String>>actorListList = new ArrayList<>();
+
+        Integer chunkSize = 8;
+        Integer totalElements = actorList.size();
+
+        for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
+            int start = i * chunkSize;
+            int end = Math.min((i + 1) * chunkSize, totalElements);
+            actorListList.add(actorList.subList(start, end));
+        }
+
+        return actorListList;
     }
 }
