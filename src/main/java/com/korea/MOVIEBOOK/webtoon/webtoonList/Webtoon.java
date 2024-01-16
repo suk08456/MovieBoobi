@@ -28,7 +28,7 @@ public class Webtoon {
 
     private String author;
 
-    private String img;
+    private String imageUrl;
 
     private String searchKeyword;
 
