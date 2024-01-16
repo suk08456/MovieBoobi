@@ -12,13 +12,11 @@ import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -206,7 +204,6 @@ public class MovieController {
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
-
         return "Movie/movie_detail";
     }
     //

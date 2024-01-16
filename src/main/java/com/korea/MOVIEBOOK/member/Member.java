@@ -6,12 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.security.Principal;
 import java.util.List;
@@ -52,35 +47,3 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Review> reviewList;
 }
-
-
-
-//    @PostMapping("/changeNickname")
-//    public String nicknameChange(@RequestParam("newNickname") String newNickname, Principal principal) {
-//        // 새로운 nickname이 유효한지 검증
-//        // 여기서는 간단하게 길이만 확인하는 예제
-//        if (newNickname.length() < 3 || newNickname.length() > 20) {
-//            // 유효하지 않은 경우에 대한 처리
-//            return "redirect:/mypage/profile?error";
-//        }
-//
-//        // 현재 로그인한 사용자의 정보를 가져옴
-//        String username = principal.getName();
-//        Member member = memberService.findByUsername(username);
-//
-//        // nickname 변경
-//        member.setNickname(newNickname);
-//        memberService.save(member);
-//
-//        // 변경 후 마이페이지로 리다이렉트
-//        return "redirect:/mypage/profile?success";
-//    }
-//else {
-//        Customer customer = customerService.findByusername(principal.getName());
-//        if (passwordEncoder.matches(passwordChangeForm.getOldPassword(), customer.getPassword())) {
-//        customerService.changePassword(customer, passwordChangeForm.getOldPassword());
-//        } else {
-//        bindingResultReject(bindingResult);
-//        return "member/changePwForm";
-//        }
-//        }

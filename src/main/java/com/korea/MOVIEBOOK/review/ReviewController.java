@@ -50,9 +50,6 @@ public class ReviewController {
         return "redirect:/webtoon/detail?webtoonId=" + webtoonId;
     }
 
-//<<<<<<< HEAD
-//    @GetMapping("/detail/{id}")
-//=======
 ////    @GetMapping("/webtoon/review/create")
 ////    public String createWebtoonReview(@RequestParam("webtoonId") Long webtoonId, @RequestParam("comment") String
 ////            comment, @RequestParam("rating") Double rating) {
@@ -61,24 +58,12 @@ public class ReviewController {
 ////    }
 //
 //    @GetMapping("/review/detail/{id}")
-//>>>>>>> pay
 //    public String DramaReviewDetail(@PathVariable("id") Long reviewId, Model model) {
 //        Review review = reviewService.findReviewById(reviewId);
 //        if (review == null) {
 //            return "redirect:/error";
 //        }
 //        model.addAttribute("review", review);
-//<<<<<<< HEAD
-//        // 해당 리뷰의 상세 정보를 보여주는 템플릿 경로를 반환합니다.
-//        return "/review/review_detail";
-//    }
-//
-//    @GetMapping("/list/{dramaId}")
-//    public String reviewList(@PathVariable("dramaId") Long dramaId, Model model) {
-//        if (dramaId == null) {
-//            model.addAttribute("error", "error");
-//            return "error";
-//=======
 //        return "/drama_review/review_detail";
 //    }
 //
@@ -89,37 +74,18 @@ public class ReviewController {
 //        if (reviews.isEmpty()) {
 //            model.addAttribute("errorMessage", "더 이상 리뷰가 없습니다.");
 //            return "drama/drama_detail";
-//>>>>>>> pay
 //        }
 //        List<Review> review = reviewService.getReviewByDramaId(dramaId);
 //        model.addAttribute("review", review);
 //        return "review/review_list";
 //    }
 //
-//<<<<<<< HEAD
-//    @GetMapping("/delete/{id}")
-//=======
 //    @GetMapping("/review/delete/{id}")
-//>>>>>>> pay
 //    public String deleteDramaReview(@PathVariable("id") Long id) {
 //        Long dramaId = reviewService.getDramaIdByReviewId(id);
 //        reviewService.deleteReviewById(id);
 //        return "redirect:/drama/" + dramaId;
 //    }
-//<<<<<<< HEAD
-////    @GetMapping("/review/edit/{id}")
-////    public String showEditDramaReviewForm(@PathVariable Long id, Model model) {
-////        Review review = reviewService.findReviewById(id);
-////        model.addAttribute("review", review);
-////        return "drama_review/review_edit";
-////    }
-////
-////    @PostMapping("/review/update")
-////    public String updateDramaReview(@ModelAttribute Review updateReview) {
-////        reviewService.updateReview(updateReview);
-////        return "redirect:/review/detail/" + updateReview.getId();
-////    }
-//=======
 //
 //    @GetMapping("/review/edit/{id}")
 //    public String showEditDramaReviewForm(@PathVariable Long id, Model model) {
@@ -133,5 +99,4 @@ public class ReviewController {
 //        reviewService.updateReview(updateReview);
 //        return "redirect:/review/detail/" + updateReview.getId();
 //    }
-
 }

@@ -2,9 +2,11 @@
 <html lang="ko">
 <head>
     <meta charset="utf-8">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" th:href="@{/layout2.css}">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.5.0/dist/full.min.css" rel="stylesheet" type="text/css"/>
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>MOVIE&BOOK</title>
+    <link rel="icon" href="/etc/cat.gif">
 </head>
 <body>
 <div class="layout2-co">
@@ -18,8 +20,8 @@
         <div class="menu1" style="display: flex; align-items: center;">
             <li style="display: flex;">
                 <a class="category" style="margin-left : 30px;" href="/movie">영화</a>
-                <a class="category" th:href="@{/drama/dramaList}">TV</a>
-                <a class="category" href="/book/mainPage">책</a>
+                <a class="category" href="#">TV</a>
+                <a class="category" href="/book">책</a>
                 <a class="category" href="/webtoon/list">웹툰</a>
             </li>
         </div>
@@ -30,14 +32,25 @@
                 <input class="search" id="search" type="search" name="" style="width: 100%; background: #dddedf;"
                        placeholder="콘텐츠,인물,컬렉션, 유저를 검색해보세요." value="">
             </div>
-            <div style="display: flex; flex-direction: row; align-items: center; margin-left: 5%;">
+            <div style="display: flex; flex-direction: row; align-items: center; margin-left: 5%; font-weight: bold;">
                 <img src="/etc/coin.png" style="height : 20px;">
-                <a style="color : #000000" href="/payment">코인충전</a>
-                <a style="color : #000000; margin-left : 2%;" href="">고객센터</a>
-                <a style="color : #000000; margin-left : 2%;" sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
-                <a style="color : #000000; margin-left : 2%;" sec:authorize="isAuthenticated()" th:href="@{/member/mypage}">마이페이지</a>
-                <a style="color : #000000; margin-left : 2%;" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
-                <a th:if="${#authorization.expression('isAnonymous()')}" style="color : #000000; margin-left : 2%;" th:href="@{/member/signup}">회원가입</a>
+                <a style="color : #000000; padding: 4px;" href="/payment">코인충전</a>
+                <div class="dropdown dropdown-hover">
+                    <a tabindex="0" role="button" th:href="@{/customerSupport}" style="color : #000000; padding: 4px;">고객센터</a>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
+                        style="margin-left: -35px;">
+                        <a class="btn">공지사항</a>
+                        <a class="btn">1:1문의</a>
+                        <a class="btn">내 질문</a>
+                        <a class="btn">자주 묻는 질문</a>
+                    </ul>
+                </div>
+                <a style="color : #000000; padding: 4px;" sec:authorize="isAnonymous()"
+                   th:href="@{/member/login}">로그인</a>
+                <a style="color : #000000; padding: 4px;" sec:authorize="isAuthenticated()" th:href="@{/member/mypage}">마이페이지</a>
+                <a style="color : #000000; padding: 4px;" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
+                <a th:if="${#authorization.expression('isAnonymous()')}" style="color : #000000; margin-left : 2%;"
+                   th:href="@{/member/signup}">회원가입</a>
             </div>
         </div>
     </div>
@@ -49,7 +62,7 @@
         <header class="footer-title">Services</header>
         <a class="link link-hover" href="/movie">Movie</a>
         <a class="link link-hover" href="/drama/dramaList">TV</a>
-        <a class="link link-hover" href="/book/mainPage">Book</a>
+        <a class="link link-hover" href="/book">Book</a>
         <a class="link link-hover" href="/webtoon/list">Webtoon</a>
     </nav>
     <nav>
@@ -68,7 +81,7 @@
             <a>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
                     <a href="https://www.youtube.com/@user-jc7ek9jk3l">
-                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+                        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
                     </a>
                 </svg>
             </a>
@@ -274,4 +287,3 @@
        ////////////////////////////////////////////////  마우스 효과 끝  ////////////////////////////////////////////////////
 </script>
 </html>
-
