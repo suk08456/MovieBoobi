@@ -15,7 +15,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String paymentCompany;     // 결제사
+    private String paymentCompany;    // 결제사
 
     private String paidAmount;        // 결제 금액
 

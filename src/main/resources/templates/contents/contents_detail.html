@@ -12,8 +12,8 @@
     <div class="content-co" style="width : 1300px; height : 1540px; margin : auto; margin-top : -25px;">
         <div class="post-co" style="display : flex; flex-direction : row; ">
             <div style="margin-top: 30px; color: #868e96;" th:if="${contentsDTOS != null}">
-                <img th:if="${contentsDTOS.imageUrl != null and gubun == 'drama'}" th:src="${'/dramaImage' + contentsDTOS.imageUrl}" style="width: 300px;">
-                <img th:if="${contentsDTOS.imageUrl != null and gubun != 'drama'}" th:src="${contentsDTOS.imageUrl}" style="width: 300px;">
+                <img th:if="${contentsDTOS.imageUrl != null and category == 'drama'}" th:src="${'/dramaImage' + contentsDTOS.imageUrl}" style="width: 300px;">
+                <img th:if="${contentsDTOS.imageUrl != null and category != 'drama'}" th:src="${contentsDTOS.imageUrl}" style="width: 300px;">
             </div>
             <div style="display : flex; flex-direction : column; width : 75%; margin-left : 25px;">
                 <span th:if="${contentsDTOS.title}" th:text="${contentsDTOS.title}"
@@ -63,7 +63,7 @@
                     <span th:if="${contentsDTOS.nations}" th:text="${'·' + contentsDTOS.nations}"></span>
                     <span th:if="${contentsDTOS.viewingRating}" th:text="${'·' + contentsDTOS.viewingRating}"></span>
                     <span th:if="${movieruntime}" th:text="${'(' + movieruntime + ')'}"></span>
-                    <span th:if="${contentsDTOS.pubdate}" th:text="${'출간일 : ' + #temporals.format(contentsDTOS.pubdate, 'yyyy-MM-dd') + '·'}"></span>
+                    <span th:if="${contentsDTOS.pubdate}" th:text="${'출간일 : ' + #temporals.format(contentsDTOS.pubdate, 'yyyy-MM-dd') + ' /'}"></span>
                     <span th:if="${contentsDTOS.pricestandard}" th:text="${'소비자 가격 : ' + #numbers.formatDecimal(contentsDTOS.pricestandard, 0,  'COMMA', 0, 'POINT') + '₩' }"></span>
                     <span th:if="${contentsDTOS.updateDays}" th:text="${'연재일 : ' + contentsDTOS.updateDays}"></span>
                 </div>
@@ -110,13 +110,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        function adjustFontSize() {
-    <!--            영화 - 6,500원-->
-    <!--TV - 회당 1,500원-->
-    <!--책 - 책가격-->
-    <!--웹툰 - 회당 200원 -->
-        }
-
         function updateRating(rating) {
             document.getElementById("Rating").innerText = "⭐" + rating;
         }

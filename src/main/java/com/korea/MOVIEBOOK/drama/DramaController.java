@@ -60,7 +60,7 @@ public class DramaController {
                 .average()
                 .orElse(0);
 
-        model.addAttribute("gubun", "drama");
+        model.addAttribute("category", "drama");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("author_actor_ListList", actorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
@@ -105,7 +105,7 @@ public class DramaController {
                 .average()
                 .orElse(0);
 
-        model.addAttribute("gubun", "drama");
+        model.addAttribute("category", "drama");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("author_actor_ListList", actorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));

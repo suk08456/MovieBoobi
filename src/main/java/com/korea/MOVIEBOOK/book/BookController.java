@@ -83,7 +83,7 @@ public class BookController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
-
+        model.addAttribute("category", "book");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
         model.addAttribute("author_actor_ListList", authorListList);
@@ -127,6 +127,7 @@ public class BookController {
     @GetMapping("/detail/{isbn}")
     public String bookDetail1(@PathVariable("isbn") String isbn, Model model,Principal principal) {
         Book book = bookService.findByIsbn(isbn);
+        ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
         List<Review> reviews = book.getReviewList().stream().limit(10).collect(Collectors.toList());
 
@@ -136,7 +137,8 @@ public class BookController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
-        model.addAttribute("book", book);
+        model.addAttribute("category", book);
+        model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
         model.addAttribute("authorListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
@@ -163,6 +165,6 @@ public class BookController {
             model.addAttribute("sum","");
         }
 
-        return "book/bookDetail";
+        return "contents/contents_detail";
     }
 }

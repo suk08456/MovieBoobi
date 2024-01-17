@@ -54,14 +54,14 @@ public class PaymentController {
     public String kakaoPayCheck(@RequestBody PaymentDTO paymentDTO) {
         String content = paymentDTO.getO_paidAmount() + "Coin 충전";
         this.paymentService.savePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content);
-        return "redriect:/kakaoPay";
+        return "redirect:/payment";
     }
 
     @PostMapping("/tossPayCheck")
     public String tossPayCheck(@RequestBody PaymentDTO paymentDTO) {
         String content = paymentDTO.getO_paidAmount() + "Coin 충전";
         this.paymentService.savePayment(paymentDTO.getM_id(), "toss", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content);
-        return "redriect:/kakaoPay";
+        return "redirect:/payment";
     }
 //    @PostMapping("/kakaoPayCheck")
 //    public String saveKakaoPaymentData(@RequestParam("m_id") Long id,

@@ -126,6 +126,7 @@ public class MovieController {
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
 
+        model.addAttribute("category", "movie");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("author_actor_ListList", actorListList);
         model.addAttribute("movieruntime", movieruntime);
@@ -179,6 +180,7 @@ public class MovieController {
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
 
+        model.addAttribute("category", "movie");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("author_actor_ListList", actorListList);
         model.addAttribute("movieruntime", movieruntime);
