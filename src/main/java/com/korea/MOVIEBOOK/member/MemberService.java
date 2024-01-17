@@ -1,8 +1,10 @@
 package com.korea.MOVIEBOOK.member;
 
+import com.korea.MOVIEBOOK.member.EmailService;
+import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.member.MemberRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -83,5 +85,13 @@ public class MemberService {
     public void updateNickname(Member member, String nickname) {
         member.setNickname(nickname);
         memberRepository.save(member);
+    }
+
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
+    }
+
+    public Optional<Member> findById(Long id) {
+        return this.memberRepository.findById(id);
     }
 }
