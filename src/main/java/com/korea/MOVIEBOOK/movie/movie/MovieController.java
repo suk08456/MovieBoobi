@@ -2,14 +2,13 @@ package com.korea.MOVIEBOOK.movie.movie;
 
 import com.korea.MOVIEBOOK.ContentsController;
 import com.korea.MOVIEBOOK.ContentsDTO;
-import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.movie.daily.MovieDailyAPI;
 import com.korea.MOVIEBOOK.movie.MovieDTO;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeeklyAPI;
 import com.korea.MOVIEBOOK.payment.Payment;
-import com.korea.MOVIEBOOK.payment.PaymentService;
+import com.korea.MOVIEBOOK.payment.PaymentRepository;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class MovieController {
     private final MovieWeeklyAPI movieWeeklyAPI;
     private final MovieService movieService;
     private final ReviewService reviewService;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
     private final MemberService memberService;
     private final ContentsController contentsController;
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
@@ -137,7 +136,19 @@ public class MovieController {
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
+            if(payment.isPresent()){
+                model.addAttribute("paid","true");
+            } else {
+                model.addAttribute("paid","false");
+            }
+
+
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -191,7 +202,17 @@ public class MovieController {
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
+            if(payment.isPresent()){
+                model.addAttribute("paid","true");
+            } else {
+                model.addAttribute("paid","false");
+            }
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){

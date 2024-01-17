@@ -4,6 +4,7 @@ import com.korea.MOVIEBOOK.ContentsDTO;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.payment.PaymentRepository;
 import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
@@ -30,7 +31,7 @@ public class WebtoonController {
     private final WebtoonDayListService webtoonDayListService;
     private final ReviewService reviewService;
     private final ContentsController contentsController;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
     private final MemberService memberService;
 
 
@@ -132,7 +133,17 @@ public class WebtoonController {
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "webtoon", String.valueOf(webtoonId)));
+            if(payment.isPresent()){
+                model.addAttribute("paid","true");
+            } else {
+                model.addAttribute("paid","false");
+            }
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -175,7 +186,17 @@ public class WebtoonController {
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "webtoon", String.valueOf(webtoonId)));
+            if(payment.isPresent()){
+                model.addAttribute("paid","true");
+            } else {
+                model.addAttribute("paid","false");
+            }
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){

@@ -9,7 +9,9 @@
 <nav th:fragment="paymentLayout">
     <div class="payment_modal">
         <button class="down-co" id="popup_open_btn" onclick="loginStatus();">
-            <img class="down" src="/imgs/buy.png"
+            <img th:if="${paid == 'false'}" class="down" src="/imgs/buy.png"
+                 style="width : 40px; height : 40px; margin-left : 7px;">
+            <img th:if="${paid == 'true'}" class="down" src="/imgs/check.png"
                  style="width : 40px; height : 40px; margin-left : 7px;">
             <p style="margin-top : 18px;" class="id=btn-modal">구매하기</p>
         </button>
@@ -52,7 +54,10 @@
                                style="width : 95px; text-align : center; color : red;" readonly>
                         <span style="color : black;">Coin</span>
                     </div>
-<!--                    <input name="movieCD" th:value="${contentsDetail.movieCode}" type="hidden">-->
+                    <input class="contentsID" th:if="${contentsDTOS.movieCode}"  th:value="${contentsDTOS.movieCode}" type="hidden">
+                    <input class="contentsID" th:if="${contentsDTOS.isbn}"  th:value="${contentsDTOS.isbn}" type="hidden">
+                    <input class="contentsID" th:if="${contentsDTOS.dramaCode}"  th:value="${contentsDTOS.dramaCode}" type="hidden">
+                    <input class="contentsID" th:if="${contentsDTOS.wetoonCode}"  th:value="${contentsDTOS.wetoonCode}" type="hidden">
                 </form>
                 <div style="margin-left : 48%; margin-top : 46px; display : flex;">
                     <button onclick="pay();"><input title="Button push orange" class="button btnPush btnOrange" th:value="결제" style="letter-spacing : 0.2em; cursor : pointer;"></button>
@@ -65,7 +70,11 @@
             var bg = document.createElement('div');
             var form = document.querySelector('#coin_receipt');
             var category = '[[${category}]]';
+            var paid = '[[${paid}]]';
             var usedCoinsElement;
+            var contentsID = document.querySelector('.contentsID').value;
+
+
             if (category === 'movie') {
                 usedCoinsElement = document.querySelector('.usedCoins.movie');
             } else if (category === 'book') {
@@ -79,13 +88,13 @@
 
             var usedCoins = parseInt(usedCoinsElement.value.replace(/,/g, ''), 10);
             var remainingCoins = totalCoins - usedCoins;
-
-
             var login = [[${login}]] == true ? true : false;
 
             function loginStatus() {
                 if (login == false) {
                     alert("로그인 후 사용해주세요");
+                } else if (paid == "true") {
+                    alert("이미 결제완료한 콘텐츠입니다.");
                 } else {
                     modal('payment_modal');
                     calculateRemainingCoins();
@@ -102,7 +111,7 @@
                     }
                 } else {
                     if (form) {
-                        form.action = "/payment/category";
+                        form.action = "/payment/category/" + category + "/" + contentsID + "/" + usedCoins;
                         form.method = "post";
                         form.submit();
                     } else {

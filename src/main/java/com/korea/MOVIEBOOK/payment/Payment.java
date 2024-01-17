@@ -33,6 +33,10 @@ public class Payment {
     @Column(columnDefinition = "text")
     private String content;
 
+    private String contents;         // 결제한 컨텐츠 카테고리 ( movie,book,webtoon,drama)
+
+    private String contentsID;       // 결제한 컨텐츠 구분 값
+
     @ManyToOne
     private Member member;
 

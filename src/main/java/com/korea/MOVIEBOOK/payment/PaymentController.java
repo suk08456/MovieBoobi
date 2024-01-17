@@ -5,15 +5,14 @@ import com.korea.MOVIEBOOK.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
+
 import java.awt.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Controller
@@ -23,44 +22,44 @@ public class PaymentController {
     private final MemberService memberService;
 
     @GetMapping("/payment")
-    public String kakao(Model model, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
+    public String kakao(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page) {
         String providerID = principal.getName();
 
         Member member = this.memberService.findByproviderId(providerID);
-        if(member == null){
-            member =  this.memberService.getmember(providerID);
+        if (member == null) {
+            member = this.memberService.getmember(providerID);
         }
-        List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
         long sum = 0;
 
-        for(int i  = 0 ; i < payments.size(); i++){
-            if(payments.get(i).getContent().contains("충전")){
+        for (int i = 0; i < payments.size(); i++) {
+            if (payments.get(i).getContent().contains("충전")) {
                 sum += Long.valueOf(payments.get(i).getPaidAmount());
             } else {
                 sum -= Long.valueOf(payments.get(i).getPaidAmount());
             }
         }
 
-        Page<Payment> paging = this.paymentService.getPaymentsByMember(member,page);
+        Page<Payment> paging = this.paymentService.getPaymentsByMember(member, page);
 
 
-        model.addAttribute("member",member);
-        model.addAttribute("paging",paging);
-        model.addAttribute("sum",sum);
+        model.addAttribute("member", member);
+        model.addAttribute("paging", paging);
+        model.addAttribute("sum", sum);
         return "Payment/payment";
     }
 
     @PostMapping("/kakaoPayCheck")
     public String kakaoPayCheck(@RequestBody PaymentDTO paymentDTO) {
         String content = paymentDTO.getO_paidAmount() + "Coin 충전";
-        this.paymentService.savePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content);
+        this.paymentService.savePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content, "", "");
         return "redirect:/payment";
     }
 
     @PostMapping("/tossPayCheck")
     public String tossPayCheck(@RequestBody PaymentDTO paymentDTO) {
         String content = paymentDTO.getO_paidAmount() + "Coin 충전";
-        this.paymentService.savePayment(paymentDTO.getM_id(), "toss", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content);
+        this.paymentService.savePayment(paymentDTO.getM_id(), "toss", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content, "", "");
         return "redirect:/payment";
     }
 //    @PostMapping("/kakaoPayCheck")
@@ -82,16 +81,24 @@ public class PaymentController {
 //       return "redirect:/kakaoPay";
 //    }
 
-    @PostMapping("/payment/category")
-    public String paymentCatgory(Principal principal, @RequestParam("usedCoins") String paidAmount, @RequestParam("movieCD") String movieCD){
+    @PostMapping("/payment/category/{category}/{contentsID}/{usedCoins}")
+    public String paymentCatgory(Principal principal, @PathVariable("category") String category, @PathVariable("contentsID") String contentsID, @PathVariable("usedCoins") String paidAmount) {
         String providerID = principal.getName();
         String content = paidAmount + "Coin 사용";
 
         Member member = this.memberService.findByproviderId(providerID);
-        if(member == null){
-            member =  this.memberService.getmember(providerID);
+        if (member == null) {
+            member = this.memberService.getmember(providerID);
         }
-        this.paymentService.savePayment(member.getId(), "coin", paidAmount, "00000", "point", null, content);
-        return "redirect:/movie/detail?movieCD=" + movieCD;
+        this.paymentService.savePayment(member.getId(), "coin", paidAmount, "00000", "point", null, content, category, contentsID);
+
+        if (Objects.equals(category, "movie")) {
+            return "redirect:/movie/detail/" + contentsID;
+        } else if (Objects.equals(category, "book")) {
+            return "redirect:/book/detail/" + contentsID;
+        } else if (Objects.equals(category, "drama")) {
+            return "redirect:/drama/detail/" + contentsID;
+        }
+        return "redirect:/webtoon/detail/" + contentsID;
     }
 }
