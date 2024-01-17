@@ -61,63 +61,6 @@
 </html>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-    var swiper = new Swiper(".mySwiper", {
-      pagination: {
-        el: ".swiper-pagination",
-        type: "fraction",
-      },
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-    });
-
-    const sliderWrap = document.querySelector(".slider-wrap");
-    const sliderImg = sliderWrap.querySelector(".slider-img");             // 보여지는 영역
-    const sliderInner = sliderWrap.querySelector(".slider-inner");         // 움직이는 영역
-    const slider = sliderWrap.querySelectorAll(".slider");                 // 개별 이미지
-    const sliderBtn = sliderWrap.querySelectorAll(".slider-btn a");        // 버튼
-
-    let currentIndex = 0;                                                   // 현재 보이는 이미지
-    let sliderCount = slider.length;                                        // 이미지 갯수
-    let sliderInterval = 2000;                                              // 이미지 변경 간격 시간
-    let sliderWidth = slider[0].clientWidth;                                // 이미지 가로값 구하기
-    let dotIndex = "";
-
-    function gotoSlider(num){
-        sliderInner.style.transition = "all 400ms";
-        sliderInner.style.transform = "translateX(" + -sliderWidth * num + "px)";
-        currentIndex = num;
-    }
-
-    sliderBtn.forEach((btn, index) => {
-        btn.addEventListener("click", () => {
-            let prevIndex = (currentIndex + (sliderCount-1)) % sliderCount;
-            let nextIndex = (currentIndex+1) % sliderCount;
-
-            if(btn.classList.contains("prev")){
-                gotoSlider(prevIndex);
-            } else {
-                gotoSlider(nextIndex);
-            }
-        });
-    });
-
-     function showSlides() {
-        setTimeout(() => {
-            next();
-            showSlides();
-        }, 5000);
-    }
-
-    function next() {
-        let nextIndex = (currentIndex + 1) % sliderCount;
-        gotoSlider(nextIndex);
-    }
-
-    showSlides();
-
-
         ////////////////////////////////////////////////  마우스 효과 시작  ////////////////////////////////////////////////////
                 var colour="random"; // in addition to "random" can be set to any valid colour eg "#f0f" or "red"
                 var sparkles=50;

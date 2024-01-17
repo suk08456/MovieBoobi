@@ -163,7 +163,7 @@ public class BookService {
         book.setPlot((String) bookData.get("plot"));
         book.setIsbn((String) bookData.get("isbn"));
         book.setIsbn13((String) bookData.get("isbn13"));
-        book.setImageUrl((String) bookData.get("ImageUrl"));
+        book.setImageUrl((String) bookData.get("cover"));
         book.setPublisher((String) bookData.get("publisher"));
         book.setPricestandard((Integer) bookData.get("priceStandard"));
         book.setBestRank((Integer) bookData.get("bestRank"));
@@ -181,7 +181,7 @@ public class BookService {
                     .plot((String) bookData.get("plot"))
                     .isbn((String) bookData.get("isbn"))
                     .isbn13((String) bookData.get("isbn13"))
-                    .imageUrl((String) bookData.get("imageUrl"))
+                    .imageUrl((String) bookData.get("cover"))
                     .publisher((String) bookData.get("publisher"))
                     .priceStandard((Integer) bookData.get("priceStandard"))
                     .bestRank((Integer) bookData.get("bestRank"))
