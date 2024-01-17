@@ -35,7 +35,7 @@ public class WebtoonController {
 
 
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String CreateDayList(Model model) {
         Day day = this.dayService.findByDay("tue");     // 그냥 DAY 테이블이 있는지 확인용
         if (day == null) {
@@ -149,31 +149,13 @@ public class WebtoonController {
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
-
         return "contents/contents_detail";
     }
-
-
-//    @PostMapping("/detail")
-//    public String WebtoonDetail1(Model model, Long webtoonId) {
-//        Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-//        List<Review> reviews = reviewService.findWebtoonReview(webtoon.getWebtoonId());
-//
-//
-////       List<WebtoonDayList> webtoonDayLists = this.webtoonDayListService.findBywebtoon(webtoon);
-////       webtoonDayLists.get(0).getWebtoonDay().getUpdateDays();
-//
-//        model.addAttribute("WebtoonDetail", webtoon);
-//        model.addAttribute("reviews", reviews);
-//        return "webtoon/webtoon_detail";
-//    }
-
-
-    @GetMapping("/detail")
-    public String WebtoonDetail2(Model model, @RequestParam("webtoonId") Long webtoonId, Principal principal){
+    @GetMapping("/detail/{webtoonId}")
+    public String WebtoonDetail2(Model model, @PathVariable("webtoonId") Long webtoonId, Principal principal){
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
         List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(10).collect(Collectors.toList());
-        ContentsDTO contentsDTO = this.contentsController.setWetoonContentsDTO(webtoon);
+        ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
         List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
@@ -182,7 +164,8 @@ public class WebtoonController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
-        model.addAttribute("contentsDTO", contentsDTO);
+
+        model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
         model.addAttribute("author_actor_ListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
@@ -208,7 +191,6 @@ public class WebtoonController {
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
-
         return "contents/contents_detail";
     }
 }

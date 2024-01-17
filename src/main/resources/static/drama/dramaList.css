@@ -1,33 +1,55 @@
- .rank {
-    position: absolute;
-    width: 43px;
-    height: 46px;
-    text-align : center;
-    border-radius: 50%;
-    transform: translate(8%,2%);
-    z-index: 1;
-    font-size: 18px;
-    font-weight: bold;
-    background: #D1180B;
-    color: white;
-    padding: 10px;
- }
 
- .swiper-slide{
-    display:flex;
-    font-size: 18px;
-    align-items: center;
+a {
+    color:inherit;
+    text-decoration:none;
+}
+
+.swiper {
+    width: 100%;
     height: 100%;
- }
+}
 
- .img img {
-     width: 100%;         /* 이미지 너비 조절 */
-     height: 100%;        /* 이미지 높이 조절 */
-     object-fit: cover;   /* 이미지를 부모 요소에 맞게 크롭 */
- }
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
 
- .img img {
-      width: 100%;         /* 이미지 너비 조절 */
-      height: 100%;        /* 이미지 높이 조절 */
-      object-fit: cover;   /* 이미지를 부모 요소에 맞게 크롭 */
-  }
+.rank {
+    position: absolute;
+    border-radius: 50%;
+    font-weight: bold;
+    background: #FFD400;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    margin-left: -11.7%;
+    margin-top: -19%;
+}
+
+.mv-text {
+     padding: 1px 10px;
+     font-size : 13px;
+     border: 1px solid #000000;
+     border-radius: 5px;
+     color: #000000;
+     background : #ffffff;
+     position: absolute;
+     opacity: 0;
+     transition: all ease 0.5s;
+     margin-left : 13px;
+     margin-top : 26px;
+     max-width : 200px;
+   }
+
+.short-info:hover .mv-text {
+    opacity: 1;
+    cursor : Default;
+}
