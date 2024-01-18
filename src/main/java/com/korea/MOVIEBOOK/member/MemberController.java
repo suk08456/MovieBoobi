@@ -26,8 +26,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -153,11 +160,14 @@ public class MemberController {
         return "/member/find_username";
     }
 
-    // 마이페이지
     @GetMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
-    public String showmyPage(Model model, Principal principal) {
-        Member member = memberService.getmember(principal.getName());
+    public String showmyPage(Model model, Principal principal){
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+
         System.out.println("====================" + principal.getName());
 
         if (member == null) {
@@ -191,6 +201,47 @@ public class MemberController {
 //        model.addAttribute("answerList", answerList);
         return "member/my_page";
     }
+
+
+    // 마이페이지
+
+    @RequestMapping("/mypage")
+    @PreAuthorize("isAuthenticated()")
+    public String uploadProfileImg(MultipartHttpServletRequest mre, Principal principal) throws IOException {
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+
+        MultipartFile mf = mre.getFile("file");
+        String uploadPath = "";
+
+        String path = "C:\\" + "Project2\\" + "profileimg\\";
+
+        File Folder = new File(path);
+        if (!Folder.exists()) {
+            Folder.mkdirs();
+        }
+
+        Path directoryPath = Paths.get(path);
+        Files.createDirectories(directoryPath);
+
+        String origional = mf.getOriginalFilename();
+
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String uniqueFileName = timestamp + "_" + origional;
+        uploadPath = path+uniqueFileName;
+
+        try{
+            mf.transferTo(new File(uploadPath));
+            this.memberService.saveImg(member, "/profileimg/"+uniqueFileName);
+        }catch (IllegalStateException | IOException e){
+            e.printStackTrace();
+        }
+
+        return "redirect:/member/mypage";
+    }
+
 
     @GetMapping("/changeInformation")
     public String updateNm(Model model, NicknameForm nicknameForm, Principal principal) {
@@ -319,46 +370,7 @@ public class MemberController {
         model.addAttribute("sum", sum);
         return "member/delete_form";
     }
-//
-//    @PostMapping("/delete")
-//    public String delete(@RequestParam("id") Long id,
-//                         @Valid PasswordResetForm passwordResetForm,
-//                         BindingResult bindingResult,
-//                         Model model) {
-//
-//        if (bindingResult.hasErrors()) {
-//            return "member/delete_form";
-//        }
-//
-//        // 회원 ID를 이용하여 회원 조회
-//        Optional<Member> optionalMember = memberService.findById(id);
-//
-//        if (optionalMember.isEmpty()) {
-//            // 회원이 존재하지 않으면 에러 처리
-//            bindingResult.rejectValue("memberId", "error.member", "회원을 찾을 수 없습니다.");
-//            return "member/delete_form";
-//        }
-//
-//        Member member = optionalMember.get(); // Optional에서 값을 가져옴
-//
-//        // 비밀번호 확인
-//        if (passwordResetForm.getPassword().equals(passwordResetForm.getPasswordConfirm())) {
-//            // 입력된 비밀번호와 회원의 비밀번호가 일치하는지 확인
-//            if (passwordEncoder.matches(passwordResetForm.getPassword(), member.getPassword())) {
-//                // 일치하면 회원 삭제
-//                memberService.deleteMember(member);
-//                return "redirect:/";
-//            } else {
-//                // 비밀번호 불일치 시 에러 처리
-//                bindingResult.rejectValue("password", "error.password", "비밀번호가 일치하지 않습니다.");
-//                return "member/delete_form";
-//            }
-//        } else {
-//            // 비밀번호와 비밀번호 확인이 일치하지 않을 경우 에러 처리
-//            bindingResult.rejectValue("passwordConfirm", "error.passwordConfirm", "비밀번호 확인이 일치하지 않습니다.");
-//            return "member/delete_form";
-//        }
-//    }
+
 
 
    @PostMapping("/delete")

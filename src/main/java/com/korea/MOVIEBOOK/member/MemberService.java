@@ -94,4 +94,20 @@ public class MemberService {
     public Optional<Member> findById(Long id) {
         return this.memberRepository.findById(id);
     }
+
+    public void saveImg(Member member, String profileImage) {
+        member.setProfileImage(profileImage);
+        this.memberRepository.save(member);
+    }
+
+//    public void savefile(String origFileName, String filePath, PlaceOwner placeOwner, String name, String price){
+//        PlaceMenu placeMenu = new PlaceMenu();
+//        placeMenu.setOrigFileName(origFileName);
+//        placeMenu.setFilePath(filePath);
+//        placeMenu.setMenuName(name);
+//        placeMenu.setMenuPrice(price);
+//        placeMenu.setPlaceOwner(placeOwner);
+//
+//        this.placeMenuRepository.save(placeMenu);
+//    }
 }
