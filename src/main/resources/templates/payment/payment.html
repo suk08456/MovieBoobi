@@ -5,13 +5,14 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
     <meta charset="UTF-8">
-    <title>Sample Payment</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <div layout:fragment="content" style="width : 100%; height : 30%;">
     <div style="display : flex; margin : auto; width : 1300px; height : 890px; margin-top : 3px;">
-        <input type="hidden" class="_csrf"
-               value="ELCsIKgKv7yGzeFZsXxrCtAcVBiiS-lvBrP8b-1scsRpPlrWHJoKfFsw4ioyr-thtgFFfbLF6eSCUctFCYICYW2l4gC57o4W1"/>
+<!--        <input type="hidden" class="_csrf"-->
+<!--               value="ELCsIKgKv7yGzeFZsXxrCtAcVBiiS-lvBrP8b-1scsRpPlrWHJoKfFsw4ioyr-thtgFFfbLF6eSCUctFCYICYW2l4gC57o4W1"/>-->
         <div style="width : 900px; display : flex; flex-direction : column; padding : 22px;">
             <span style="font-size: larger; font-weight: bold;"> 결제 및 구매 내역 </span>
             <div style="margin-left : 50px; margin-top : 40px;">
@@ -24,7 +25,7 @@
                             <th>사용코인</th>
                             <th></th>
                         </tr>
-                        <tr th:if="${#lists.size(paging) > 0}" th:each="payment, row: ${paging}">
+                        <tr th:each="payment, row: ${paging}">
                             <td><span th:text="${row.index + 1}"></span></td>
                             <td><span th:text="${#temporals.format(payment.dateTime, 'yyyy-MM-dd HH:mm')}"></span></td>
                             <td><span th:text="${payment.content}"></span></td>
@@ -32,10 +33,6 @@
                                     th:text="${#strings.contains(payment.content, '충전') ? '+ ' + payment.paidAmount  : '- ' + payment.paidAmount}"></span>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.size(paging) == 0}">
-                            <td colspan="4" style="text-align: center;">데이터가 없습니다.</td>
-                        </tr>
-
                     </table>
                 </div>
                 <div class="join" th:if="${paging.totalPages > 0}"
@@ -69,7 +66,7 @@
                          th:if="${not #strings.isEmpty(member.profileImage)}"
                          th:src="${member.profileImage}">
                     <div style="display : flex; flex-direction: column;">
-                    <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
+                    <span sec:authorize="isAuthenticated()"
                           th:text="${member.nickname} + ' 님 안녕하세요'"
                           style="font-size : large; width : 100%; height : 27px; margin-top : 33px; margin-left : 5px;"></span>
                     <div style="display : flex; font-weight : bold;">
@@ -81,9 +78,11 @@
                     </div>
                     </div>
                 </div>
+                <input class="s_name" name="s_name" sec:authorize="isAuthenticated()" th:value="${member.nickname}"
+                       type="hidden">
                 <input class="m_id" name="m_id" sec:authorize="isAuthenticated()" th:value="${member.id}"
                        type="hidden">
-                <input type="hidden" class="_csrf" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+<!--                <input type="hidden" class="_csrf" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
                 <div style=" margin-top : 20px;">
                     <div style="display : flex; justify-content : space-between; padding : 5px;">
                         <img src="/etc/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 1,000Coin
@@ -177,25 +176,27 @@
             var csrfToken = $("input._csrf").val();
             var kakaoPg =  'kakaopay.TC0ONETIME';
             var tossPg =  'tosspay.tosstest';
+            var csrfToken = $("meta[name='_csrf']").attr("content");
+            var csrfHeader = $("meta[name='_csrf_header']").attr("content");
 
             $(document).ready(function(){
                 $("#kakaoPayment").click(function(){
                     var m_email = $("input.m_email").val();
-                    var s_name = $('span.s_name').val();
-                    var s_phone = $('input.s_phone').val();
+                    var s_name = $('input.s_name').val();
                     var m_id = $('input.m_id').val();
-                    var amount = $('input.totalAmount').val().replace(/,/g, '');
+                    var s_phone = $('input.s_phone').val();
                     var pg = kakaoPg;
+                    var amount = $('input.totalAmount').val().replace(/,/g, '');
                     var url = 'kakaoPayCheck';
                     payment(m_email, s_name, m_id, s_phone, pg, amount, url);
                 });
                 $("#TossPayment").click(function(){
                     var m_email = $("input.m_email").val();
-                    var s_name = $('span.s_name').val();
-                    var s_phone = $('input.s_phone').val();
+                    var s_name = $("input.s_name").val();
                     var m_id = $('input.m_id').val();
-                    var amount = $('input.totalAmount').val().replace(/,/g, '');
+                    var s_phone = $('input.s_phone').val();
                     var pg = tossPg;
+                    var amount = $('input.totalAmount').val().replace(/,/g, '');
                     var url = 'tossPayCheck';
                     payment(m_email, s_name, m_id, s_phone, pg, amount, url);
                 });
@@ -215,9 +216,9 @@
                 }, function (rsp) {
                 if(rsp.success){
                     var msg = '결제가 완료되었습니다.';
-                    msg += '고유ID : ' + rsp.imp_uid;
-                    msg += '상점 거래ID : ' + rsp.merchant_uid;
-                    msg += '결제 금액 : ' + rsp.paid_amount;
+<!--                    msg += '고유ID : ' + rsp.imp_uid;-->
+<!--                    msg += '상점 거래ID : ' + rsp.merchant_uid;-->
+<!--                    msg += '결제 금액 : ' + rsp.paid_amount;-->
                     let paymentDTO = {
                         m_id: m_id,
                         m_email: m_email,
@@ -227,6 +228,7 @@
                         o_paidAmount: rsp.paid_amount,
                         o_paytype: rsp.pay_method
                     }
+<!--                    console.log('m_id : ' +m_id +  'm_email : ' +m_email + 's_name : ' +s_name + 's_phone : ' +s_phone + 'o_shipno : ' + rsp.merchant_uid + 'o_paidAmount : ' + rsp.paid_amount + 'o_paytype :  ' + rsp.pay_method );-->
 
                     $.ajax({
                        url: url,
@@ -235,17 +237,11 @@
                        dataType: "text",
                        contentType: "application/json",
                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                            xhr.setRequestHeader(csrfHeader, csrfToken);
                        },
                        success: function (result) {
-                          console.log('2');
-                          if (result == "y") {
-                             alert(msg);
-                             location.href = "kakaoPayCheck";
-                          } else {
-                             alert("디비입력실패");
-                             return false;
-                          }
+<!--                         alert("충전완료");-->
+                         return false;
                        },
                        error: function (a, b, c) {}
                     });

@@ -15,7 +15,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String paymentCompany;     // 결제사
+    private String paymentCompany;    // 결제사
 
     private String paidAmount;        // 결제 금액
 
@@ -32,6 +32,10 @@ public class Payment {
 //    private String name;            // 회원 이름(= nickname)
     @Column(columnDefinition = "text")
     private String content;
+
+    private String contents;         // 결제한 컨텐츠 카테고리 ( movie,book,webtoon,drama)
+
+    private String contentsID;       // 결제한 컨텐츠 구분 값
 
     @ManyToOne
     private Member member;
