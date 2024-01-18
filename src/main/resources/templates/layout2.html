@@ -26,31 +26,34 @@
             </li>
         </div>
         <div style="width: 15%"></div>
-        <div class="search-co">
-            <div class="search-wrap" style="width : 60%; position: relative;">
+        <div class="search-co" style="width: 23%; margin-right: 2%;">
+            <div class="search-wrap" style="position: relative; font-size: 14px;">
                 <img src="/imgs/돋보기.jpg" style="width : 15px;  position: absolute; top: 21%; left: 15px;">
                 <input class="search" id="search" type="search" name="" style="width: 100%; background: #dddedf;"
                        placeholder="콘텐츠,인물,컬렉션, 유저를 검색해보세요." value="">
             </div>
-            <div style="display: flex; flex-direction: row; align-items: center; margin-left: 5%; font-weight: bold;">
-                <img src="/etc/coin.png" style="height : 20px;">
-                <a style="color : #000000; padding: 4px;" href="/payment">코인충전</a>
-                <div class="dropdown dropdown-hover">
-                    <a tabindex="0" role="button" th:href="@{/customerSupport}" style="color : #000000; padding: 4px;">고객센터</a>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
-                        style="margin-left: -35px;">
-                        <a class="btn">공지사항</a>
-                        <a class="btn">1:1문의</a>
-                        <a class="btn">내 질문</a>
-                        <a class="btn">자주 묻는 질문</a>
-                    </ul>
-                </div>
-                <a style="color : #000000; padding: 4px;" sec:authorize="isAnonymous()"
-                   th:href="@{/member/login}">로그인</a>
-                <a style="color : #000000; padding: 4px;" sec:authorize="isAuthenticated()" th:href="@{/member/mypage}">마이페이지</a>
-                <a style="color : #000000; padding: 4px;" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
-                <a th:if="${#authorization.expression('isAnonymous()')}" style="color : #000000; margin-left : 2%;"
-                   th:href="@{/member/signup}">회원가입</a>
+        </div>
+        <div style="display: flex; align-items: flex-end;">
+            <div style="display: flex; flex-direction: row; align-items: center; font-weight: bold;">
+                <a class="layoutLink" href="/payment" style="display: flex;">
+                    <img src="/etc/coin.png" style="height: 18px; margin-right: 4px;">코인충전</a>
+                <!--                <div class="layoutLink">-->
+                <!--                    <div class="dropdown dropdown-hover">-->
+                <!--                        <a tabindex="0" role="button" th:href="@{/customerSupport}" style="color : #000000; padding: 4px;">고객센터</a>-->
+                <!--                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"-->
+                <!--                            style="margin-left: -35px;">-->
+                <!--                            <a class="btn">공지사항</a>-->
+                <!--                            <a class="btn">1:1문의</a>-->
+                <!--                            <a class="btn">내 질문</a>-->
+                <!--                            <a class="btn">자주 묻는 질문</a>-->
+                <!--                        </ul>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <a class="layoutLink" th:href="@{/customerSupport}">고객센터</a>
+                <a class="layoutLink" sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
+                <a class="layoutLink" sec:authorize="isAuthenticated()" th:href="@{/member/mypage}">마이페이지</a>
+                <a class="layoutLink" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
+                <a class="layoutLink" th:if="${#authorization.expression('isAnonymous()')}" th:href="@{/member/signup}">회원가입</a>
             </div>
         </div>
     </div>

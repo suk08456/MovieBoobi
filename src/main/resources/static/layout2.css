@@ -57,12 +57,6 @@ a {
     font-weight : bold;
 }
 
-.search-co{
-    display: flex;
-    font-size : 14px;
-    width : 35%;
-}
-
 .search{
     border-radius: 5px 5px 5px 5px;
     margin-left : 8px;
@@ -71,4 +65,8 @@ a {
     width : 90%;
     background : #E9ECEF;
     border : none;
+}
+
+.layoutLink {
+    color : #000000;
 }

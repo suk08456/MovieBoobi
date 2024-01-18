@@ -17,8 +17,4 @@ public class main {
     public String test3() {
         return "test";
     }
-    @GetMapping("4")
-    public String test4() {
-        return "layout";
-    }
 }
