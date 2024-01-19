@@ -108,8 +108,10 @@ public class MovieController {
     @PostMapping("/detail")
     public String movieDetail(Model model, String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
-        List<Review> reviews = reviewService.findReviews(movie.getId()).stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
+        List<Review> reviewList = this.reviewService.findReviews(movie.getId());
+        String paid = "false";
 
         Integer runtime = Integer.valueOf(movie.getRuntime());
         Integer hour = (int) Math.floor((double) runtime / 60);
@@ -131,6 +133,7 @@ public class MovieController {
         model.addAttribute("movieruntime", movieruntime);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
 
 
         if(principal != null){
@@ -142,9 +145,7 @@ public class MovieController {
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
             if(payment.isPresent()){
-                model.addAttribute("paid","true");
-            } else {
-                model.addAttribute("paid","false");
+                paid ="true";
             }
 
 
@@ -158,14 +159,17 @@ public class MovieController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
+
 
         return "contents/contents_detail";
     }
@@ -173,8 +177,10 @@ public class MovieController {
     @GetMapping("/detail/{movieCD}")
     public String movieDetail2(Model model, @PathVariable("movieCD") String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
-        List<Review> reviews = reviewService.findReviews(movie.getId());
+        List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
+        List<Review> reviewList = this.reviewService.findReviews(movie.getId());
+        String paid = "false";
 
         Integer runtime = Integer.valueOf(movie.getRuntime());
         Integer hour = (int) Math.floor((double) runtime / 60);
@@ -197,6 +203,7 @@ public class MovieController {
         model.addAttribute("movieruntime", movieruntime);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
 
 
         if(principal != null){
@@ -208,9 +215,7 @@ public class MovieController {
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
             if(payment.isPresent()){
-                model.addAttribute("paid","true");
-            } else {
-                model.addAttribute("paid","false");
+                paid ="true";
             }
             List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
@@ -222,10 +227,12 @@ public class MovieController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");

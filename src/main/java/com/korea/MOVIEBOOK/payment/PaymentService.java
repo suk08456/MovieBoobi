@@ -32,6 +32,7 @@ public class PaymentService {
         payment1.setContent(content);
         payment1.setContents(contents);
         payment1.setContentsID(contentsID);
+        payment1.setDateTime(LocalDateTime.now());
         this.paymentRepository.save(payment1);
     }
 
@@ -43,6 +44,6 @@ public class PaymentService {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("dateTime"));
         Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
-        return paymentRepository.findByMember(member, pageable);
+        return this.paymentRepository.findByMember(member, pageable);
     }
 }
