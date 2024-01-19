@@ -4,6 +4,10 @@ import com.korea.MOVIEBOOK.webtoon.days.DayService;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayListRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -105,24 +109,6 @@ public class WebtoonService {
     }
 
 
-//    public void setDay(Day day) {
-//        this.day = day;
-//    }
-
-
-
-//    public List<Webtoon> getWebtoonList(Day day,String date) {
-//        Day day1 = this.dayRepository.findByupdateDays(date);
-////        List<Webtoon> webtoonList = day1.getWebtoonList();
-//        if (day1 == null) {
-//            getWebtoonAPI(date);
-//        }
-////        allWebtoonList.addAll(webtoonRepository.findByUpdateDays(day));
-//        day1 = this.dayRepository.findByupdateDays(date);
-////        List<Webtoon> webtoonList = day1.getWebtoonList();
-////        return webtoonList;
-//    }
-
 
     public Webtoon findWebtoonByWebtoonId(Long webtoonId) {
         return this.webtoonRepository.findByWebtoonId(webtoonId);
@@ -150,6 +136,17 @@ public class WebtoonService {
 
         return authorListList;
     }
+
+
+    public Page<Webtoon> getWebtoonList(int page, String kw) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("fanCount"));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
+        return webtoonRepository.findAllByWebtoonKeyword(kw, pageable);
+    }
+
+
 }
 
 

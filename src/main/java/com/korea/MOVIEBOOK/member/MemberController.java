@@ -1,7 +1,9 @@
 package com.korea.MOVIEBOOK.member;
 
+import com.korea.MOVIEBOOK.member.*;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentService;
+import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -24,10 +26,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
+
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
 @RequiredArgsConstructor
 @Controller
@@ -95,6 +107,7 @@ public class MemberController {
     public String googleLogin() {
         return "redirect:/oauth2/authorization/google";
     }
+
     @GetMapping("/login/kakao")
     public String kakaoLogin() {
         return "redirect:/oauth2/authorization/kakao";
@@ -147,11 +160,14 @@ public class MemberController {
         return "/member/find_username";
     }
 
-    // 마이페이지
     @GetMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
-    public String showmyPage(Model model, Principal principal) {
-        Member member = memberService.getmember(principal.getName());
+    public String showmyPage(Model model, Principal principal){
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+
         System.out.println("====================" + principal.getName());
 
         if (member == null) {
@@ -174,28 +190,90 @@ public class MemberController {
                 sum -= Long.valueOf(payments.get(i).getPaidAmount());
             }
         }
+
+        model.addAttribute("sum", sum);
+
+
 //        Page<Payment> paging = this.paymentService.getPaymentsByMember(member, page);
 
-        model.addAttribute("sum",sum);
 
 //        List<Review> reviewList = reviewService.getAnswerTop5LatestByUser(user);
 //        model.addAttribute("answerList", answerList);
         return "member/my_page";
     }
 
+
+    // 마이페이지
+
+    @RequestMapping("/mypage")
+    @PreAuthorize("isAuthenticated()")
+    public String uploadProfileImg(MultipartHttpServletRequest mre, Principal principal) throws IOException {
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+
+        MultipartFile mf = mre.getFile("file");
+        String uploadPath = "";
+
+        String path = "C:\\" + "Project2\\" + "profileimg\\";
+
+        File Folder = new File(path);
+        if (!Folder.exists()) {
+            Folder.mkdirs();
+        }
+
+        Path directoryPath = Paths.get(path);
+        Files.createDirectories(directoryPath);
+
+        String origional = mf.getOriginalFilename();
+
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String uniqueFileName = timestamp + "_" + origional;
+        uploadPath = path+uniqueFileName;
+
+        try{
+            mf.transferTo(new File(uploadPath));
+            this.memberService.saveImg(member, "/profileimg/"+uniqueFileName);
+        }catch (IllegalStateException | IOException e){
+            e.printStackTrace();
+        }
+
+        return "redirect:/member/mypage";
+    }
+
+
     @GetMapping("/changeInformation")
-    public String updateNm(Model model, NicknameForm nicknameForm) {
-        model.addAttribute("parameter",1);
+    public String updateNm(Model model, NicknameForm nicknameForm, Principal principal) {
+
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
+        long sum = 0;
+
+        for (int i = 0; i < payments.size(); i++) {
+            if (payments.get(i).getContent().contains("충전")) {
+                sum += Long.valueOf(payments.get(i).getPaidAmount());
+            } else {
+                sum -= Long.valueOf(payments.get(i).getPaidAmount());
+            }
+        }
+        model.addAttribute("parameter", 1);
+        model.addAttribute("member", member);
+        model.addAttribute("sum", sum);
         return "member/changeinfor";
     }
 
     @PostMapping("/changeInformation")
-    public String updateNickname(Model model,@Valid NicknameForm nicknameForm, BindingResult bindingResult,
+    public String updateNickname(Model model, @Valid NicknameForm nicknameForm, BindingResult bindingResult,
                                  Principal principal) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        GrantedAuthority authority = authentication.getAuthorities().iterator().next();
-        model.addAttribute("parameter",1);
+//        GrantedAuthority authority = authentication.getAuthorities().iterator().next();
+        model.addAttribute("parameter", 1);
+
 
         if (bindingResult.hasErrors()) {
             return "member/changeinfor";
@@ -203,17 +281,37 @@ public class MemberController {
 
         if (nicknameForm.getNewNickname().length() >= 3 || nicknameForm.getNewNickname().length() > 20) {
             Member member = memberService.findByusername(principal.getName());
-            if(member == null){
+            if (member == null) {
                 member = memberService.findByproviderId(principal.getName());
             }
             memberService.updateNickname(member, nicknameForm.getNewNickname());
         }
+        model.addAttribute("member", member);
+
         return "redirect:/member/mypage";
     }
 
     @GetMapping("/changePw")
-    public String changePw(Model model, PasswordChangeForm passwordChangeForm) {
-        model.addAttribute("parameter",2);
+    public String changePw(Model model, PasswordChangeForm passwordChangeForm, Principal principal) {
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
+        long sum = 0;
+
+        for (int i = 0; i < payments.size(); i++) {
+            if (payments.get(i).getContent().contains("충전")) {
+                sum += Long.valueOf(payments.get(i).getPaidAmount());
+            } else {
+                sum -= Long.valueOf(payments.get(i).getPaidAmount());
+            }
+        }
+
+        model.addAttribute("parameter", 2);
+        model.addAttribute("member", member);
+        model.addAttribute("sum", sum);
+
         return "member/changepw";
     }
 
@@ -224,7 +322,7 @@ public class MemberController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GrantedAuthority authority = authentication.getAuthorities().iterator().next();
-        model.addAttribute("parameter",2);
+        model.addAttribute("parameter", 2);
 
         if (bindingResult.hasErrors()) {
             return "member/changepw";
@@ -244,11 +342,69 @@ public class MemberController {
             bindingResultReject(bindingResult);
             return "member/changepw";
         }
+
+        model.addAttribute("member", member);
         return "redirect:/member/logout";
     }
+
+
+    @GetMapping("/deleteForm")
+    public String deleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model) {
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
+        long sum = 0;
+
+        for (int i = 0; i < payments.size(); i++) {
+            if (payments.get(i).getContent().contains("충전")) {
+                sum += Long.valueOf(payments.get(i).getPaidAmount());
+            } else {
+                sum -= Long.valueOf(payments.get(i).getPaidAmount());
+            }
+        }
+
+//        model.addAttribute("parameter", 2);
+        model.addAttribute("member", member);
+        model.addAttribute("sum", sum);
+        return "member/delete_form";
+    }
+
+
+
+   @PostMapping("/delete")
+    public String delete(Principal principal, @Valid PasswordResetForm passwordResetForm,
+                         BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "member/delete_form";
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("parameter", 3);
+
+        if (passwordResetForm.getPassword().equals(passwordResetForm.getPasswordConfirm())) {
+            Member member = memberService.findByusername(principal.getName());
+            if (member == null) {
+                member = memberService.findByproviderId(principal.getName());
+            }
+            if (passwordEncoder.matches(passwordResetForm.getPassword(), member.getPassword())) {
+                memberService.deleteMember(member);
+                return "redirect:/";
+            } else {
+                bindingResultReject(bindingResult);
+                return "member/delete_form";
+            }
+        } else {
+            bindingResultReject(bindingResult);
+            return "member/delete_form";
+        }
+    }
+
 
     private void bindingResultReject(BindingResult bindingResult) {
         bindingResult.rejectValue("passwordConfirm", "passwordInCorrect",
                 "패스워드가 일치하지 않습니다.");
     }
 }
+
