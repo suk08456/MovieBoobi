@@ -13,6 +13,7 @@ import com.korea.MOVIEBOOK.webtoon.days.DayService;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayListService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,7 @@ public class WebtoonController {
         if (day == null) {
             dayService.FindByWeek();
         }
+
 
         List<Day> days = this.dayService.findAll();
         List<List<List<Webtoon>>> allList = new ArrayList<>();//  월,화,수,목,금,토,일이라는 값을 가져오기 위함
@@ -81,6 +83,7 @@ public class WebtoonController {
         allList.add(saturdayListList);
         allList.add(sundayListList);
         model.addAttribute("allList", allList);
+
         return "webtoon/webtoon_list";
     }
 
@@ -216,6 +219,8 @@ public class WebtoonController {
         }
         return "contents/contents_detail";
     }
+
+
 }
 
 

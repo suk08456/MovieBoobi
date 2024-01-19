@@ -58,11 +58,6 @@
                                         <span th:text="${#strings.length(webtoon.getAuthor()) > 7 ? #strings.substring(webtoon.getAuthor(), 0, 7) + '..' : webtoon.getAuthor()}"
                                               style="font-size : 17px; margin-bottom : 5px;"></span>
                                     </div>
-<!--                                    <div class="webToon-update">-->
-<!--                                        <span style="color : #868e96; font-size : 15px;">연재일 :</span>-->
-<!--                                        <span th:text="${webtoon.getWebtoonDayLists().}"-->
-<!--                                              style="color: #868e96; font-size: 15px;"></span>-->
-<!--                                    </div>-->
                                 </div>
                                 <input type="hidden" name="webtoonId" th:value="${webtoon.getWebtoonId()}">
                             </button>

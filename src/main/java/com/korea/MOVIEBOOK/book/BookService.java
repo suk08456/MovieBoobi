@@ -1,8 +1,13 @@
 package com.korea.MOVIEBOOK.book;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -227,5 +232,14 @@ public class BookService {
 
     public Book findByIsbn(String isbn) {
         return bookRepository.findByIsbn(isbn);
+    }
+
+
+    public Page<Book> getBookList(int page, String kw) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("title"));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
+        return bookRepository.findAllByBookKeyword(kw, pageable);
     }
 }
