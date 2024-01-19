@@ -41,7 +41,6 @@ p {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0);
     background-color: rgba(0, 0, 0, 0.5);
     transition: background-color .5s;
     visibility: hidden;
@@ -190,7 +189,7 @@ input.button {
   float: left;
   width: 85px;
   padding: 0;
-  margin: 10px 20px 10px 0;
+  margin: 11px 10px 10px 0;
   text-align: center;
   line-height: 34px;
   border-radius: 5px;

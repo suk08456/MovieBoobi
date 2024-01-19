@@ -74,7 +74,9 @@ public class BookController {
         Book book = bookService.findByIsbn(isbn);
         ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
-        List<Review> reviews = book.getReviewList().stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = book.getReviewList().stream().limit(12).collect(Collectors.toList());
+        List<Review> reviewList = book.getReviewList();
+        String paid = "false";
 
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
@@ -86,6 +88,7 @@ public class BookController {
         model.addAttribute("category", "book");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
         model.addAttribute("author_actor_ListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
@@ -98,9 +101,7 @@ public class BookController {
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "book", isbn));
             if(payment.isPresent()){
-                model.addAttribute("paid","true");
-            } else {
-                model.addAttribute("paid","false");
+                paid ="true";
             }
 
             List<Payment> payments  = this.paymentRepository.findBymember(member);
@@ -113,10 +114,12 @@ public class BookController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
@@ -136,11 +139,13 @@ public class BookController {
 //    }
 
     @GetMapping("/detail/{isbn}")
-    public String bookDetail1(@PathVariable("isbn") String isbn, Model model,Principal principal) {
+    public String bookDetail1(@PathVariable("isbn") String isbn, Model model, Principal principal) {
         Book book = bookService.findByIsbn(isbn);
         ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
-        List<Review> reviews = book.getReviewList().stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = book.getReviewList().stream().limit(12).collect(Collectors.toList());
+        List<Review> reviewList = book.getReviewList();
+        String paid = "false";
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
                 .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
@@ -148,9 +153,10 @@ public class BookController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
-        model.addAttribute("category", book);
+        model.addAttribute("category", "book");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
         model.addAttribute("authorListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
@@ -163,9 +169,7 @@ public class BookController {
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "book", isbn));
             if(payment.isPresent()){
-                model.addAttribute("paid","true");
-            } else {
-                model.addAttribute("paid","false");
+                paid ="true";
             }
             List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
@@ -177,10 +181,12 @@ public class BookController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
