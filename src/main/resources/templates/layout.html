@@ -24,19 +24,17 @@
     </a>
     <div class="layout">
         <div class="login" style="font-size : 14px; display: flex; position: absolute; z-index: 99; bottom: 1px;">
-            <a class="loginLink" href="/payment" style="display: flex;">
-                <img src="/etc/coin.png" style="height: 18px; margin-right: 4px;">코인충전</a>
-            <!--                <div class="dropdown dropdown-hover">-->
-            <!--                    <a tabindex="0" role="button" th:href="@{/customerSupport}" style="color: white; padding: 1%;">고객센터</a>-->
-            <!--                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"-->
-            <!--                        style="margin-left: -35px;">-->
-            <!--                        <a class="btn" style="color: white;">공지사항</a>-->
-            <!--                        <a class="btn" style="color: white;">1:1문의</a>-->
-            <!--                        <a class="btn" style="color: white;">내 질문</a>-->
-            <!--                        <a class="btn" style="color: white;">자주 묻는 질문</a>-->
-            <!--                    </ul>-->
-            <!--                </div>-->
-            <a class="loginLink" th:href="@{/customerSupport}">고객센터</a>
+            <a class="loginLink" href="/payment" style="display: flex;"><img src="/etc/coin.png" style="height: 18px; margin-right: 4px;">코인충전</a>
+            <div class="dropdown dropdown-hover">
+                <a class="loginLink" tabindex="0" role="button" th:href="@{/customerSupport}">고객센터</a>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
+                    style="margin-left: -35px;">
+                    <a class="btn">공지사항</a>
+                    <a class="btn">1:1문의</a>
+                    <a class="btn">내 질문</a>
+                    <a class="btn">자주 묻는 질문</a>
+                </ul>
+            </div>
             <a class="loginLink" sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
             <a class="loginLink" sec:authorize="isAuthenticated()" th:href="@{/member/mypage}">마이페이지</a>
             <a class="loginLink" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>

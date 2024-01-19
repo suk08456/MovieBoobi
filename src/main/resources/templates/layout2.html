@@ -3,57 +3,61 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" th:href="@{/layout2.css}">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.5.0/dist/full.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@4.5.0/dist/full.min.css" type="text/css"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>MOVIE&BOOK</title>
     <link rel="icon" href="/etc/cat.gif">
 </head>
 <body>
 <div class="layout2-co">
-    <div class="layout2" style="display: flex; justify-content: center;">
-        <a class="logo" style="font-size : x-large;" href="/">
-            <span style="color : #fbd7ed;">무비</span>
-            <span style="color : #000000; ">MOVIE</span>
-            <span style="color : #fbd7ed;">부비</span>
-            <span style="color : #000000;">BOOK</span>
-        </a>
-        <div class="menu1" style="display: flex; align-items: center;">
-            <li style="display: flex;">
-                <a class="category" style="margin-left : 30px;" href="/movie">영화</a>
-                <a class="category" href="#">TV</a>
-                <a class="category" href="/book">책</a>
-                <a class="category" href="/webtoon/list">웹툰</a>
-            </li>
-        </div>
-        <div style="width: 15%"></div>
-        <div class="search-co" style="width: 23%; margin-right: 2%;">
-            <div class="search-wrap" style="position: relative; font-size: 14px;">
-                <img src="/imgs/돋보기.jpg" style="width : 15px;  position: absolute; top: 21%; left: 15px;">
-                <input class="search" id="search" type="search" name="" style="width: 100%; background: #dddedf;"
-                       placeholder="콘텐츠,인물,컬렉션, 유저를 검색해보세요." value="">
+    <div class="layout2" style="display: flex; justify-content: space-around;">
+        <div style="display: flex; align-items: center;">
+            <a class="logo" style="font-size : x-large;" href="/">
+                <span style="color : #fbd7ed;">무비</span>
+                <span style="color : #000000; ">MOVIE</span>
+                <span style="color : #fbd7ed;">부비</span>
+                <span style="color : #000000;">BOOK</span>
+            </a>
+            <div class="menu1" style="display: flex; align-items: center;">
+                <li style="display: flex;">
+                    <a class="category" style="margin-left : 30px;" href="/movie">영화</a>
+                    <a class="category" href="#">TV</a>
+                    <a class="category" href="/book">책</a>
+                    <a class="category" href="/webtoon/list">웹툰</a>
+                </li>
             </div>
         </div>
-        <div style="display: flex; align-items: flex-end;">
-            <div style="display: flex; flex-direction: row; align-items: center; font-weight: bold;">
-                <a class="layoutLink" href="/payment" style="display: flex;">
-                    <img src="/etc/coin.png" style="height: 18px; margin-right: 4px;">코인충전</a>
-                <!--                <div class="layoutLink">-->
-                <!--                    <div class="dropdown dropdown-hover">-->
-                <!--                        <a tabindex="0" role="button" th:href="@{/customerSupport}" style="color : #000000; padding: 4px;">고객센터</a>-->
-                <!--                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"-->
-                <!--                            style="margin-left: -35px;">-->
-                <!--                            <a class="btn">공지사항</a>-->
-                <!--                            <a class="btn">1:1문의</a>-->
-                <!--                            <a class="btn">내 질문</a>-->
-                <!--                            <a class="btn">자주 묻는 질문</a>-->
-                <!--                        </ul>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-                <a class="layoutLink" th:href="@{/customerSupport}">고객센터</a>
+        <div style="display: flex; width: 40%; justify-content: center;">
+            <div style="width: 50%;">
+                <div class="search-wrap" style="position: relative; font-size: 14px; width: 97%;">
+                    <!--                    <img src="/imgs/돋보기.jpg" style="width : 15px;  position: absolute; top: 21%; left: 15px;">-->
+                    <input class="search" id="search" type="search" name="" style="background: #dddedf; width: 100%;"
+                           placeholder="콘텐츠,인물,컬렉션, 유저를 검색해보세요." value="">
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-end; font-weight: bold;">
+                <a class="layoutLink" href="/payment" style="display: flex; align-items: center;">
+                    <div style="margin-right: 4px; width: 19px;">
+                        <img src="/etc/coin.png" style="height: 18px; margin-right: 4px;">
+                    </div>
+                    코인충전
+                </a>
+                <!--                <a class="layoutLink" th:href="@{/customerSupport}">고객센터</a>-->
+                <div class="dropdown dropdown-hover" style="z-index: 100;">
+                    <a class="layoutLink" tabindex="0" role="button" th:href="@{/customerSupport}">고객센터</a>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
+                        style="margin-left: -35px;">
+                        <a class="btn">공지사항</a>
+                        <a class="btn">1:1문의</a>
+                        <a class="btn">내 질문</a>
+                        <a class="btn">자주 묻는 질문</a>
+                    </ul>
+                </div>
                 <a class="layoutLink" sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
                 <a class="layoutLink" sec:authorize="isAuthenticated()" th:href="@{/member/mypage}">마이페이지</a>
                 <a class="layoutLink" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
-                <a class="layoutLink" th:if="${#authorization.expression('isAnonymous()')}" th:href="@{/member/signup}">회원가입</a>
+                <a class="layoutLink" th:if="${#authorization.expression('isAnonymous()')}"
+                   th:href="@{/member/signup}">회원가입</a>
             </div>
         </div>
     </div>
