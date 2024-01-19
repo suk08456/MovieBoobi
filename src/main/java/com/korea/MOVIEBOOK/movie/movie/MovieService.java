@@ -5,7 +5,12 @@ import com.korea.MOVIEBOOK.movie.daily.MovieDaily;
 import com.korea.MOVIEBOOK.movie.daily.MovieDailyRepository;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeekly;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeeklyRepository;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -186,5 +191,14 @@ public class MovieService {
         }
 
         return actorListList;
+    }
+
+
+    public Page<Movie> getMovieList(int page, String kw) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("title"));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
+        return movieRepository.findAllByMovieKeyword(kw, pageable);
     }
 }

@@ -1,10 +1,23 @@
 package com.korea.MOVIEBOOK.movie.movie;
 
+import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MovieRepository extends JpaRepository<Movie,Long> {
     Movie findByTitleAndNationsAndReleaseDate(String movieNm, String nations, String releaseDate);
     Movie findByTitle(String title);
 
     Movie findBymovieCode(String movieCode);
+
+    Page<Movie> findAll(Pageable pageable);
+
+
+    @Query("SELECT m FROM Movie m " +
+            "WHERE m.title LIKE %:kw% " +
+            "   OR m.actor LIKE %:kw% ")
+    Page<Movie> findAllByMovieKeyword(@Param("kw") String kw, Pageable pageable);
 }

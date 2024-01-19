@@ -8,15 +8,14 @@ import com.korea.MOVIEBOOK.movie.daily.MovieDailyAPI;
 import com.korea.MOVIEBOOK.movie.MovieDTO;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeeklyAPI;
 import com.korea.MOVIEBOOK.payment.Payment;
-import com.korea.MOVIEBOOK.payment.PaymentService;
+import com.korea.MOVIEBOOK.payment.PaymentRepository;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -29,13 +28,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
+@RequestMapping("/movie")
 public class MovieController {
 
     private final MovieDailyAPI movieDailyAPI;
     private final MovieWeeklyAPI movieWeeklyAPI;
     private final MovieService movieService;
     private final ReviewService reviewService;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
     private final MemberService memberService;
     private final ContentsController contentsController;
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
@@ -50,7 +50,7 @@ public class MovieController {
     String weekInfo = getCurrentWeekOfMonth(oneWeekAgoDate);
 
 
-    @GetMapping("movie")
+    @GetMapping("")
     public String movie(Model model, Principal principal) throws ParseException {
 
         List<MovieDTO> movieDTOS = this.movieService.listOfMovieDailyDTO();
@@ -95,19 +95,23 @@ public class MovieController {
             startIndex += 5;
             endIndex += 5;
         }
+        List<List<List<MovieDTO>>> allList = new ArrayList<>();
+        allList.add(movieListList);
+        allList.add(movieWeeklyListList);
 
         model.addAttribute("movieDailyDate", date);
-        model.addAttribute("movieListList", movieListList);
         model.addAttribute("movieWeeklyDate", weekInfo);
-        model.addAttribute("movieWeeklyListList", movieWeeklyListList);
+        model.addAttribute("allList", allList);
 
         return "Movie/movie";
     }
-    @PostMapping("movie/detail")
+    @PostMapping("/detail")
     public String movieDetail(Model model, String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
-        List<Review> reviews = reviewService.findReviews(movie.getId()).stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
+        List<Review> reviewList = this.reviewService.findReviews(movie.getId());
+        String paid = "false";
 
         Integer runtime = Integer.valueOf(movie.getRuntime());
         Integer hour = (int) Math.floor((double) runtime / 60);
@@ -123,17 +127,29 @@ public class MovieController {
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
 
+        model.addAttribute("category", "movie");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("author_actor_ListList", actorListList);
         model.addAttribute("movieruntime", movieruntime);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
 
 
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
+            if(payment.isPresent()){
+                paid ="true";
+            }
+
+
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -143,23 +159,28 @@ public class MovieController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
+
 
         return "contents/contents_detail";
     }
 
-    @GetMapping("movie/detail")
-    public String movieDetail2(Model model, @RequestParam("movieCD") String movieCD, Principal principal) {
+    @GetMapping("/detail/{movieCD}")
+    public String movieDetail2(Model model, @PathVariable("movieCD") String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
-        List<Review> reviews = reviewService.findReviews(movie.getId());
+        List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
+        List<Review> reviewList = this.reviewService.findReviews(movie.getId());
+        String paid = "false";
 
         Integer runtime = Integer.valueOf(movie.getRuntime());
         Integer hour = (int) Math.floor((double) runtime / 60);
@@ -176,17 +197,27 @@ public class MovieController {
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
 
+        model.addAttribute("category", "movie");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("author_actor_ListList", actorListList);
         model.addAttribute("movieruntime", movieruntime);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
 
 
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
+            if(payment.isPresent()){
+                paid ="true";
+            }
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -196,15 +227,17 @@ public class MovieController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
-        return "Movie/movie_detail";
+        return "contents/contents_detail";
     }
     //
     public void movieDailySize(List<Map> failedMovieList) {

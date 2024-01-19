@@ -19,19 +19,21 @@
                     <button class="modal_close_btn" style="color : red;">X</button>
                 </div>
                 <div style="display : flex; align-items : center;">
-                    <span id="movieTitle" th:text="${contentsDTOS.title}"
-                          style="text-align : center; font-weight: bold; color: black; white-space: nowrap; margin-top : 2px;"></span>
+                    <span id="title" th:text="${contentsDTOS.title}" style="text-align : center; font-weight: bold; color: black; white-space: pre-line; margin-top : 2px;"></span>
                     <button class="btn-close"></button>
                 </div>
                 <form class="comment_area" id="comment_area" name="comment_area"
                       style="display: flex; flex-direction: column;">
                      <textarea class="body"
-                               style="height : 369px; margin-bottom : 5px; background : white;"
+                               style="height : 340px; margin-top : 10px;margin-bottom : 5px; background : white;"
                                oninput="updateCharacterCount()"> </textarea>
-<!--                    <input class="movieCD" th:value="${contentsDetail.movieCode}" type="hidden">-->
+                    <input class="movieCD" th:if="${contentsDTOS.movieCode}"  th:value="${contentsDTOS.movieCode}" type="hidden">
+                    <input class="isbn" th:if="${contentsDTOS.isbn}"  th:value="${contentsDTOS.isbn}" type="hidden">
+                    <input class="dramaCode" th:if="${contentsDTOS.dramaCode}"  th:value="${contentsDTOS.dramaCode}" type="hidden">
+                    <input class="wetoonCode" th:if="${contentsDTOS.wetoonCode}"  th:value="${contentsDTOS.wetoonCode}" type="hidden">
                 </form>
                 <div style="margin-left : 74%; display : flex;">
-                    <button class="w-btn" style="margin-right : 5px;" onclick="saveComment();"> 저장</button>
+                    <button onclick="saveComment();"><input title="Button push orange" class="button btnPush btnOrange" th:value="저장" style="letter-spacing : 0.2em; cursor : pointer;"></button>
                 </div>
             </div>
         </div>
@@ -46,18 +48,31 @@
                     modal('comment_modal');
                     calculateRemainingCoins();
                     $('textarea.body').focus();
+                    adjustFontSize();
                 }
             }
 
             function saveComment() {
                 var commentValue = $('textarea.body').val();
                 var movieCD = $('input.movieCD').val();
+                var isbn = $('input.isbn').val();
+                var dramaId = $('input.dramaCode').val();
+                var webtoonId = $('input.wetoonCode').val();
+
                 var rating = document.getElementById("Rating").innerText.replace("⭐", "");
                 if (rating == "") {
                     alert("별점을 선택해주세요");
                     return;
                 }
-                window.location.href = '/review/create/movie?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
+                if(movieCD != null){
+                    window.location.href = '/review/create/movie?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;
+                } else if(isbn != null){
+                    window.location.href = '/review/create/book?isbn=' + isbn + '&comment=' + commentValue + '&rating=' + rating;
+                } else if(dramaId != null){
+                    window.location.href = '/review/create/drama?dramaId=' + dramaId + '&comment=' + commentValue + '&rating=' + rating;
+                } else if(webtoonId != null){
+                    window.location.href = '/review/create/webtoon?webtoonId=' + webtoonId + '&comment=' + commentValue + '&rating=' + rating;
+                }
             }
 
             function updateCharacterCount() {
@@ -73,21 +88,28 @@
             var bg = document.createElement('div');
             var form = document.querySelector('#comment_area');
 
-
             function adjustFontSize() {
-                const titleElement = document.getElementById("movieTitle");
-                const containerWidth = 345;
+            const titleElement = document.getElementById("title");
 
-                let fontSize = 16;
-                titleElement.style.fontSize = fontSize + "px";
+                if (titleElement) {
+                    const containerWidth = 345;
+                    const containerHeight = 50;
+                    let fontSize = 16;
 
-                while (titleElement.offsetWidth > containerWidth) {
-                    fontSize--;
                     titleElement.style.fontSize = fontSize + "px";
-                }
-            }
+                    titleElement.style.lineHeight = "1.2";
 
-            window.addEventListener("load", adjustFontSize);
+                    if (titleElement.offsetHeight > containerHeight) {
+                        titleElement.style.whiteSpace = "pre-line";
+                        titleElement.style.height = "auto";
+                    }
+
+                    while (titleElement.offsetHeight > containerHeight) {
+                        fontSize--;
+                        titleElement.style.fontSize = fontSize + "px";
+                    }
+                }
+           }
 
         //////////////////////////////////////////// 모달창 /////////////////////////////////////////////
 

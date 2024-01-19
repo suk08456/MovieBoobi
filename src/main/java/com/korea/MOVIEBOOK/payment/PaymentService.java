@@ -19,7 +19,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final MemberRepository memberRepository;
 
-    public void savePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, String phone, String content){
+    public void savePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, String phone, String content, String contents, String contentsID){
         Member member = this.memberRepository.findById(id).get();
         Payment payment1 = new Payment();
         payment1.setPaymentCompany(payment);
@@ -30,6 +30,9 @@ public class PaymentService {
         payment1.setMember(member);
         payment1.setDateTime(LocalDateTime.now());
         payment1.setContent(content);
+        payment1.setContents(contents);
+        payment1.setContentsID(contentsID);
+        payment1.setDateTime(LocalDateTime.now());
         this.paymentRepository.save(payment1);
     }
 
@@ -41,6 +44,6 @@ public class PaymentService {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("dateTime"));
         Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
-        return paymentRepository.findByMember(member, pageable);
+        return this.paymentRepository.findByMember(member, pageable);
     }
 }

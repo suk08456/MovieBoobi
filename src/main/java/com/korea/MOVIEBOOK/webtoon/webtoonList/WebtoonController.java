@@ -4,6 +4,7 @@ import com.korea.MOVIEBOOK.ContentsDTO;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.payment.PaymentRepository;
 import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
@@ -12,6 +13,7 @@ import com.korea.MOVIEBOOK.webtoon.days.DayService;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayListService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,17 +32,18 @@ public class WebtoonController {
     private final WebtoonDayListService webtoonDayListService;
     private final ReviewService reviewService;
     private final ContentsController contentsController;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
     private final MemberService memberService;
 
 
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String CreateDayList(Model model) {
         Day day = this.dayService.findByDay("tue");     // 그냥 DAY 테이블이 있는지 확인용
         if (day == null) {
             dayService.FindByWeek();
         }
+
 
         List<Day> days = this.dayService.findAll();
         List<List<List<Webtoon>>> allList = new ArrayList<>();//  월,화,수,목,금,토,일이라는 값을 가져오기 위함
@@ -80,6 +83,7 @@ public class WebtoonController {
         allList.add(saturdayListList);
         allList.add(sundayListList);
         model.addAttribute("allList", allList);
+
         return "webtoon/webtoon_list";
     }
 
@@ -112,9 +116,11 @@ public class WebtoonController {
     @PostMapping("/detail")
     public String WebtoonDetail1(Model model, Long webtoonId, Principal principal) {
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
         ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
         List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
+        List<Review> reviewList = this.reviewService.findWebtoonReview(webtoon.getWebtoonId());
+        String paid = "false";
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
                 .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
@@ -123,15 +129,26 @@ public class WebtoonController {
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
 
+        model.addAttribute("category", "webtoon");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
         model.addAttribute("author_actor_ListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
+        model.addAttribute("reviewList", reviewList);
 
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "webtoon", String.valueOf(webtoonId)));
+            if(payment.isPresent()){
+                paid ="true";
+            }
+
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -141,40 +158,26 @@ public class WebtoonController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
-
         return "contents/contents_detail";
     }
-
-
-//    @PostMapping("/detail")
-//    public String WebtoonDetail1(Model model, Long webtoonId) {
-//        Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-//        List<Review> reviews = reviewService.findWebtoonReview(webtoon.getWebtoonId());
-//
-//
-////       List<WebtoonDayList> webtoonDayLists = this.webtoonDayListService.findBywebtoon(webtoon);
-////       webtoonDayLists.get(0).getWebtoonDay().getUpdateDays();
-//
-//        model.addAttribute("WebtoonDetail", webtoon);
-//        model.addAttribute("reviews", reviews);
-//        return "webtoon/webtoon_detail";
-//    }
-
-
-    @GetMapping("/detail")
-    public String WebtoonDetail2(Model model, @RequestParam("webtoonId") Long webtoonId, Principal principal){
+    @GetMapping("/detail/{webtoonId}")
+    public String WebtoonDetail2(Model model, @PathVariable("webtoonId") Long webtoonId, Principal principal){
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(10).collect(Collectors.toList());
-        ContentsDTO contentsDTO = this.contentsController.setWetoonContentsDTO(webtoon);
+        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
+        ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
         List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
+        List<Review> reviewList = this.reviewService.findWebtoonReview(webtoon.getWebtoonId());
+        String paid = "false";
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
                 .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
@@ -182,15 +185,27 @@ public class WebtoonController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
-        model.addAttribute("contentsDTO", contentsDTO);
+
+        model.addAttribute("category", "webtoon");
+        model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
         model.addAttribute("author_actor_ListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
+        model.addAttribute("reviewList", reviewList);
 
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "webtoon", String.valueOf(webtoonId)));
+            if(payment.isPresent()){
+                paid ="true";
+            }
+
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -200,17 +215,20 @@ public class WebtoonController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
-
         return "contents/contents_detail";
     }
+
+
 }
 
 

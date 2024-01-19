@@ -45,18 +45,16 @@
     <div>
         <li style="display : flex;">
             <a class="category" href="/movie">영화</a>
-            <span class="category-bar">|</span>
-            <a class="category" th:href="@{/drama/dramaList}">TV</a>
+            <span class="category-bar" >|</span>
+            <a class="category" href="/drama">TV</a>
             <span class="category-bar">|</span>
             <a class="category" href="/book">책</a>
-            <span class="category-bar">|</span>
-            <a class="category" href="/webtoon/list">웹툰</a>
+            <span class="category-bar" >|</span>
+            <a class="category" href="/webtoon">웹툰</a>
         </li>
     </div>
 </div>
 <th:block layout:fragment="content"></th:block>
-</body>
-</html>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     ////////////////////////////////////////////////  마우스 효과 시작  ////////////////////////////////////////////////////

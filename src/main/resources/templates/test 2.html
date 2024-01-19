@@ -1,0 +1,25 @@
+<div class="swiper-wrapper">
+    <div class="swiper-slide"
+         style="display:flex; font-size: 18px; align-items: center; height : 100%;"
+         th:if="${pagingmovie}" th:each="movie,loop : ${pagingmovie}">
+            <button>
+                <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex;
+                        justify-content: center; align-items: center;">
+                    <img th:src="${movie.getImageUrl}" style="max-height: 100%;">
+                </div>
+                <div class="short-info" style="display : flex; flex-direction: column; align-items: flex-start;
+                        margin-left : 5px;">
+                                <span class="movie-title"
+                                      th:text="${#strings.length(movie.getTitle) > 16 ? #strings.substring(movie.getTitle, 0, 16) + '..' : movie.getTitle}"
+                                      style="font-size : 17px;"></span>
+                    <div class="short-kind">
+                        <span style="color : #868e96; font-size : 15px;">글,그림 :</span>
+                        <span th:text="${#strings.length(webtoon.getAuthor()) > 7 ? #strings.substring(webtoon.getAuthor(), 0, 7) + '..' : webtoon.getAuthor()}"
+                              style="font-size : 17px; margin-bottom : 5px;"></span>
+                    </div>
+                </div>
+                <input type="hidden" name="webtoonId" th:value="${webtoon.getWebtoonId()}">
+            </button>
+        </form>
+    </div>
+</div>
