@@ -30,7 +30,6 @@
         <div style="display: flex; width: 40%; justify-content: center;">
             <div style="width: 50%;">
                 <div class="search-wrap" style="position: relative; font-size: 14px; width: 97%;">
-                    <!--                    <img src="/imgs/돋보기.jpg" style="width : 15px;  position: absolute; top: 21%; left: 15px;">-->
                     <input class="search" id="search" type="search" name="" style="background: #dddedf; width: 100%;"
                            placeholder="콘텐츠,인물,컬렉션, 유저를 검색해보세요." value="">
                 </div>
@@ -42,16 +41,26 @@
                     </div>
                     코인충전
                 </a>
-                <!--                <a class="layoutLink" th:href="@{/customerSupport}">고객센터</a>-->
-                <div class="dropdown dropdown-hover" style="z-index: 100;">
-                    <a class="layoutLink" tabindex="0" role="button" th:href="@{/customerSupport}">고객센터</a>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
-                        style="margin-left: -35px;">
-                        <a class="btn">공지사항</a>
-                        <a class="btn">1:1문의</a>
-                        <a class="btn">내 질문</a>
-                        <a class="btn">자주 묻는 질문</a>
-                    </ul>
+                <div class="layoutLink">
+                    <div class="dropdown">
+                        <button class="btn-submit" style="display : flex;">
+                            <span>고객센터</span>
+                        </button>
+                        <div class="dropdown-content">
+                            <div class="dropdown-list">
+                                <a th:href="@{/customerSupport/notice}">공지사항</a>
+                            </div>
+                            <div class="dropdown-list">
+                                <a href="#">1:1문의</a>
+                            </div>
+                            <div class="dropdown-list">
+                                <a href="#">내 질문</a>
+                            </div>
+                            <div class="dropdown-list">
+                                <a href="#">자주 묻는 질문</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <a class="layoutLink" sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
                 <a class="layoutLink" sec:authorize="isAuthenticated()" th:href="@{/member/mypage}">마이페이지</a>
