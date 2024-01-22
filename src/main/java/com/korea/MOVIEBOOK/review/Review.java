@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.review;
 
+import com.korea.MOVIEBOOK.comment.Comment;
 import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
@@ -48,4 +49,7 @@ public class Review {
 
     @OneToMany( mappedBy = "review", cascade = CascadeType.ALL)
     private List<Heart> hearts;
+
+    @OneToMany(mappedBy = "review")
+    private List<Comment> commentList;
 }

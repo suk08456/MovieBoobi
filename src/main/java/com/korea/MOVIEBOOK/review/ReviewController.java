@@ -157,7 +157,10 @@ public class ReviewController {
     public String reviewListPaging(@PathVariable("category") String category, @PathVariable("contentsID") String contentsID, Model model, @RequestParam(value = "page", defaultValue = "0") int page, Principal principal) {
 
         Page<Review> paging;
-        String providerID = principal.getName();
+        String providerID = "";
+        if(principal != null ) {
+            providerID = principal.getName();
+        }
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
             member = this.memberService.getmember(providerID);
@@ -187,8 +190,8 @@ public class ReviewController {
     }
 
 
-    @PostMapping("/heart/{category}/{contentsID}/{reviewId}/{heartClick}")
-    public String reviewList(@PathVariable("category") String category, @PathVariable("contentsID") String contentsID, @PathVariable("reviewId") String reviewId, @PathVariable("heartClick") String heartClick, Model model, Principal principal) {
+    @PostMapping("/heart/{category}/{contentsID}/{reviewId}/{heartClick}/{gubun}")
+    public String reviewList(@PathVariable("category") String category, @PathVariable("contentsID") String contentsID, @PathVariable("reviewId") String reviewId, @PathVariable("heartClick") String heartClick, @PathVariable("gubun") String gubun, Model model, Principal principal) {
 
         if (Objects.equals(heartClick, "true")) {
             this.heartService.plusHeart(principal, category, contentsID, reviewId);
@@ -196,15 +199,74 @@ public class ReviewController {
             this.heartService.minusHeart(principal, reviewId);
         }
 
-        model.addAttribute("paging", "hello");
-        return "redirect:/review/list/" + category + "/" + contentsID;
+        if(gubun == "list"){
+            return "redirect:/review/list/" + category + "/" + contentsID;
+        }
+        return "redirect:/review/detail/" + category + "/" + contentsID  + "/" + reviewId;
     }
 
-    @PostMapping("/detail/{reviewID}")
-    public String reviewDetailList(@PathVariable("reviewID") String reviewID, Model model) {
-        Review review = this.reviewService.findReviewById(Long.valueOf(reviewID));
+    @PostMapping("/detail/{category}/{contentsID}/{reviewId}")
+    public String reviewDetailList(@PathVariable("category") String category, @PathVariable("contentsID") String contentsID, @PathVariable("reviewId") String reviewId, Model model,Principal principal) {
+        Review review = this.reviewService.findReviewById(Long.valueOf(reviewId));
+        String providerID = "";
+        if(principal != null ) {
+            providerID = principal.getName();
+        }
+        Member member = this.memberService.findByproviderId(providerID);
+        if (member == null) {
+            member = this.memberService.getmember(providerID);
+        }
+
+        if (Objects.equals(category, "movie")) {
+            Movie movie = this.movieRepository.findBymovieCode(contentsID);
+            model.addAttribute("info",movie);
+        } else if (Objects.equals(category, "book")) {
+            Book book = this.bookRepository.findByIsbn(contentsID);
+            model.addAttribute("info",book);
+        } else if (Objects.equals(category, "drama")) {
+            Drama drama = this.dramaRepository.getReferenceById(Long.valueOf(contentsID));
+            model.addAttribute("info",drama);
+        } else {
+            Webtoon webtoon = this.webtoonRepository.findByWebtoonId(Long.valueOf(contentsID));
+            model.addAttribute("info",webtoon);
+        }
+
+        model.addAttribute("memberInfo", member);
+        model.addAttribute("category",category);
         model.addAttribute("review", review);
-        return "review_detail";
+        return "review/review_detail";
+    }
+
+    @GetMapping("/detail/{category}/{contentsID}/{reviewId}")
+    public String getreviewDetailList(@PathVariable("category") String category, @PathVariable("contentsID") String contentsID, @PathVariable("reviewId") String reviewId, Model model,Principal principal) {
+        Review review = this.reviewService.findReviewById(Long.valueOf(reviewId));
+        String providerID = "";
+        if(principal != null ) {
+            providerID = principal.getName();
+        }
+        Member member = this.memberService.findByproviderId(providerID);
+        if (member == null) {
+            member = this.memberService.getmember(providerID);
+        }
+
+        if (Objects.equals(category, "movie")) {
+            Movie movie = this.movieRepository.findBymovieCode(contentsID);
+            model.addAttribute("info",movie);
+        } else if (Objects.equals(category, "book")) {
+            Book book = this.bookRepository.findByIsbn(contentsID);
+            model.addAttribute("info",book);
+        } else if (Objects.equals(category, "drama")) {
+            Drama drama = this.dramaRepository.getReferenceById(Long.valueOf(contentsID));
+            model.addAttribute("info",drama);
+        } else {
+            Webtoon webtoon = this.webtoonRepository.findByWebtoonId(Long.valueOf(contentsID));
+            model.addAttribute("info",webtoon);
+        }
+
+        model.addAttribute("memberInfo", member);
+        model.addAttribute("category",category);
+        model.addAttribute("review", review);
+        return "review/review_detail";
     }
 
 

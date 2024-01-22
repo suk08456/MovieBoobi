@@ -13,8 +13,8 @@
         <span style="font-size : 22px; font-weight : bold; margin-left : 28px;">코멘트</span>
     </div>
     <div th:each="review, stat : ${paging}" style="width : 50%; margin-top : 55px;">
-        <form class="click_review" style="margin-top : 7px; margin-bottom : 7px;">
-            <div style="display : flex; justify-content : space-between;  border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+        <div style="display : flex; justify-content : space-between;  border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+            <form class="click_review" style="margin-top : 7px; margin-bottom : 7px;">
                 <button onclick="click_review(this);" style="margin-bottom : 5px;">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <input class="reviewId" th:value="${review.id}" type="hidden">
@@ -25,31 +25,34 @@
                               style="font-size : 16px; margin-left : 5px; padding : 3px;"></span>
                     </div>
                 </button>
-                <div style="display : flex; align-items: center; margin-bottom : 5px;">
+            </form>
+            <div style="display : flex; align-items: center; margin-bottom : 5px;">
                 <span th:text="${ '⭐' + review.rating}"
                       style="font-size : 16px; border : 2px solid rgba(0, 0, 0, 0.1); padding : 3px; border-radius : 12px; margin-left : 2px;"></span>
-                    <form class="click_heart">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <button onclick="clickHeart(this);" sec:authorize="isAuthenticated()" style="display: flex;">
-                            <input class="id" th:value="${review.id}" type="hidden">
-                            <div class="heartIcon">
+                <form class="click_heart">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button onclick="clickHeart(this);" sec:authorize="isAuthenticated()" style="display: flex;">
+                        <input class="id" th:value="${review.id}" type="hidden">
+                        <div class="heartIcon">
                                 <span th:if="${#lists.contains(review.hearts.![member.id], memberInfo.id)}">❤️<sup
                                         class="number" th:text="${#lists.size(review.hearts)}"></sup></span>
-                                <span th:unless="${#lists.contains(review.hearts.![member.id], memberInfo.id)}">🤍<sup
-                                        class="number" th:text="${#lists.size(review.hearts)}"></sup></span>
-                            </div>
-                        </button>
-                        <div sec:authorize="isAnonymous()">
-                            <span>🤍<sup th:text="${#lists.size(review.hearts)}"></sup></span>
+                            <span th:unless="${#lists.contains(review.hearts.![member.id], memberInfo.id)}">🤍<sup
+                                    class="number" th:text="${#lists.size(review.hearts)}"></sup></span>
                         </div>
-                    </form>
-                </div>
+                    </button>
+                    <div sec:authorize="isAnonymous()">
+                        <span>🤍<sup th:text="${#lists.size(review.hearts)}"></sup></span>
+                    </div>
+                </form>
             </div>
+        </div>
+        <form class="click_review" style="margin-top : 7px; margin-bottom : 7px;">
             <button onclick="click_review(this);" style="margin-top: 5px;">
+                <input class="reviewId" th:value="${review.id}" type="hidden">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <input class="reviewId" th:value="${review.id}" type="hidden">
                 <span th:text="${#strings.length(review.comment) > 800 ? #strings.substring(review.comment, 0, 800) + '..' : review.comment}"
-                  style="display: inline-block; word-wrap: break-word; font-size : 14px; margin-top : 10px; text-align: left;"></span>
+                      style="display: inline-block; word-wrap: break-word; font-size : 14px; margin-top : 10px; text-align: left;"></span>
             </button>
         </form>
     </div>
@@ -97,37 +100,36 @@
             var heartIcon = button.querySelector('.heartIcon');
             var reviewIDInput = button.querySelector('.id');
             var reviewID = reviewIDInput.value;
-            var form = button.closest('.click_heart');
             var heartClick = true;
             var number = button.querySelector('.number').textContent;
+            var form = button.closest('.click_heart');
+            var gubun = "list";
 
             if (heartIcon.innerText.trim() === '🤍' + number) {
-                alert("In '🤍' block");
                 heartIcon.innerText = '❤️';
             } else if (heartIcon.innerText.trim() === '❤️' + number){
-                alert("In '❤️' block");
                 heartIcon.innerText = '🤍';
                 heartClick = false;
             }
 
             if (form) {
                 form.method = "POST";
-                form.action = "/review/heart/" + '[[${category}]]' + "/" + '[[${contentsID}]]' + "/" + reviewID + "/" + heartClick;
+                form.action = "/review/heart/" + '[[${category}]]' + "/" + '[[${contentsID}]]' + "/" + reviewID + "/" + heartClick + "/" + gubun;
                 form.submit();
             } else {
                 console.error("Form element is null");
             }
         }
 
+
         function click_review(button){
+            var form = button.closest('.click_review');
             var reviewIDInput = button.querySelector('.reviewId');
             var reviewID = reviewIDInput.value;
-            var form = button.closest('.click_review');
-            alert(reviewID);
 
             if (form) {
                 form.method = "POST";
-                form.action = "/review/detail/" + reviewID ;
+                form.action = "/review/detail/" + '[[${category}]]' + "/" + '[[${contentsID}]]' + "/" + reviewID ;
                 form.submit();
             } else {
                 console.error("Form element is null");

@@ -21,6 +21,7 @@
                 <div style="display : flex; flex-direction : column;align-items : center;">
                     <img th:if="${contentsDTOS.imageUrl != null and category == 'drama'}" th:src="${'/dramaImage' + contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
                     <img th:if="${contentsDTOS.imageUrl != null and category != 'drama'}" th:src="${contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
+                    <img th:if="${contentsDTOS.imageUrl == null}" th:src="${contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
                     <span id="title" th:text="${contentsDTOS.title}" style="text-align : center; font-weight: bold; color: black; white-space: pre-line; margin-top : 2px;"></span>
                     <div style="display : flex;">
                         <img src="/etc/coin.png" style="height : 18px; margin-top : 2px; margin-left : 30%;">

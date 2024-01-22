@@ -16,6 +16,7 @@
                      th:src="${'/dramaImage' + contentsDTOS.imageUrl}" style="width: 300px;">
                 <img th:if="${contentsDTOS.imageUrl != null and category != 'drama'}" th:src="${contentsDTOS.imageUrl}"
                      style="width: 300px;">
+                <img th:if="${contentsDTOS.imageUrl == null}" src="/imgs/noimg.jpg" style="width : 300px;">
             </div>
             <div style="display : flex; flex-direction : column; width : 75%; margin-left : 25px;">
                 <span th:if="${contentsDTOS.title}" th:text="${contentsDTOS.title}"
