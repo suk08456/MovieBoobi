@@ -44,7 +44,8 @@
                                     </form>
                                     <div class="short-kind" style="display : flex; flex-direction : column; text-align : left;">
                                         <span th:text="${drama.genre}" style="color : #868e96; font-size : 15px;"></span>
-                                        <span th:text="${'오픈' + #strings.substring(drama.releaseDate, 0, 4) + '.' + #strings.substring(drama.releaseDate, 4, 6) + '.' + #strings.substring(drama.releaseDate, 6, 8)}"
+                                        <span th:text="${#strings.length(drama.releaseDate) >= 8 ? '오픈' + #strings.substring(drama.releaseDate, 0, 4) + '.' +
+                                         #strings.substring(drama.releaseDate, 4, 6) + '.' + #strings.substring(drama.releaseDate, 6, 8) : ''}"
                                               style="color: #868e96; font-size: 15px;"></span>
                                     </div>
                                     <input type="hidden" name="dramaId" th:value="${drama.getId()}">
