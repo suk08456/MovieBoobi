@@ -5,6 +5,7 @@ import com.korea.MOVIEBOOK.ContentsDTO;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.payment.PaymentRepository;
 import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class BookController {
     private final BookService bookService;
     private final ContentsController contentsController;
     private final MemberService memberService;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
 
     @GetMapping("")
     public String mainPage(Model model) {
@@ -60,7 +61,6 @@ public class BookController {
             startIndex+=5;
             endIndex+=5;
         }
-        System.out.println("=================================== 새로고침 ===================================");
         List<List<List<Book>>> allList = new ArrayList<>();
         allList.add(bestSellerListList);
         allList.add(newSpecialBookListList);
@@ -74,7 +74,9 @@ public class BookController {
         Book book = bookService.findByIsbn(isbn);
         ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
-        List<Review> reviews = book.getReviewList().stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = book.getReviewList().stream().limit(12).collect(Collectors.toList());
+        List<Review> reviewList = book.getReviewList();
+        String paid = "false";
 
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
@@ -83,16 +85,26 @@ public class BookController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
-
+        model.addAttribute("category", "book");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
         model.addAttribute("author_actor_ListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "book", isbn));
+            if(payment.isPresent()){
+                paid ="true";
+            }
+
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -102,10 +114,12 @@ public class BookController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
@@ -125,10 +139,13 @@ public class BookController {
 //    }
 
     @GetMapping("/detail/{isbn}")
-    public String bookDetail1(@PathVariable("isbn") String isbn, Model model,Principal principal) {
+    public String bookDetail1(@PathVariable("isbn") String isbn, Model model, Principal principal) {
         Book book = bookService.findByIsbn(isbn);
+        ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
-        List<Review> reviews = book.getReviewList().stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = book.getReviewList().stream().limit(12).collect(Collectors.toList());
+        List<Review> reviewList = book.getReviewList();
+        String paid = "false";
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
                 .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
@@ -136,15 +153,25 @@ public class BookController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
-        model.addAttribute("book", book);
+        model.addAttribute("category", "book");
+        model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
         model.addAttribute("authorListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "book", isbn));
+            if(payment.isPresent()){
+                paid ="true";
+            }
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -154,15 +181,17 @@ public class BookController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
         }
 
-        return "book/bookDetail";
+        return "contents/contents_detail";
     }
 }

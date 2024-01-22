@@ -6,7 +6,17 @@ import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Getter
@@ -31,10 +41,6 @@ public class Webtoon {
     private String imageUrl;
 
     private String searchKeyword;
-
-//    @Column(name = "update_days")
-//    private String updateDays;
-
 
     private String detailUrl;
 

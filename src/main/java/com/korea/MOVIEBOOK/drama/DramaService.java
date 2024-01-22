@@ -2,7 +2,12 @@ package com.korea.MOVIEBOOK.drama;
 
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.review.Review;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -62,5 +67,13 @@ public class DramaService {
         }
 
         return actorListList;
+    }
+
+    public Page<Drama> getDramaList(int page, String kw) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("title"));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
+        return dramaRepository.findAllByDramaKeyword(kw, pageable);
     }
 }

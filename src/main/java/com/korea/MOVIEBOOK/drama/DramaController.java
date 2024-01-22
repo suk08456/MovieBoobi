@@ -5,6 +5,7 @@ import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.payment.PaymentRepository;
 import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -28,7 +30,7 @@ public class DramaController {
 
     private final DramaService dramaService;
     private final ContentsController contentsController;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
     private final MemberService memberService;
 
     @GetMapping("")
@@ -50,9 +52,11 @@ public class DramaController {
     public String dramaDetail(Model model, Long dramaId, Principal principal) {
         Drama drama = dramaService.getDramaById(dramaId);
 
-        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
         List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
         ContentsDTO contentsDTOS = this.contentsController.setDramaContentsDTO(drama);
+        List<Review> reviewList = dramaService.getReviewByDramaId(dramaId);
+        String paid = "false";
 
         double avgRating = reviews.stream()
                 .filter(review -> review.getRating() != null)
@@ -60,17 +64,25 @@ public class DramaController {
                 .average()
                 .orElse(0);
 
-        model.addAttribute("gubun", "drama");
+        model.addAttribute("category", "drama");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("author_actor_ListList", actorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
-        model.addAttribute("newReview", new Review());
+        model.addAttribute("reviewList", reviewList);
 
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "drama", String.valueOf(dramaId)));
+            if(payment.isPresent()){
+                paid ="true";
+            }
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -80,10 +92,12 @@ public class DramaController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
@@ -95,9 +109,11 @@ public class DramaController {
     public String dramaDetail2(Model model,@PathVariable("dramaId") Long dramaId, Principal principal) {
         Drama drama = dramaService.getDramaById(dramaId);
 
-        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(10).collect(Collectors.toList());
+        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
         List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
         ContentsDTO contentsDTOS = this.contentsController.setDramaContentsDTO(drama);
+        List<Review> reviewList = dramaService.getReviewByDramaId(dramaId);
+        String paid = "false";
 
         double avgRating = reviews.stream()
                 .filter(review -> review.getRating() != null)
@@ -105,17 +121,25 @@ public class DramaController {
                 .average()
                 .orElse(0);
 
-        model.addAttribute("gubun", "drama");
+        model.addAttribute("category", "drama");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("author_actor_ListList", actorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
-        model.addAttribute("newReview", new Review());
+        model.addAttribute("reviewList", reviewList);
 
         if(principal != null){
-            String providerID = principal.getName();
-            Member member = this.memberService.findByproviderId(providerID);
-            List<Payment> payments  = this.paymentService.findPaymentListByMember(member);
+            String providerID = principal.getName();Member member = this.memberService.findByproviderId(providerID);
+            if (member == null) {
+                member = this.memberService.getmember(providerID);
+            }
+
+            Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "drama", String.valueOf(dramaId)));
+            if(payment.isPresent()){
+                paid ="true";
+            }
+
+            List<Payment> payments  = this.paymentRepository.findBymember(member);
             long sum = 0;
 
             for(int i  = 0 ; i < payments.size(); i++){
@@ -125,10 +149,12 @@ public class DramaController {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
+            model.addAttribute("paid",paid);
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
         } else {
+            model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
