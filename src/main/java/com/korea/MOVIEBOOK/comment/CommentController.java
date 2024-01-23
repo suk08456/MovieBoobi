@@ -16,6 +16,7 @@ public class CommentController {
 
         this.commentService.saveComment(comment,memberId,reviewId);
 
-        return "redirect:/review/detail/" + category + "/" + contentsId + "/" + reviewId;
+        return "redirect:/review/detail?category="+category+"&contentsID=" + contentsId + "&reviewId=" + reviewId;
     }
+
 }

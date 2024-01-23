@@ -104,36 +104,52 @@
             <span th:text="코멘트"
                   style="font-size : 22px; font-weight : bold; color : black;">
             </span>
-            <span th:text="${#lists.size(reviewList)}"
+                <span th:text="${#lists.size(reviewList)}"
                       style="font-size : 22px; font-weight : bold; color : #FF2F6E; margin-left : 8px; width : 1175px;">
             </span>
-                <form class="review_more">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <input class="contentsID" th:if="${contentsDTOS.movieCode}" th:value="${contentsDTOS.movieCode}"
+                <form th:action="@{/review/list}" method="get">
+                    <input name="category" th:if="${category}" th:value="${category}"
                            type="hidden">
-                    <input class="contentsID" th:if="${contentsDTOS.isbn}" th:value="${contentsDTOS.isbn}"
+                    <input name="contentsID" th:if="${contentsDTOS.movieCode}" th:value="${contentsDTOS.movieCode}"
                            type="hidden">
-                    <input class="contentsID" th:if="${contentsDTOS.dramaCode}" th:value="${contentsDTOS.dramaCode}"
+                    <input name="contentsID" th:if="${contentsDTOS.isbn}" th:value="${contentsDTOS.isbn}"
                            type="hidden">
-                    <input class="contentsID" th:if="${contentsDTOS.wetoonCode}" th:value="${contentsDTOS.wetoonCode}"
+                    <input name="contentsID" th:if="${contentsDTOS.dramaCode}" th:value="${contentsDTOS.dramaCode}"
                            type="hidden">
-                    <button onclick="moreReviews();"><span style="color : #FF2F6E; font-weight : bold;" th:text="더보기"></span></button>
+                    <input name="contentsID" th:if="${contentsDTOS.wetoonCode}" th:value="${contentsDTOS.wetoonCode}"
+                           type="hidden">
+                    <button th:if="${#lists.size(reviewList)} > 12"><span
+                            style="color : #FF2F6E; font-weight : bold;" th:text="더보기"></span></button>
                 </form>
             </div>
             <div class="review-co" style="display : flex; flex-wrap : wrap; height : 500px;">
                 <div th:each="review : ${reviews}" style="padding : 9px; height : 240px; width : 325px;">
-                    <div style="display : flex;">
-                        <img th:if="${review.member.profileImage}" th:src="${review.member.profileImage}"
-                             style="height : 33px; width : 33px; border-radius : 17px;">
-                        <span th:if="${review.member.nickname}" th:text="${review.member.nickname}"
-                              style="font-size : 16px; margin-left : 5px; width : 190px; padding : 3px;"></span>
-                        <span th:text="${ '⭐' + review.rating}"
-                              style="font-size : 16px; border : 2px solid rgba(0, 0, 0, 0.1); padding : 3px; border-radius : 12px; margin-left : 2px;"></span>
-                    </div>
-                    <div style="margin-top: 5px; overflow: hidden; border-top: 1px solid #868E96;">
+                    <form th:action="@{/review/detail}" method="get">
+                        <button style="margin-top: 5px;">
+                            <div style="display : flex;">
+                                <input name="category" th:value="${category}" type="hidden">
+                                <input name="contentsID" th:if="${contentsDTOS.movieCode}" th:value="${contentsDTOS.movieCode}"
+                                       type="hidden">
+                                <input name="contentsID" th:if="${contentsDTOS.isbn}" th:value="${contentsDTOS.isbn}"
+                                       type="hidden">
+                                <input name="contentsID" th:if="${contentsDTOS.dramaCode}" th:value="${contentsDTOS.dramaCode}"
+                                       type="hidden">
+                                <input name="contentsID" th:if="${contentsDTOS.wetoonCode}" th:value="${contentsDTOS.wetoonCode}"
+                                       type="hidden">
+                                <input name="reviewId" th:value="${review.id}" type="hidden">
+                                <img th:if="${review.member.profileImage}" th:src="${review.member.profileImage}"
+                                     style="height : 33px; width : 33px; border-radius : 17px;">
+                                <span th:if="${review.member.nickname}" th:text="${review.member.nickname}"
+                                      style="font-size : 16px; margin-left : 5px; width : 190px; padding : 3px;"></span>
+                                <span th:text="${ '⭐' + review.rating}"
+                                      style="font-size : 16px; border : 2px solid rgba(0, 0, 0, 0.1); padding : 3px; border-radius : 12px; margin-left : 2px;"></span>
+                            </div>
+                            <div style="margin-top: 5px; overflow: hidden; border-top: 1px solid #868E96;">
                         <span th:text="${#strings.length(review.comment) > 100 ? #strings.substring(review.comment, 0, 100) + '..' : review.comment}"
                               style="display: inline-block; word-wrap: break-word; font-size : 14px; margin-top : 10px;"></span>
-                    </div>
+                            </div>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -155,19 +171,7 @@
                 hide: true,
             },
         });
-
-        function moreReviews() {
-            var form = document.querySelector('.review_more');
-            if (form) {
-                form.method = "POST";
-                form.action = "/review/list/" + category + "/" + contentsID;
-                form.submit();
-            } else {
-                console.error("Form element is null");
-            }
-            return false;
-        }
-
+    }
 
     </script>
 </div>

@@ -7,6 +7,8 @@ import com.korea.MOVIEBOOK.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -22,6 +24,7 @@ public class CommentService {
         comment1.setContent(comment);
         comment1.setMember(member);
         comment1.setReview(review);
+        comment1.setDateTime(LocalDateTime.now());
         this.commentRepository.save(comment1);
     }
 

@@ -1,26 +1,18 @@
-<form style="display : grid; margin-left:15px;"
-      th:action="@{/drama/detail}" method="post" th:if="${pagingDrama}" th:each="drama,loop : ${pagingDrama}">
-    <button>
-        <div class="img"
-             style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
-            <img th:src="${'/dramaImage' + drama.imageUrl}"
-                 th:if="${not #strings.isEmpty(drama.imageUrl)}">
-            <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(drama.imageUrl)}"
-                 style="width : 213px; height : 303px;">
-        </div>
-        <div class="short-info" style="display : inline-grid; margin-left : 5px;">
-            <form class="title-co">
-                <input class="title" name="title"
-                       th:value="${#strings.length(drama.title) > 17 ? #strings.substring(drama.title, 0, 17) + '..' : drama.title}"
-                       style="font-size : 17px;" onclick="goDetail('.title-co');" readonly>
-                <div class="mv-text" th:text="${drama.title}"></div>
-            </form>
-            <div class="short-kind" style="display : flex; flex-direction : column; text-align : left;">
-                <span th:text="${drama.genre}" style="color : #868e96; font-size : 15px;"></span>
-                <span th:text="${'오픈' + #strings.substring(drama.releaseDate, 0, 4) + '.' + #strings.substring(drama.releaseDate, 4, 6) + '.' + #strings.substring(drama.releaseDate, 6, 8)}"
-                      style="color: #868e96; font-size: 15px;"></span>
-            </div>
-            <input type="hidden" name="dramaId" th:value="${drama.getId()}">
-        </div>
-    </button>
-</form>
+<a href="javascript:void(0);" th:data-uri="@{|/review/detail/{category}/{contentsID}/delete/${comment.id}|}"
+   class="delete" sec:authorize="isAuthenticated()"
+   th:if="${comment.customer != null and #authentication.getPrincipal().getUsername() == comment.customer.username}"
+   th:text="삭제"></a>
+
+
+
+<script layout:fragment="script" type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function (element) {
+        element.addEventListener('click', function () {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            }
+            ;
+        });
+    });
+</script>

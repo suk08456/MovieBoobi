@@ -66,6 +66,8 @@
                 </div>
             </div>
         </div>
+        <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script>
             var totalCoins = parseInt(document.getElementById('totalCoins').textContent.replace(/,/g, ''), 10);
             var bg = document.createElement('div');
@@ -93,9 +95,17 @@
 
             function loginStatus() {
                 if (login == false) {
-                    alert("로그인 후 사용해주세요");
+                    Swal.fire({
+                            icon: 'warning',
+                            title: '로그인 후 이용해주세요.',
+                        });
+                    return false;
                 } else if (paid == "true") {
-                    alert("이미 결제완료한 콘텐츠입니다.");
+                    Swal.fire({
+                            icon: 'warning',
+                            title: '이미 결제완료한 콘텐츠입니다..',
+                        });
+                    return false;
                 } else {
                     modal('payment_modal');
                     calculateRemainingCoins();
@@ -104,6 +114,9 @@
             }
 
             function pay() {
+
+                // 중첩 X
+
                 if (remainingCoins < 0) {
                     alert("코인이 부족합니다!! 코인 충전 후 이용해주세요 🔥");
                     var confirmResult = confirm("코인 충전소로 이동할까요?");
