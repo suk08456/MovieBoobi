@@ -25,7 +25,7 @@
                      style="display:flex; font-size: 18px; align-items: center; height : 100%;"
                      th:each="bookList : ${bookListList}">
                     <form style="display : grid; margin-left:15px;"
-                          th:action="@{/book/detail}" method="post" th:each="book : ${bookList}">
+                          th:action="@{/book/detail}" method="get" th:each="book : ${bookList}">
                         <button>
                             <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex;
                         justify-content: center; align-items: center; border: solid 1px;">

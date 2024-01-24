@@ -1,7 +1,53 @@
-.redHeart {
-    color: red; /* 빨간색으로 설정 */
+.dropdown-list:hover {
+    background-color: #e9ecef;
 }
 
-.whiteHeart {
-    color: white; /* 흰색으로 설정 */
+.dropdown-list {
+    display : flex;
+    padding : 5px;
+    margin-top : 10px;
+    justify-content : space-around;
+    border-radius : 5px;
+    box-sizing : border-box;
+    align-items : center;
+    cursor : pointer;
+}
+
+.btnOrange {
+  background: #FFD400;
+}
+
+input.button {
+  display: block;
+  position: relative;
+  float: left;
+  width: 67px;
+  text-align: center;
+  line-height: 34px;
+  border-radius: 5px;
+  transition: all 0.2s;
+  color : black;
+}
+
+.btnPush:hover {
+  box-shadow: 0px 5px 0px 0px #E5B409;
+}
+
+.comment-writer {
+    height: 24px;
+    margin: 3px 0 0 6px;
+    padding: 0 8px;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-radius: 17px;
+    font-size: 14px;
+    color : #558DCF;
+}
+
+.btnWhite {
+    border-block: 1px solid #868E96;
+    border-radius: 17px;
+    text-align: center;
+    width: 61px;
+    font-size: 12px;
 }

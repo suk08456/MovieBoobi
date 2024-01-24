@@ -21,6 +21,7 @@
                 <div style="display : flex; flex-direction : column;align-items : center;">
                     <img th:if="${contentsDTOS.imageUrl != null and category == 'drama'}" th:src="${'/dramaImage' + contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
                     <img th:if="${contentsDTOS.imageUrl != null and category != 'drama'}" th:src="${contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
+                    <img th:if="${contentsDTOS.imageUrl == null}" th:src="${contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
                     <span id="title" th:text="${contentsDTOS.title}" style="text-align : center; font-weight: bold; color: black; white-space: pre-line; margin-top : 2px;"></span>
                     <div style="display : flex;">
                         <img src="/etc/coin.png" style="height : 18px; margin-top : 2px; margin-left : 30%;">
@@ -65,6 +66,8 @@
                 </div>
             </div>
         </div>
+        <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script>
             var totalCoins = parseInt(document.getElementById('totalCoins').textContent.replace(/,/g, ''), 10);
             var bg = document.createElement('div');
@@ -92,9 +95,17 @@
 
             function loginStatus() {
                 if (login == false) {
-                    alert("로그인 후 사용해주세요");
+                    Swal.fire({
+                            icon: 'warning',
+                            title: '로그인 후 이용해주세요.',
+                        });
+                    return false;
                 } else if (paid == "true") {
-                    alert("이미 결제완료한 콘텐츠입니다.");
+                    Swal.fire({
+                            icon: 'warning',
+                            title: '이미 결제완료한 콘텐츠입니다..',
+                        });
+                    return false;
                 } else {
                     modal('payment_modal');
                     calculateRemainingCoins();
@@ -103,6 +114,9 @@
             }
 
             function pay() {
+
+                // 중첩 X
+
                 if (remainingCoins < 0) {
                     alert("코인이 부족합니다!! 코인 충전 후 이용해주세요 🔥");
                     var confirmResult = confirm("코인 충전소로 이동할까요?");

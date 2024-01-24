@@ -37,13 +37,19 @@
                 </div>
             </div>
         </div>
+        <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script>
 
             var login_check = [[${login}]] == true ? true : false;
 
             function logincheck() {
                 if (login_check == false) {
-                    alert("로그인 후 사용해주세요");
+                    Swal.fire({
+                            icon: 'warning',
+                            title: '로그인 후 이용해주세요.',
+                        });
+                    return false;
                 } else {
                     modal('comment_modal');
                     calculateRemainingCoins();
@@ -61,8 +67,11 @@
 
                 var rating = document.getElementById("Rating").innerText.replace("⭐", "");
                 if (rating == "") {
-                    alert("별점을 선택해주세요");
-                    return;
+                    Swal.fire({
+                            icon: 'warning',
+                            title: '별점을 선택해주세요.',
+                        });
+                    return false;
                 }
                 if(movieCD != null){
                     window.location.href = '/review/create/movie?movieCD=' + movieCD + '&comment=' + commentValue + '&rating=' + rating;

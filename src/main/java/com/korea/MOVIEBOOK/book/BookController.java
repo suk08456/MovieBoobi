@@ -69,7 +69,7 @@ public class BookController {
         return "book/bookMainPage";
     }
 
-    @PostMapping("/detail")
+    @GetMapping("/detail")
     public String bookDetail(String isbn, Model model, Principal principal) {
         Book book = bookService.findByIsbn(isbn);
         ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
