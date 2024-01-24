@@ -41,10 +41,10 @@
                                     class="number" th:text="${#lists.size(review.hearts)}"></sup></span>
                         </div>
                     </button>
-                    <div sec:authorize="isAnonymous()">
-                        <span>🤍<sup th:text="${#lists.size(review.hearts)}"></sup></span>
-                    </div>
                 </form>
+                <div sec:authorize="isAnonymous()" onclick="ClickHeartWithoutLongin()" style="cursor : pointer;">
+                    <span>🤍<sup th:text="${#lists.size(review.hearts)}"></sup></span>
+                </div>
             </div>
         </div>
         <form th:action="@{/review/detail}" method="get">
@@ -80,6 +80,8 @@
         </ul>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
 
         function getBytes(str) {
@@ -94,6 +96,13 @@
               }
 
               return charBytes;
+        }
+
+        function ClickHeartWithoutLongin(){
+            Swal.fire({
+                    icon: 'warning',
+                    title: '로그인 후 이용해주세요.',
+            });
         }
 
 
