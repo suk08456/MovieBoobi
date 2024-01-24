@@ -34,6 +34,7 @@ public class main {
         Page<Drama> pagingDrama = dramaService.getDramaList(page, kw);
         Page<Book> pagingBook = bookService.getBookList(page, kw);
         Page<Webtoon> pagingWebtoon = webtoonService.getWebtoonList(page, kw);
+
         model.addAttribute("pagingmovie", pagingMovie);
         model.addAttribute("pagingDrama", pagingDrama);
         model.addAttribute("pagingBook", pagingBook);

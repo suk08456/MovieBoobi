@@ -140,7 +140,7 @@ public class WebtoonService {
 
     public Page<Webtoon> getWebtoonList(int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("fanCount"));
+        sorts.add(Sort.Order.desc("title"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 
         return webtoonRepository.findAllByWebtoonKeyword(kw, pageable);

@@ -2,36 +2,241 @@
 <html lang="ko" layout:decorate="~{layout2}">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/Webtoon/webtoon.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/serach_list.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 </head>
 <body>
-<div layout:fragment="content" style="width : 100%; height: 100%; ">
-    <div>
-        <div th:if="${pagingmovie}" th:each="movie,loop : ${pagingmovie}">
-            <td style="text-align : center;" th:text="${movie.title}"></td>
-            <img style="text-align : center;" th:src="${movie.imageUrl}">
+<div layout:fragment="content" style="width: 100%; height: 100%;">
+    <div style="margin-bottom: 50px;">
+        <div style="display: flex; justify-content: center; margin-top: 50px; font-size: 20px;">
+        <span th:text="'&quot;' + ${param.kw} + '&quot;'"
+              style="font-size: 30px; font-weight: bold; color: #3b3ff6; margin-right: 5px;"></span>
+
+            <span style="margin-top: 10px;"> 로 검색하신 결과 입니다</span>
         </div>
+        <div>
+            <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold">
+                <span style="font-size: 30px; color: black;">영화</span>
+                <p class="movie_console" style="cursor: pointer; margin-top: 22px;">더보기</p>
+            </div>
+            <div style="display: flex; justify-content: center; margin-bottom: 60px;">
+                <div style="width : 60%; max-height: 820px;">
+                    <div class="result-container"
+                         style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 15px; width : 100%; height: 100%;">
+                        <form class="more_movielist" th:action="@{/movie/detail}" method="post" th:if="${pagingmovie}"
+                              th:each="movie, loop : ${pagingmovie}" style="height : 38%;">
+                            <button>
+                                <div class="img"
+                                     style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
+                                    <img th:src="${movie.imageUrl}"
+                                         th:if="${not #strings.isEmpty(movie.imageUrl)}">
+                                    <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(movie.imageUrl)}"
+                                         style="width : 213px; height : 303px;">
+                                    <input type="hidden" name="movieCD" th:value="${movie.movieCode}">
+                                </div>
+                                <div class="short-info" style="display : inline-grid; margin-left : 5px;">
+                                    <form class="title-co">
+                                        <input class="title" name="title"
+                                               th:value="${#strings.length(movie.title) > 17 ? #strings.substring(movie.title, 0, 17) + '..' : movie.title}"
+                                               style="font-size : 17px;" readonly>
+                                        <div class="mv-text" th:text="${movie.title}"></div>
+                                        <input type="hidden" name="date" th:value="${movieDailyDate}">
+                                    </form>
+                                    <div class="short-kind" style="text-align : left;">
+                                    <span th:text="${movie.genre}"
+                                          style="color : #868e96; font-size : 15px;"></span>
+                                        ·
+                                        <span th:text="${movie.nations}"
+                                              style="color : #868e96; font-size : 15px;"></span>
+                                    </div>
+                                    <div class="short-kind" style="text-align : left;">
+                                        <span style="color : #868e96; font-size : 15px;">개봉일 </span>
+                                        <span th:text="${#strings.substring(movie.releaseDate, 0, 4) + '.' + #strings.substring(movie.releaseDate, 4, 6) + '.' + #strings.substring(movie.releaseDate, 6, 8)}"
+                                              style="color: #868e96; font-size: 15px;"></span>
+                                    </div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-        <tr th:if="${pagingDrama}" th:each="drama,loop : ${pagingDrama}">
-            <td style="text-align : center;" th:text="${drama.title}"></td>
-            <img style="text-align : center;" th:src="${drama.imageUrl}">
-        </tr>
 
-        <tr th:if="${pagingBook}" th:each="book,loop : ${pagingBook}">
-            <td style="text-align : center;" th:text="${book.title}"></td>
-            <img style="text-align : center;" th:src="${book.imageUrl}">
-        </tr>
+            <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold">
+                <span style="font-size: 30px; color: black;">TV</span>
+                <p class="drama_console" style="cursor: pointer; margin-top: 22px;">더보기</p>
+            </div>
+            <div style="display: flex; justify-content: center; margin-bottom: 60px;">
+                <div style="width : 60%; max-height: 820px;">
+                    <div class="result-container"
+                         style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 15px; width : 100%; height: 100%;">
+                        <form class="more_dramalist" th:action="@{/drama/detail}" method="post" th:if="${pagingDrama}"
+                              th:each="drama, loop : ${pagingDrama}" style="height : 38%;">
+                            <button>
+                                <div class="img"
+                                     style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
+                                    <img th:src="${'/dramaImage' + drama.imageUrl}"
+                                         th:if="${not #strings.isEmpty(drama.imageUrl)}">
+                                    <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(drama.imageUrl)}"
+                                         style="width : 213px; height : 303px;">
+                                </div>
+                                <div class="short-info" style="display : inline-grid; margin-left : 5px;">
+                                    <form class="title-co">
+                                        <input class="title" name="title"
+                                               th:value="${#strings.length(drama.title) > 17 ? #strings.substring(drama.title, 0, 17) + '..' : drama.title}"
+                                               style="font-size : 17px;" onclick="goDetail('.title-co');" readonly>
+                                        <div class="mv-text" th:text="${drama.title}"></div>
+                                    </form>
+                                    <div class="short-kind"
+                                         style="display : flex; flex-direction : column; text-align : left;">
+                                        <span th:text="${drama.genre}"
+                                              style="color : #868e96; font-size : 15px;"></span>
+                                    </div>
+                                    <input type="hidden" name="dramaId" th:value="${drama.getId()}">
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-        <tr th:if="${pagingWebtoon}" th:each="webtoon,loop : ${pagingWebtoon}">
-            <td style="text-align : center;" th:text="${webtoon.title}"></td>
-            <img style="text-align : center;" th:src="${webtoon.imageUrl}">
-        </tr>
+
+            <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold">
+                <span style="font-size: 30px; color:black;">도서</span>
+                <p class="book_console" style="cursor: pointer; margin-top: 22px;">더보기</p>
+            </div>
+            <div style="display: flex; justify-content: center; margin-bottom: 60px;">
+                <div style="width : 60%; max-height: 820px;">
+                    <div class="result-container"
+                         style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 15px; width : 100%; height: 100%;">
+                        <form class="more_booklist" th:action="@{/book/detail}" method="post" th:if="${pagingBook}"
+                              th:each="book, loop : ${pagingBook}" style="height : 38%;">
+                            <button>
+                                <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex;
+                        justify-content: center; align-items: center; border: solid 1px;">
+                                    <img th:src="${book.getImageUrl}" style="max-height: 100%;">
+                                </div>
+                                <div class="short-info" style="display : flex; flex-direction: column; align-items: flex-start;
+                        margin-left : 5px; padding-top: 16px;">
+                                <span class="mv-title"
+                                      th:text="${#strings.length(book.getTitle) > 16 ? #strings.substring(book.getTitle, 0, 16) + '..' : book.getTitle}"
+                                      style="font-size : 17px;"></span>
+                                    <div class="mv-text" th:text="${book.title}"></div>
+                                    <div class="short-kind">
+                                        <span style="color : #868e96; font-size : 15px;">출간일</span>
+                                        <span th:text="${#temporals.format(book.Pubdate, 'yyyy.MM.dd')}"
+                                              style="color: #868e96; font-size: 15px;"></span>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="isbn" th:value="${book.getIsbn}">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold">
+                <span style="font-size: 30px; color:black;">웹툰</span>
+                <p class="webtoon_console" style="cursor: pointer; margin-top: 22px;">더보기</p>
+            </div>
+            <div style="display: flex; justify-content: center;">
+                <div style="width : 60%; max-height: 820px;">
+                    <div class="result-container"
+                         style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 15px; width : 100%; height: 100%;">
+                        <form class="more_webtoonlist" th:action="@{/webtoon/detail}" method="post"
+                              th:if="${pagingWebtoon}"
+                              th:each="webtoon, loop : ${pagingWebtoon}" style="height : 38%;">
+                            <button>
+                                <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex;
+                        justify-content: center; align-items: center;">
+                                    <img th:src="${webtoon.getImageUrl}" style="max-height: 100%;">
+                                </div>
+                                <div class="short-info" style="display : flex; flex-direction: column; align-items: flex-start;
+                        margin-left : 5px;">
+                                <span class="webToon-title"
+                                      th:text="${#strings.length(webtoon.getTitle) > 16 ? #strings.substring(webtoon.getTitle, 0, 16) + '..' : webtoon.getTitle}"
+                                      style="font-size : 17px;"></span>
+                                    <div class="mv-text" th:text="${webtoon.title}"></div>
+                                    <div class="short-kind">
+                                        <span style="color : #868e96; font-size : 15px;">글,그림 :</span>
+                                        <span th:text="${#strings.length(webtoon.getAuthor()) > 7 ? #strings.substring(webtoon.getAuthor(), 0, 7) + '..' : webtoon.getAuthor()}"
+                                              style="font-size : 17px; margin-bottom : 5px;"></span>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="webtoonId" th:value="${webtoon.getWebtoonId()}">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+            <script>
+                $(function () {
+                    $(".more_movielist").slice(0, 5).show();
+
+                    $(".movie_console").click(function (e) {
+                        e.preventDefault();
+                        var visibleItems = $(".more_movielist:visible").length;
+                        $(".more_movielist").slice(0, 5).show();
+                        $(".more_movielist:hidden").slice(0, 5).show();
+
+                        if ($(".more_movielist:hidden").length === 0) {
+                            $('.movie_console').hide();
+                        }
+                    });
+                });
+
+                $(function () {
+                    $(".more_dramalist").slice(0, 5).show();
+
+                    $(".drama_console").click(function (e) {
+                        e.preventDefault();
+                        var visibleItems = $(".more_dramalist:visible").length;
+                        $(".more_dramalist").slice(0, 5).show();
+                        $(".more_dramalist:hidden").slice(0, 5).show();
+
+                        if ($(".more_dramalist:hidden").length === 0) {
+                            $('.drama_console').hide();
+                        }
+                    });
+                });
+
+                $(function () {
+                    $(".more_booklist").slice(0, 5).show();
+
+                    $(".book_console").click(function (e) {
+                        e.preventDefault();
+                        var visibleItems = $(".more_booklist:visible").length;
+                        $(".more_booklist").slice(0, 5).show();
+                        $(".more_booklist:hidden").slice(0, 5).show();
+
+                        if ($(".more_booklist:hidden").length === 0) {
+                            $('.book_console').hide();
+                        }
+                    });
+                });
+
+                $(function () {
+                    $(".more_webtoonlist").slice(0, 5).show();
+
+                    $(".webtoon_console").click(function (e) {
+                        e.preventDefault();
+                        var visibleItems = $(".more_webtoonlist:visible").length;
+                        $(".more_webtoonlist").slice(0, 5).show();
+                        $(".more_webtoonlist:hidden").slice(0, 5).show();
+
+                        if ($(".more_webtoonlist:hidden").length === 0) {
+                            $('.webtoon_console').hide();
+                        }
+                    });
+                });
+            </script>
+
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
-    </script>
 </div>
 </body>
 </html>

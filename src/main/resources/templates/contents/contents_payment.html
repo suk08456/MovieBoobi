@@ -7,7 +7,14 @@
 </head>
 <body>
 <nav th:fragment="paymentLayout">
-    <div class="payment_modal">
+    <div sec:authorize="isAnonymous()">
+        <button class="down-co" onclick="loginError();">
+            <img class="down" src="/imgs/buy.png"
+                 style="width : 40px; height : 40px; margin-left : 7px;">
+            <p style="margin-top : 18px;" class="id=btn-modal">구매하기</p>
+        </button>
+    </div>
+    <div class="payment_modal" sec:authorize="isAuthenticated()">
         <button class="down-co" id="popup_open_btn" onclick="loginStatus();">
             <img th:if="${paid == 'false'}" class="down" src="/imgs/buy.png"
                  style="width : 40px; height : 40px; margin-left : 7px;">
@@ -21,6 +28,7 @@
                 <div style="display : flex; flex-direction : column;align-items : center;">
                     <img th:if="${contentsDTOS.imageUrl != null and category == 'drama'}" th:src="${'/dramaImage' + contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
                     <img th:if="${contentsDTOS.imageUrl != null and category != 'drama'}" th:src="${contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
+                    <img th:if="${contentsDTOS.imageUrl == null}" th:src="${contentsDTOS.imageUrl}" style="width : 120px; margin-top : 10px;">
                     <span id="title" th:text="${contentsDTOS.title}" style="text-align : center; font-weight: bold; color: black; white-space: pre-line; margin-top : 2px;"></span>
                     <div style="display : flex;">
                         <img src="/etc/coin.png" style="height : 18px; margin-top : 2px; margin-left : 30%;">
@@ -60,11 +68,13 @@
                     <input class="contentsID" th:if="${contentsDTOS.wetoonCode}"  th:value="${contentsDTOS.wetoonCode}" type="hidden">
                 </form>
                 <div style="height : 89px; display : flex; justify-content : center;">
-                    <button onclick="pay();"><input title="Button push orange" class="button btnPush btnOrange" th:value="결제" style="letter-spacing : 0.2em; cursor : pointer;"></button>
+                    <button onclick="payForContents();"><input title="Button push orange" class="button btnPush btnOrange" th:value="결제" style="letter-spacing : 0.2em; cursor : pointer;"></button>
                     <button onclick="cancel();"><input title="Button push orange" class="button btnPush btnOrange" th:value="취소" style="letter-spacing : 0.2em; cursor : pointer;"></button>
                 </div>
             </div>
         </div>
+        <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script>
             var totalCoins = parseInt(document.getElementById('totalCoins').textContent.replace(/,/g, ''), 10);
             var bg = document.createElement('div');
@@ -88,13 +98,14 @@
 
             var usedCoins = parseInt(usedCoinsElement.value.replace(/,/g, ''), 10);
             var remainingCoins = totalCoins - usedCoins;
-            var login = [[${login}]] == true ? true : false;
 
             function loginStatus() {
-                if (login == false) {
-                    alert("로그인 후 사용해주세요");
-                } else if (paid == "true") {
-                    alert("이미 결제완료한 콘텐츠입니다.");
+                if (paid == "true") {
+                    Swal.fire({
+                            icon: 'warning',
+                            title: '이미 결제완료한 콘텐츠입니다..',
+                        });
+                    return false;
                 } else {
                     modal('payment_modal');
                     calculateRemainingCoins();
@@ -102,7 +113,7 @@
                 }
             }
 
-            function pay() {
+            function payForContents() {
                 if (remainingCoins < 0) {
                     alert("코인이 부족합니다!! 코인 충전 후 이용해주세요 🔥");
                     var confirmResult = confirm("코인 충전소로 이동할까요?");
