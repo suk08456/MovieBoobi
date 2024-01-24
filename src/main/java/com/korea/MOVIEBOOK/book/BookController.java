@@ -69,7 +69,7 @@ public class BookController {
         return "book/bookMainPage";
     }
 
-    @PostMapping("/detail")
+    @GetMapping("/detail")
     public String bookDetail(String isbn, Model model, Principal principal) {
         Book book = bookService.findByIsbn(isbn);
         ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
@@ -92,8 +92,9 @@ public class BookController {
         model.addAttribute("author_actor_ListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
-        if(principal != null){
-            String providerID = principal.getName();
+        String providerID = "";
+        if(principal != null ) {
+            providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
                 member = this.memberService.getmember(providerID);

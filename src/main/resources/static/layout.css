@@ -22,6 +22,7 @@ body {
     padding : 0;
     font-family : 'SUITE-Regular',cursive;
     background : black;
+    height: 100vh;
 }
 
 .layout-co{
@@ -105,4 +106,26 @@ body {
 .loginLink {
     color: #FFF;
     padding-right: 6px;
+}
+
+.dropdown-list:hover {
+    background-color: #cacaca;
+}
+.dropdown-content {
+    border-radius : 10px;
+    margin-left: -30px;
+    z-index: 100;
+    background: white;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.dropdown-list {
+    display : flex;
+    padding : 5px;
+    justify-content : space-around;
+    border-radius : 10px;
+    box-sizing : border-box;
+    align-items : center;
+    cursor : pointer;
 }

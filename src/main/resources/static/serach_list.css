@@ -1,0 +1,39 @@
+.hidden {
+    display: none;
+}
+
+.mv-text {
+    padding: 1px 10px;
+    font-size : 13px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    color: #000000;
+    background : #ffffff;
+    position: absolute;
+    opacity: 0;
+    transition: all ease 0.5s;
+    margin-left : 13px;
+    margin-top : 26px;
+    max-width : 200px;
+}
+
+.short-info:hover .mv-text {
+    opacity: 1;
+    cursor : Default;
+}
+
+.more_movielist {
+    display: none;
+}
+
+.more_dramalist {
+    display: none;
+}
+
+.more_booklist {
+    display: none;
+}
+
+.more_webtoonlist {
+    display: none;
+}

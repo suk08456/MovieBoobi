@@ -8,15 +8,301 @@
     <link rel="stylesheet" type="text/css" th:href="@{/review.css}">
 </head>
 <body layout:fragment="content">
-<div style="width : 100%; display: flex; flex-direction: column; align-items: center;">
+<div style="width : 100%; display: flex; flex-direction: column; align-items: center; padding-bottom : 34px;">
     <div style="width : 53%; border-bottom: 1px solid #dddddd; margin-top : 25px;">
         <span style="font-size : 22px; font-weight : bold; margin-left : 28px;">코멘트</span>
     </div>
-    <div style="width : 50%; margin-top : 55px;">
-        <input th:value="${review.comment}">
+    <div style="width : 50%; margin-top : 15px;">
+        <div style="display : flex; justify-content : space-between; margin-bottom : 10px;">
+            <div style="display : flex; flex-direction : column; justify-content : space-evenly;">
+                <div style="display : flex;">
+                    <img th:if="${review.member.profileImage}" th:src="${review.member.profileImage}"
+                         style="height : 23px; width : 23px; border-radius : 17px;">
+                    <span th:if="${review.member.nickname}" th:text="${review.member.nickname}"
+                          style="font-size : 14px; margin-left : 5px; padding : 3px;"></span>
+                    <span th:text="${#temporals.format(review.dateTime, 'yyyy-MM-dd')}"></span>
+                </div>
+                <div style="display : flex; flex-direction : column;">
+                    <span id="title" th:text=="${info.title}" style="font-size : 16px; font-weight : bold;"></span>
+                    <div style="width : 100%; margin-top : 2px; color : #868e96; margin-bottom : 10px; font-size : 13px;">
+                    <span th:if="${info != null and (category == 'movie' or category == 'drama')}"
+                          th:text="${info.genre}" style="margin-left : 5px;"></span>
+                        <span th:if="${info != null and category == 'movie'}" th:text="${'·' + info.nations}"></span>
+                        <span th:if="${info != null and (category == 'movie' or category == 'drama')}"
+                              th:text="${'·' + contentsDTOS.viewingRating}"></span>
+                        <span th:if="${info != null and category == 'book'}"
+                              th:text="${'출간일 : ' + #temporals.format(info.pubdate, 'yyyy-MM-dd') + ' /'}"></span>
+                        <span th:if="${info != null and category == 'book'}"
+                              th:text="${'소비자 가격 : ' + #numbers.formatDecimal(info.pricestandard, 0,  'COMMA', 0, 'POINT') + '₩' }"></span>
+                        <span th:if="${info != null and category == 'webtoon'}"
+                              th:text="${'연재일 : ' + info.updateDays}"></span>
+                    </div>
+                </div>
+            </div>
+            <div style="width : 85px;">
+                <img th:if="${info != null and category == 'drama'}" th:src="${'/dramaImage' + info.imageUrl}">
+                <img th:if="${info != null and category != 'drama'}" th:src="${info.imageUrl}">
+                <img th:if="${info == null}" src="/imgs/noimg.jpg">
+            </div>
+        </div>
+        <span th:text="${review.comment}"></span>
+        <div style="display : flex; margin-top : 28px; color : #868E96; cursor : default;">
+            <span>좋아요</span>
+            <span class="number" th:text="${#lists.size(review.hearts)}" style="margin-left : 5px;"></span>
+            <span style="margin-left : 5px;">댓글</span>
+            <span class="number" th:text="${#lists.size(review.commentList)}" style="margin-left : 5px;"></span>
+        </div>
+        <div style="display : flex; justify-content : space-around; margin-top : 25px;">
+            <form class="click_heart" sec:authorize="isAuthenticated()" style="display: flex;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button onclick="clickHeart(this);" style="display: flex;">
+                    <input class="id" th:value="${review.id}" type="hidden">
+                    <div class="heartIcon" style="display: flex;">
+                        <span class="likeit" th:if="${#lists.contains(review.hearts.![member.id], memberInfo.id)}"
+                              style="display: flex;">
+                            <img src="/imgs/likeit_after.png" style="width : 30px; height : 30px;">
+                        </span>
+                        <span class="no-likeit"
+                              th:unless="${#lists.contains(review.hearts.![member.id], memberInfo.id)}"
+                              style="display: flex;">
+                            <img src="/imgs/likeit.png" style="width : 30px; height : 30px;">
+                        </span>
+                        <span style="margin-left : 7px; margin-top : 2px;">좋아요</span>
+                    </div>
+                </button>
+            </form>
+            <button onclick="clickHeart_Unclogging();" sec:authorize="isAnonymous()" style="display: flex;">
+                <img class="like" src="/imgs/likeit.png" style="width : 30px; height : 30px;">
+                <span style="margin-left : 7px; margin-top : 2px;">좋아요</span>
+            </button>
+            <button onclick="clickComment();" style="display: flex;">
+                <img src="/imgs/comment.png" style="width : 30px; height : 30px;">
+                <span style="margin-left : 7px; margin-top : 2px;">댓글</span>
+            </button>
+            <div class="dropdown">
+                <button class="btn-submit" style="display : flex;">
+                    <img src="/imgs/share.png" style="width : 30px; height : 30px;">
+                    <span style="margin-left : 7px; margin-top : 2px;">공유</span>
+                </button>
+                <div class="dropdown-content" style="width : 150px; border-radius : 5px; ">
+                    <div class="dropdown-list">
+                        <img src="/imgs/icon-twitter.png" style="width : 30px; height : 30px; margin-left : -5px; ">
+                        <a id="btnTwitter" href="javascript:shareTwitter();" style="margin-top : 3px;">트위터</a>
+                    </div>
+                    <div class="dropdown-list">
+                        <img src="/imgs/icon-facebook.png" style="width : 30px; height : 30px;">
+                        <a id="btnFacebook" href="javascript:shareFacebook();" style="margin-top : 3px;">페이스북</a>
+                    </div>
+                    <div class="dropdown-list">
+                        <img src="/imgs/icon-kakao.png" style="width : 30px; height : 30px;">
+                        <a id="btnKakao" href="javascript:shareKakao();" style="margin-top : 3px;">카카오톡</a>
+                    </div>
+                    <div class="dropdown-list">
+                        <img src="/imgs/icon-link.png" style="width : 30px; height : 30px;">
+                        <a id="btnlink" href="javascript:sharelink();" style="margin-top : 3px;">링크 복사</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="width : 100%; margin-top: 25px; border-bottom: 1px solid #dddddd;"></div>
+        <div th:if="${review.commentList}" th:each="comment : ${review.commentList}"
+             style="display : flex; flex-direction : column; border-bottom: 1px solid #dddddd; width : 100%; padding : 10px; white-space: nowrap;">
+            <div style="display : flex; justify-content: space-between; margin-bottom : 10px;">
+                <div style="display : flex;">
+                    <img th:if="${not #strings.isEmpty(comment.member.profileImage)}"
+                         th:src="${comment.member.profileImage}"
+                         style="border-radius : 60%; width : 30px; height : 30px;">
+                    <span th:if="${not #strings.isEmpty(comment.member.nickname)}"
+                          th:text="${comment.member.nickname}" style="margin-top : 2px; margin-left : 3px;"></span>
+                    <span class="comment-writer" sec:authorize="isAuthenticated()">
+                        <span th:if="${memberInfo.id == review.member.id}" th:text="작성자"
+                              style="height: 17px; line-height: 17px;margin: 0;"></span>
+                    </span>
+                </div>
+                <span th:text="${#temporals.format(comment.dateTime, 'yyyy-MM-dd')}"></span>
+            </div>
+            <span th:text="${comment.content}"></span>
+            <div sec:authorize="isAuthenticated()" th:if="${memberInfo.id == review.member.id}" style="display: flex; justify-content: flex-end;">
+                <input class="btnWhite" th:value="수정" style="letter-spacing : 0.2em; cursor : pointer;">
+                <input class="btnWhite" th:value="삭제" style="margin-left : 5px; letter-spacing : 0.2em; cursor : pointer;">
+            </div>
+        </div>
+
+        <div class="comment" style="margin-top : 25px; margin-bottom : 100px; white-space: nowrap; display : none;">
+            <div style="display : flex; flex-direction : column; border-radius : 5px; border: 1px solid #dddddd; width : 100%; padding : 10px;">
+                <div style="display : flex;">
+                    <img class="profile" sec:authorize="isAuthenticated()"
+                         th:if="${not #strings.isEmpty(memberInfo.profileImage)}" th:src="${memberInfo.profileImage}"
+                         style="border-radius : 60%; width : 30px; height : 30px;">
+                    <span class="name" sec:authorize="isAuthenticated()"
+                          th:if="${not #strings.isEmpty(memberInfo.nickname)}" th:text="${memberInfo.nickname}"
+                          style="width : 80%;"></span>
+                </div>
+                <textarea id="comment"
+                          style="width : 100%; height : 70px; margin-top : 10px; margin-bottom : 10px; padding : 3px;"></textarea>
+                <div style="display : flex; justify-content: flex-end;">
+                    <button onclick="saveComment();">
+                        <input id="member_id" type="hidden" th:if="${memberInfo}" th:value="${memberInfo.id}">
+                        <input id="review_id" type="hidden" th:value="${review.id}">
+                        <input title="Button push orange" class="button btnPush btnOrange"
+                               th:value="등록" style="letter-spacing : 0.2em; cursor : pointer;">
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
+        var title = document.getElementById('title').innerText;
+        let url = window.location.href;
+
+        function clickHeart(button){
+            var heartIcon = button.querySelector('.heartIcon');
+            var innerSpan = heartIcon.querySelector('span');
+            var heartClick = true;
+            var form = button.closest('.click_heart');
+            var gubun = "detail";
+            var classList = innerSpan.classList;
+            var reviewIDInput = button.querySelector('.id');
+            var reviewID = reviewIDInput.value;
+
+            if (classList.contains('likeit')) {
+                heartClick = false;
+            }
+            if (form) {
+                form.method = "POST";
+                form.action = "/review/heart/" + '[[${category}]]' + "/" + '[[${contentsID}]]' +"/" + reviewID + "/" + heartClick + "/" + gubun;
+                form.submit();
+            } else {
+                console.error("Form element is null");
+            }
+        }
+
+        function clickHeart_Unclogging(){
+            Swal.fire({
+                    icon: 'warning',
+                    title: '로그인 후 이용해주세요.',
+            });
+        }
+
+        function clickComment() {
+            var commentDiv = document.querySelector('.comment');
+            var currentDisplay = window.getComputedStyle(commentDiv).getPropertyValue('display');
+
+            if (currentDisplay === 'none') {
+                commentDiv.style.display = 'flex';
+            } else {
+                commentDiv.style.display = 'none';
+            }
+        }
+
+
+        function shareTwitter() {
+            var sendText = title + " 리뷰";
+            window.open("https://twitter.com/intent/tweet?text=" + sendText + "&url=" + url);
+        }
+
+        function shareFacebook() {
+            window.open("http://www.facebook.com/sharer/sharer.php?u=" + url);
+        }
+
+        function shareKakao() {
+          Kakao.init('1f6119cdfa6fe0122000dfaa0c837e0e');
+
+          Kakao.Link.createDefaultButton({
+            container: '#btnKakao', // 카카오공유버튼ID
+            objectType: 'feed',
+            content: {
+              title: '"' + title + '"' + " 리뷰",
+              description: "MOVIE&BOOK",
+              imageUrl: window.location.href, // 콘텐츠 URL
+              link: {
+                 mobileWebUrl: window.location.href,
+                 webUrl: window.location.href
+              }
+            }
+          });
+        }
+
+        function sharelink(){
+          navigator.clipboard.writeText(url).then(res=>{
+            const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+            Toast.fire({
+                icon: 'success',
+                title: '텍스트가 복사되었습니다!'
+            })
+          })
+        }
+
+
+        $().ready(function () {
+            $("#toastStart").click(function () {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'toast 알림이 정상적으로 실행 되었습니다.'
+                })
+            });
+        });
+
+
+        function saveComment() {
+            var reviewID = document.getElementById('review_id').value;
+            if(document.getElementById('member_id') == null){
+                Swal.fire({
+                        icon: 'warning',
+                        title: '로그인 후 이용해주세요.',
+                    });
+                return false;
+            }
+
+            var memberID = document.getElementById('member_id').value;
+            var comment = document.getElementById('comment').value;
+
+            $.ajax({
+                url: "/comment/save",
+                type: "GET",
+                data: {
+                    category: '[[${category}]]',
+                    contentsId: '[[${contentsID}]]',
+                    reviewId: reviewID,
+                    memberId: memberID,
+                    comment: comment
+                },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error saving comment: " + error);
+                }
+            });
+        }
+
     </script>
 </div>
 </body>

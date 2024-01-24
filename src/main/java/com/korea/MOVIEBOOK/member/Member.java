@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.member;
 
+import com.korea.MOVIEBOOK.comment.Comment;
 import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.review.Review;
@@ -52,4 +53,7 @@ public class Member {
             orphanRemoval = true,
             fetch = FetchType.LAZY)
     private List<Heart> hearts;
+
+    @OneToMany(mappedBy = "member")
+    private List<Comment> commentList;
 }
