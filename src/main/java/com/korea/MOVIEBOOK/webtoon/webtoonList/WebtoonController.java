@@ -227,8 +227,6 @@ public class WebtoonController {
         }
         return "contents/contents_detail";
     }
-
-
 }
 
 
