@@ -144,6 +144,30 @@
         <div class="swiper-button-prev"></div>
         <div class="swiper-button-next"></div>
     </div>
+    <div>
+        <form id="enter-form" style="position: fixed; bottom: 10px; right: 10px; background-color: white; padding: 10px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <label for="username">
+                닉네임:
+                <input id="username" type="text" required>
+            </label>
+            <button id="enter-button" type="button" onclick="enterChat()">입장</button>
+        </form>
+    </div>
+    <script>
+        function enterChat() {
+            const username = document.getElementById("username").value;
+            if (username.trim() !== "") {
+                openChatPopup(username);
+            } else {
+                alert("닉네임을 입력하세요.");
+            }
+        }
+         function openChatPopup(username) {
+        const popupUrl = `/chat/enter?username=${encodeURIComponent(username)}`;
+        const message = `${username}: 입장하셨습니다.`;
+        window.open(popupUrl, "ChatPopup", "width=600,height=400");
+    }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         var swiper = new Swiper(".mySwiper", {
@@ -224,4 +248,5 @@ function getScrollbarWidth() {
 }
     </script>
 </div>
+
 </html>
