@@ -13,4 +13,19 @@ public class CustomerSupportController {
     public String mainPage() {
         return "customerSupport/customerSupportNotice";
     }
+
+    @GetMapping("oneOnOne")
+    public String oneOnOne() {
+        return "customerSupport/customerSupportOneOnOne";
+    }
+
+    @GetMapping("myQuestion")
+    public String myQuestion() {
+        return "customerSupport/customerSupportMyQuestion";
+    }
+
+    @GetMapping("FAQ")
+    public String FAQ() {
+        return "customerSupport/customerSupportFAQ";
+    }
 }
