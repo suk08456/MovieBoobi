@@ -60,12 +60,12 @@
                     <div class="heartIcon" style="display: flex;">
                         <span class="likeit" th:if="${#lists.contains(review.hearts.![member.id], memberInfo.id)}"
                               style="display: flex;">
-                            <img src="/imgs/likeit_after.png" style="width : 30px; height : 30px;">
+                            <img src="/imgs/icon-like.png" style="width : 30px; height : 30px;">
                         </span>
                         <span class="no-likeit"
                               th:unless="${#lists.contains(review.hearts.![member.id], memberInfo.id)}"
                               style="display: flex;">
-                            <img src="/imgs/likeit.png" style="width : 30px; height : 30px;">
+                            <img src="/imgs/icon-unlike.png" style="width : 30px; height : 30px;">
                         </span>
                         <span style="margin-left : 7px; margin-top : 2px;">좋아요</span>
                     </div>

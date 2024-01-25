@@ -12,57 +12,77 @@
     <div style="width : 53%; border-bottom: 1px solid #dddddd; margin-top : 25px;">
         <span style="font-size : 22px; font-weight : bold; margin-left : 28px;">코멘트</span>
     </div>
-    <div th:each="review, stat : ${paging}" style="width : 50%; margin-top : 55px;">
-        <div style="display : flex; justify-content : space-between;  border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
-            <form th:action="@{/review/detail}" method="get">
-                <button onclick="click_review(this);" style="margin-bottom : 5px;">
-                    <input name="reviewId" th:value="${review.id}" type="hidden">
-                    <input name="contentsID" th:value="${contentsID}" type="hidden">
-                    <input name="category" th:value="${category}" type="hidden">
-                    <div style="display : flex;">
-                        <img th:if="${review.member.profileImage}" th:src="${review.member.profileImage}"
-                             style="height : 33px; width : 33px; border-radius : 17px;">
-                        <span th:if="${review.member.nickname}" th:text="${review.member.nickname}"
-                              style="font-size : 16px; margin-left : 5px; padding : 3px;"></span>
-                    </div>
-                </button>
-            </form>
-            <div style="display : flex; align-items: center; margin-bottom : 5px;">
+    <div style="display : flex; flex-direction: column; margin-top : 30px;">
+        <div th:each="review, stat : ${paging}"
+             style="background-color: rgb(242, 242, 242); box-sizing: border-box; padding: 15px 12px; border-radius: 6px; overflow: hidden; margin-bottom : 20px;">
+            <div style="display : flex; justify-content: space-between;">
+                <div style="display : flex;">
+                    <form th:action="@{/review/detail}" method="get">
+                        <button onclick="click_review(this);" style="margin-bottom : 5px;">
+                            <input name="reviewId" th:value="${review.id}" type="hidden">
+                            <input name="contentsID" th:value="${contentsID}" type="hidden">
+                            <input name="category" th:value="${category}" type="hidden">
+                            <div style="display : flex;">
+                                <img th:if="${review.member.profileImage}" th:src="${review.member.profileImage}"
+                                     style="height : 33px; width : 33px; border-radius : 17px;">
+                                <span th:if="${review.member.nickname}" th:text="${review.member.nickname}"
+                                      style="font-size : 16px; margin-left : 5px; padding : 3px;"></span>
+                            </div>
+                        </button>
+                    </form>
+                    <span th:text="${#temporals.format(review.dateTime, 'yyyy-MM-dd')}" style="margin-top : 3px; margin-left : 15px;"></span>
+                </div>
+                <div style="display : flex; align-items: center; margin-bottom : 5px;">
                 <span th:text="${ '⭐' + review.rating}"
                       style="font-size : 16px; border : 2px solid rgba(0, 0, 0, 0.1); padding : 3px; border-radius : 12px; margin-left : 2px;"></span>
-                <form class="click_heart">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button onclick="clickHeart(this);" sec:authorize="isAuthenticated()" style="display: flex;">
-                        <input class="id" th:value="${review.id}" type="hidden">
-                        <div class="heartIcon">
-                                <span th:if="${#lists.contains(review.hearts.![member.id], memberInfo.id)}">❤️<sup
-                                        class="number" th:text="${#lists.size(review.hearts)}"></sup></span>
-                            <span th:unless="${#lists.contains(review.hearts.![member.id], memberInfo.id)}">🤍<sup
-                                    class="number" th:text="${#lists.size(review.hearts)}"></sup></span>
-                        </div>
-                    </button>
-                </form>
-                <div sec:authorize="isAnonymous()" onclick="ClickHeartWithoutLongin()" style="cursor : pointer;">
-                    <span>🤍<sup th:text="${#lists.size(review.hearts)}"></sup></span>
                 </div>
             </div>
-        </div>
-        <form th:action="@{/review/detail}" method="get">
-            <button onclick="click_review(this);" style="margin-top: 5px;">
+            <form th:action="@{/review/detail}" method="get"
+                  style="height: 135px; width : 813px; border-top: 1px solid #DEE2E6; border-bottom: 1px solid #DEE2E6;">
                 <input name="reviewId" th:value="${review.id}" type="hidden">
                 <input name="contentsID" th:value="${contentsID}" type="hidden">
                 <input name="category" th:value="${category}" type="hidden">
-                <span th:text="${#strings.length(review.comment) > 800 ? #strings.substring(review.comment, 0, 800) + '..' : review.comment}"
-                      style="display: inline-block; word-wrap: break-word; font-size : 14px; margin-top : 10px; text-align: left;"></span>
-            </button>
-        </form>
+                <button onclick="click_review(this);">
+                   <span th:text="${#strings.length(review.comment) > 450 ? #strings.substring(review.comment, 0, 450) + '..더보기' : review.comment}"
+                         style="margin-top: 5px; height: 135px; display: inline-block; overflow: hidden; word-wrap: break-word; font-size: 14px; text-align: left;"></span>
+                </button>
+            </form>
+            <div style="display: flex; border-bottom: 1px solid #DEE2E6;">
+                <input class="id" th:value="${review.id}" type="hidden">
+                <div class="heartIcon" style="display: flex;" sec:authorize="isAuthenticated()">
+                    <span class="likeit" th:if="${#lists.contains(review.hearts.![member.id], memberInfo.id)}"
+                          style="display: flex; margin-top : 15px;">
+                        <img src="/imgs/icon-like.png" style="width : 25px; height : 25px;">
+                        <span class="number" th:text="${#lists.size(review.hearts)}"
+                              style="margin-left : 5px;"></span>
+                    </span>
+                    <span class="no-likeit"
+                          th:unless="${#lists.contains(review.hearts.![member.id], memberInfo.id)}"
+                          style="display: flex; margin-top : 15px;">
+                            <img src="/imgs/icon-unlike.png" style="width : 25px; height : 25px;">
+                            <span class="number" th:text="${#lists.size(review.hearts)}"
+                                  style="margin-left : 5px;"></span>
+                        </span>
+                </div>
+                <div sec:authorize="isAnonymous()" style="margin-top : 15px;">
+                    <img class="like" src="/imgs/icon-unlike.png" style="width : 25px; height : 25px;">
+                    <span class="number" th:text="${#lists.size(review.hearts)}" style="margin-left : 5px;"></span>
+                </div>
+                <div style="display : flex; margin-top : 15px; margin-bottom : 15px; margin-left : 20px;">
+                    <img src="/imgs/icon-chat.png" style="width : 25px; height : 25px;">
+                    <span class="number" th:text="${#lists.size(review.commentList)}"
+                          style="margin-left : 5px;"></span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="join" th:if="${paging.totalPages > 0}"
          style="display : flex; justify-content : space-around; margin-top : 18px; margin-bottom : 55px;">
         <ul class="pagination justify-content-center" style="display : flex;">
-            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'" th:if="${paging.hasPrevious}">
+            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'"
+                th:if="${paging.hasPrevious}">
                 <a class="join-item btn"
-                   th:href="@{|?page=${paging.number-1}|}">
+                   th:href="@{|/review/list?page=${paging.number-1}&category=${category}&contentsID=${contentsID}|}">
                     <span>«</span>
                 </a>
             </li>
@@ -70,17 +90,19 @@
                 th:if="${page >= paging.number and page <= paging.number}"
                 th:classappend="${page == paging.number} ? 'active'"
                 class="page-item">
-                <a th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></a>
+                <a th:text="${'Page ' + (page + 1)}" class="join-item btn"
+                   th:href="@{|?page=${page}&category=${category}&contentsID=${contentsID}|}"></a>
             </li>
             <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'" th:if="${paging.hasNext}">
-                <a class="join-item btn" th:href="@{|?page=${paging.number+1}|}">
+                <a class="join-item btn"
+                   th:href="@{|/review/list?page=${paging.number+1}&category=${category}&contentsID=${contentsID}|}">
                     <span>»</span>
                 </a>
             </li>
         </ul>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
 
@@ -98,29 +120,21 @@
               return charBytes;
         }
 
-        function ClickHeartWithoutLongin(){
-            Swal.fire({
-                    icon: 'warning',
-                    title: '로그인 후 이용해주세요.',
-            });
-        }
-
 
         function clickHeart(button){
             var heartIcon = button.querySelector('.heartIcon');
+            var innerSpan = heartIcon.querySelector('span');
+            var heartClick = true;
+            var form = button.closest('.click_heart');
+            var gubun = "detail";
+            var classList = innerSpan.classList;
             var reviewIDInput = button.querySelector('.id');
             var reviewID = reviewIDInput.value;
-            var heartClick = true;
-            var number = button.querySelector('.number').textContent;
-            var form = button.closest('.click_heart');
-            var gubun = "list";
 
-            if (heartIcon.innerText.trim() === '🤍' + number) {
-                heartIcon.innerText = '❤️';
-            } else if (heartIcon.innerText.trim() === '❤️' + number){
-                heartIcon.innerText = '🤍';
+            if (classList.contains('likeit')) {
                 heartClick = false;
             }
+
 
             if (form) {
                 form.method = "POST";
@@ -131,6 +145,12 @@
             }
         }
 
+        function clickHeart_Unclogging(){
+            Swal.fire({
+                    icon: 'warning',
+                    title: '로그인 후 이용해주세요.',
+            });
+        }
 
         function click_review(button){
             var form = button.closest('.click_review');

@@ -129,6 +129,8 @@ public class WebtoonController {
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
 
+
+
         model.addAttribute("category", "webtoon");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);

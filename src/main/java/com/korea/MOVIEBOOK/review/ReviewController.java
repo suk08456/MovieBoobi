@@ -22,9 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 import java.security.Principal;
 
@@ -144,7 +142,6 @@ public class ReviewController {
 //            reviews = this.reviewService.findWebtoonReview(Long.valueOf(contentsID));
             paging = this.reviewService.getPaymentsByWebtoon(webtoon, page);
         }
-
 
         model.addAttribute("memberInfo", member);
         model.addAttribute("category", category);

@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class ReviewService {
         review.setCategory("movie");
         review.setRating(rating);
         review.setMember(member);
+        review.setDateTime(LocalDateTime.now());
         this.reviewRepository.save(review);
     }
 
@@ -51,6 +53,7 @@ public class ReviewService {
         review.setCategory("drama");
         review.setRating(rating);
         review.setMember(member);
+        review.setDateTime(LocalDateTime.now());
         this.reviewRepository.save(review);
     }
 
@@ -62,6 +65,7 @@ public class ReviewService {
         review.setCategory("book");
         review.setRating(rating);
         review.setMember(member);
+        review.setDateTime(LocalDateTime.now());
         this.reviewRepository.save(review);
     }
 
@@ -77,6 +81,7 @@ public class ReviewService {
         review.setCategory("webtoon");
         review.setRating(rating);
         review.setMember(member);
+        review.setDateTime(LocalDateTime.now());
         this.reviewRepository.save(review);
     }
 
