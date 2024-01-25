@@ -1,10 +1,18 @@
 package com.korea.MOVIEBOOK.member;
 
+import com.korea.MOVIEBOOK.book.Book;
+import com.korea.MOVIEBOOK.book.BookService;
+import com.korea.MOVIEBOOK.drama.Drama;
+import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.member.*;
+import com.korea.MOVIEBOOK.movie.movie.Movie;
+import com.korea.MOVIEBOOK.movie.movie.MovieService;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -37,6 +45,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
@@ -51,6 +60,10 @@ public class MemberController {
     private final ReviewService reviewService;
     private final PasswordEncoder passwordEncoder;
     private final PaymentService paymentService;
+    private final MovieService movieService;
+    private final BookService bookService;
+    private final DramaService dramaService;
+    private final WebtoonService webtoonService;
 
     @GetMapping("/signup")
     public String signup(MemberCreateForm memberCreateForm) {
@@ -162,7 +175,7 @@ public class MemberController {
 
     @GetMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
-    public String showmyPage(Model model, Principal principal){
+    public String showmyPage(Model model, Principal principal) {
         Member member = memberService.findByusername(principal.getName());
         if (member == null) {
             member = memberService.findByproviderId(principal.getName());
@@ -230,12 +243,12 @@ public class MemberController {
 
         String timestamp = String.valueOf(System.currentTimeMillis());
         String uniqueFileName = timestamp + "_" + origional;
-        uploadPath = path+uniqueFileName;
+        uploadPath = path + uniqueFileName;
 
-        try{
+        try {
             mf.transferTo(new File(uploadPath));
-            this.memberService.saveImg(member, "/profileimg/"+uniqueFileName);
-        }catch (IllegalStateException | IOException e){
+            this.memberService.saveImg(member, "/profileimg/" + uniqueFileName);
+        } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
 
@@ -349,7 +362,7 @@ public class MemberController {
 
 
     @GetMapping("/deleteForm")
-    public String deleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model) {
+    public String memberDeleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model) {
         Member member = memberService.findByusername(principal.getName());
         if (member == null) {
             member = memberService.findByproviderId(principal.getName());
@@ -372,10 +385,9 @@ public class MemberController {
     }
 
 
-
-   @PostMapping("/delete")
-    public String delete(Principal principal, @Valid PasswordResetForm passwordResetForm,
-                         BindingResult bindingResult, Model model) {
+    @PostMapping("/delete")
+    public String memberDelete(Principal principal, @Valid PasswordResetForm passwordResetForm,
+                               BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             return "member/delete_form";
@@ -405,6 +417,21 @@ public class MemberController {
     private void bindingResultReject(BindingResult bindingResult) {
         bindingResult.rejectValue("passwordConfirm", "passwordInCorrect",
                 "패스워드가 일치하지 않습니다.");
+
+    }
+
+
+    @GetMapping("/purchasedetails")
+    public String memberPurchaseDetails(PasswordResetForm passwordResetForm, Principal principal, Model model) {
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
+
+        model.addAttribute("PaymentList", payments);
+        model.addAttribute("member", member);
+        return "member/member_purchase_details";
     }
 }
 

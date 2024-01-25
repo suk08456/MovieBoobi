@@ -16,7 +16,9 @@
             } else if (parameter == '2') {
                 document.querySelector('.menu-item:nth-child(3)').classList.add('clicked');
             }else if (parameter == '3') {
-                document.querySelector('.menu-item:nth-child(3)').classList.add('clicked');
+                document.querySelector('.menu-item:nth-child(4)').classList.add('clicked');
+            }else if (parameter == '4') {
+                document.querySelector('.menu-item:nth-child(5)').classList.add('clicked');
             } else {
                 document.querySelector('.menu-item:nth-child(1)').classList.add('clicked');
             }
@@ -32,31 +34,36 @@
         <div style="margin-top: 23px;">
             <div>
                  <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
-                       th:text="${member.getNickname()} + ' 님 무비부비에 오신것을 환영합니다'" style="font-size : large; margin-left: 8px;"></span>
+                       th:text="${#strings.concat(member.getNickname(), ' 님 무비부비에 오신것을 환영합니다')}" style="font-size : large; margin-left: 8px;"></span>
                 <div style="display : flex; font-weight : bold; border-bottom : 2px solid black; margin-top: 15px;">
                     <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
                     <span style="margin-right : 3px;">보유 코인 : </span>
                     <span th:text="${#numbers.formatDecimal(sum, 0,  'COMMA', 0, 'POINT')}"
                           style="width : 95px; text-align : center;"></span>
-                    <span>Coin</span>
+                    <a class="layoutLink" href="/payment" style="display: flex; align-items: center;">
+                        <div style="margin-right: 4px; width: 19px;">
+                        </div>
+                        코인충전
+                    </a>
+                    <img src="/etc/coin.png" style="height: 18px; margin-right: 4px;">
                 </div>
             </div>
             <ul class="menu" style="height: 1200px;">
                 <span class="menu-item">
-<!--                <img src="/member/infoimg.png" style="width : 9%; margin-top : -4px;">-->
                 <a class="menu-link" th:href="@{/member/mypage}" onclick="clickMenu(event, this)">내 정보</a>
             </span>
                 <span class="menu-item">
-<!--                <img src="/member/listimg.png" style="width : 9%; margin-top : -4px;">-->
                 <a class="menu-link" th:href="@{/member/changeInformation(parameter='1')}"
                    onclick="clickMenu(event, this)">회원 정보 수정</a>
             </span>
                 <span class="menu-item">
-<!--                <img src="/member/registerimg.png" style="width : 10%; margin-top : -4px;">-->
                 <a class="menu-link" th:href="@{/member/changePw(parameter='2')}" onclick="clickMenu(event, this)">비밀번호 변경</a>
             </span>
                 <span class="menu-item">
-                 <a  class="menu-link" th:href="@{/member/deleteForm(parameter='3')}" th:value="회원탈퇴" onclick="clickMenu(event, this)">회원 탈퇴</a>
+                <a class="menu-link" th:href="@{/member/purchasedetails(parameter='3')}" onclick="clickMenu(event, this)">구매 내역</a>
+            </span>
+                <span class="menu-item">
+                 <a  class="menu-link" th:href="@{/member/deleteForm(parameter='4')}" th:value="회원탈퇴" onclick="clickMenu(event, this)">회원 탈퇴</a>
             </span>
             </ul>
 

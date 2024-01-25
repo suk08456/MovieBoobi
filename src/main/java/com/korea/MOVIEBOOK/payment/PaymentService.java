@@ -1,7 +1,19 @@
 package com.korea.MOVIEBOOK.payment;
 
+import com.korea.MOVIEBOOK.book.Book;
+import com.korea.MOVIEBOOK.book.BookRepository;
+import com.korea.MOVIEBOOK.book.BookService;
+import com.korea.MOVIEBOOK.drama.Drama;
+import com.korea.MOVIEBOOK.drama.DramaRepository;
+import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberRepository;
+import com.korea.MOVIEBOOK.movie.movie.Movie;
+import com.korea.MOVIEBOOK.movie.movie.MovieRepository;
+import com.korea.MOVIEBOOK.movie.movie.MovieService;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonRepository;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -12,12 +24,20 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
+
+import static java.lang.Long.*;
 
 @RequiredArgsConstructor
 @Service
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final MemberRepository memberRepository;
+    private final MovieRepository movieRepository;
+    private final BookRepository  bookRepository;
+    private final DramaService dramaService;
+    private final WebtoonRepository webtoonRepository;
 
     public void savePayment(Long id, String payment, String paidAmount, String paymentNo, String payType, String phone, String content, String contents, String contentsID){
         Member member = this.memberRepository.findById(id).get();
@@ -33,12 +53,29 @@ public class PaymentService {
         payment1.setContents(contents);
         payment1.setContentsID(contentsID);
         payment1.setDateTime(LocalDateTime.now());
+        if(Objects.equals(contents, "movie")){
+            Movie movie = this.movieRepository.findBymovieCode(contentsID);
+            payment1.setMovie(movie);
+        }
+        else if(Objects.equals(contents, "drama")){
+            Drama drama = this.dramaService.findByDramaId(Long.valueOf(contentsID));
+            payment1.setDrama(drama);
+        }
+        else if(Objects.equals(contents, "book")){
+            Book book = this.bookRepository.findByIsbn(contentsID);
+            payment1.setBook(book);
+        }
+        else if(Objects.equals(contents, "webtoon")){
+            Webtoon webtoon = this.webtoonRepository.findByWebtoonId(Long.valueOf(contentsID));
+            payment1.setWebtoon(webtoon);
+        }
         this.paymentRepository.save(payment1);
     }
 
     public List<Payment> findPaymentListByMember(Member member){
         return this.paymentRepository.findBymember(member);
     }
+
 
     public Page<Payment> getPaymentsByMember(Member member, int page) {
         List<Sort.Order> sorts = new ArrayList<>();
