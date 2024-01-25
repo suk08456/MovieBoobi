@@ -7,7 +7,14 @@
 </head>
 <body>
 <nav th:fragment="paymentLayout">
-    <div class="payment_modal">
+    <div sec:authorize="isAnonymous()">
+        <button class="down-co" onclick="loginError();">
+            <img class="down" src="/imgs/buy.png"
+                 style="width : 40px; height : 40px; margin-left : 7px;">
+            <p style="margin-top : 18px;" class="id=btn-modal">구매하기</p>
+        </button>
+    </div>
+    <div class="payment_modal" sec:authorize="isAuthenticated()">
         <button class="down-co" id="popup_open_btn" onclick="loginStatus();">
             <img th:if="${paid == 'false'}" class="down" src="/imgs/buy.png"
                  style="width : 40px; height : 40px; margin-left : 7px;">
@@ -61,7 +68,7 @@
                     <input class="contentsID" th:if="${contentsDTOS.wetoonCode}"  th:value="${contentsDTOS.wetoonCode}" type="hidden">
                 </form>
                 <div style="height : 89px; display : flex; justify-content : center;">
-                    <button onclick="pay();"><input title="Button push orange" class="button btnPush btnOrange" th:value="결제" style="letter-spacing : 0.2em; cursor : pointer;"></button>
+                    <button onclick="payForContents();"><input title="Button push orange" class="button btnPush btnOrange" th:value="결제" style="letter-spacing : 0.2em; cursor : pointer;"></button>
                     <button onclick="cancel();"><input title="Button push orange" class="button btnPush btnOrange" th:value="취소" style="letter-spacing : 0.2em; cursor : pointer;"></button>
                 </div>
             </div>
@@ -91,16 +98,9 @@
 
             var usedCoins = parseInt(usedCoinsElement.value.replace(/,/g, ''), 10);
             var remainingCoins = totalCoins - usedCoins;
-            var login = [[${login}]] == true ? true : false;
 
             function loginStatus() {
-                if (login == false) {
-                    Swal.fire({
-                            icon: 'warning',
-                            title: '로그인 후 이용해주세요.',
-                        });
-                    return false;
-                } else if (paid == "true") {
+                if (paid == "true") {
                     Swal.fire({
                             icon: 'warning',
                             title: '이미 결제완료한 콘텐츠입니다..',
@@ -113,10 +113,7 @@
                 }
             }
 
-            function pay() {
-
-                // 중첩 X
-
+            function payForContents() {
                 if (remainingCoins < 0) {
                     alert("코인이 부족합니다!! 코인 충전 후 이용해주세요 🔥");
                     var confirmResult = confirm("코인 충전소로 이동할까요?");

@@ -9,8 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/customerSupport")
 public class CustomerSupportController {
-    @GetMapping("")
+    @GetMapping("notice")
     public String mainPage() {
-        return "customerSupport/customerSupportMainPage";
+        return "customerSupport/customerSupportNotice";
+    }
+
+    @GetMapping("oneOnOne")
+    public String oneOnOne() {
+        return "customerSupport/customerSupportOneOnOne";
+    }
+
+    @GetMapping("myQuestion")
+    public String myQuestion() {
+        return "customerSupport/customerSupportMyQuestion";
+    }
+
+    @GetMapping("FAQ")
+    public String FAQ() {
+        return "customerSupport/customerSupportFAQ";
     }
 }

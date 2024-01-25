@@ -163,7 +163,7 @@ public class ReviewController {
         }
 
         if(Objects.equals(gubun, "list")){
-            return "redirect:/review/list/" + category + "/" + contentsID;
+            return "redirect:/review/list?category="+category+"&contentsID=" + contentsID;
         }
         return "redirect:/review/detail?category="+category+"&contentsID=" + contentsID + "&reviewId=" + reviewId;
     }

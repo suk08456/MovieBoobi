@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>WebSocket Chatting</title>
+    <!-- 필요한 스타일이 있다면 여기에 추가 -->
 </head>
 <body>
 <h3 id="room-name"></h3>
@@ -10,51 +11,55 @@
     <div id="response"></div>
     <form id="chat-form">
         <h4>
-            이름: <span id="username-holder"></span>
+            닉네임: <span id="username-holder"></span>
         </h4>
-        <input type="text" id="message" placeholder="Write a message..."/>
+        <input type="text" id="message" placeholder="Write a message..." />
         <button type="submit">Send</button>
     </form>
 </div>
-<script>
-    const username = (new URLSearchParams(location.search)).get("username")
-    document.getElementById("username-holder").innerText = username
-    const webSocket = new WebSocket("ws://localhost:8888/ws/chat")
-    webSocket.onopen = (event) => {
-    console.log(event)
-    webSocket.send(JSON.stringify({
-    username,
-    message: `${username} 입장`
-    }))
-    }
-    webSocket.onmessage = (msg) => {
-    console.log(msg)
-    const data = JSON.parse(msg.data)
-    const chatMessage = document.createElement("div")
-    const message = document.createElement("p")
-    message.innerText = data.username + ": " + data.message;
 
-    chatMessage.appendChild(message)
-    document.getElementById("response").appendChild(chatMessage)
-    }
-    webSocket.onclose = (event) => {
-    console.log(event)
+<script>
+    const username = (new URLSearchParams(location.search)).get("username");
+    document.getElementById("username-holder").innerText = username;
+    const webSocket = new WebSocket("ws://localhost:8888/ws/chat");
+
+   webSocket.onopen = (event) => {
+    console.log(event);
+    const entryMessage = `님이 입장하셨습니다.`;
     webSocket.send(JSON.stringify({
-    username,
-    message: `${username} 퇴장`
-    }))
-    }
+        username,
+        message: entryMessage
+    }));
+};
+
+    webSocket.onmessage = (msg) => {
+        console.log(msg);
+        const data = JSON.parse(msg.data);
+        const chatMessage = document.createElement("div");
+        const message = document.createElement("p");
+        message.innerText = data.username + ": " + data.message;
+
+        chatMessage.appendChild(message);
+        document.getElementById("response").appendChild(chatMessage);
+    };
+
+    webSocket.onclose = (event) => {
+        console.log(event);
+        webSocket.send(JSON.stringify({
+            username,
+            message: `${username} 퇴장`
+        }));
+    };
 
     document.getElementById("chat-form").addEventListener("submit", e => {
-    e.preventDefault()
-    const messageInput = document.getElementById("message")
-    const message = messageInput.value
-    webSocket.send(JSON.stringify({
-    username, message
-    }))
-    messageInput.value = ""
-    })
-
+        e.preventDefault();
+        const messageInput = document.getElementById("message");
+        const message = messageInput.value;
+        webSocket.send(JSON.stringify({
+            username, message
+        }));
+        messageInput.value = "";
+    });
 </script>
 </body>
 </html>

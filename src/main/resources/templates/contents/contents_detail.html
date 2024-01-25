@@ -157,8 +157,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-
-        var contentsID = document.querySelector('.contentsID').value;
+        var contentsID = document.getElementsByName('contentsID')[0].value;
         var category = '[[${category}]]';
 
         function updateRating(rating) {
@@ -171,7 +170,16 @@
                 hide: true,
             },
         });
-    }
+
+
+        function loginError(){
+<!--        결제버튼 누를때 에러메세지 나오게 하기 위해 넣음 / contents_payment내부 script에 넣으면 작동 안함-->
+           Swal.fire({
+                       icon: 'warning',
+                       title: '로그인 후 이용해주세요.',
+                   });
+               return false;
+       }
 
     </script>
 </div>
