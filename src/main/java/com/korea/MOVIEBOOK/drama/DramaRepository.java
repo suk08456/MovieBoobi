@@ -15,8 +15,8 @@ public interface DramaRepository extends JpaRepository<Drama, Long> {
 
 
     @Query("SELECT d FROM Drama d " +
-            "WHERE d.title LIKE %:kw% " +
-            "   OR d.actor LIKE %:kw% ")
+            "  where REGEXP_REPLACE(REPLACE(REPLACE( d.actor, '(', '<'), ')' ,'>'), '<([^<>]+)>', '') LIKE %:kw% " +
+            "   OR d.title LIKE %:kw% ")
     Page<Drama> findAllByDramaKeyword(@Param("kw") String kw, Pageable pageable);
 }
 

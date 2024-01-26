@@ -5,6 +5,7 @@ import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieService;
+import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonService;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +36,29 @@ public class main {
         Page<Book> pagingBook = bookService.getBookList(page, kw);
         Page<Webtoon> pagingWebtoon = webtoonService.getWebtoonList(page, kw);
 
+
+        model.addAttribute("pagingWebtoon", pagingWebtoon);
         model.addAttribute("pagingmovie", pagingMovie);
         model.addAttribute("pagingDrama", pagingDrama);
         model.addAttribute("pagingBook", pagingBook);
-        model.addAttribute("pagingWebtoon", pagingWebtoon);
         model.addAttribute("spec", kw);
 
         return "search_list";
     }
+
+//    @GetMapping("/searchwebtoon")
+//    public String searchWebtoonList(Model model,
+//                             @RequestParam(value = "page", defaultValue = "0") int page,
+//                             @RequestParam(value = "kw", defaultValue = "") String kw) {
+//
+//
+//        Page<Webtoon> pagingWebtoon = webtoonService.getWebtoonList(page, kw);
+//
+//        model.addAttribute("pagingWebtoon", pagingWebtoon);
+//
+//        return "test2";
+//    }
+
 
     @GetMapping("/")
     public String test() {

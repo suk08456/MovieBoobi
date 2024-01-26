@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
 
 
+import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
 import jakarta.persistence.*;
@@ -49,4 +50,7 @@ public class Webtoon {
 
     @OneToMany(mappedBy = "webtoon")
     private List<Review> reviewList;
+
+    @OneToOne
+    private Payment payment;
 }

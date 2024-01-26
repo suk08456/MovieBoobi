@@ -17,7 +17,7 @@ public interface MovieRepository extends JpaRepository<Movie,Long> {
 
 
     @Query("SELECT m FROM Movie m " +
-            "WHERE m.title LIKE %:kw% " +
-            "   OR m.actor LIKE %:kw% ")
+            "  where REGEXP_REPLACE(REPLACE(REPLACE( m.actor, '(', '<'), ')' ,'>'), '<([^<>]+)>', '') LIKE %:kw% " +
+            "   OR m.title LIKE %:kw% ")
     Page<Movie> findAllByMovieKeyword(@Param("kw") String kw, Pageable pageable);
 }

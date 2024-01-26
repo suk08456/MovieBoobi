@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,4 +29,16 @@ public class CommentService {
         this.commentRepository.save(comment1);
     }
 
+    public Comment getComment(Long commentid) {
+        Optional<Comment> commentOptional = this.commentRepository.findById(commentid);
+        if(commentOptional.isEmpty()){
+            return null;
+        }
+
+        return commentOptional.get();
+    }
+
+    public void deleteComment(Comment comment) {
+        this.commentRepository.delete(comment);
+    }
 }
