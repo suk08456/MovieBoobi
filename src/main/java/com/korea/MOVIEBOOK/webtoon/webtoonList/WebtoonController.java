@@ -1,6 +1,8 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
 import com.korea.MOVIEBOOK.ContentsController;
 import com.korea.MOVIEBOOK.ContentsDTO;
+import com.korea.MOVIEBOOK.heart.Heart;
+import com.korea.MOVIEBOOK.heart.HeartRepository;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
@@ -34,7 +36,7 @@ public class WebtoonController {
     private final ContentsController contentsController;
     private final PaymentRepository paymentRepository;
     private final MemberService memberService;
-
+    private final HeartRepository heartRepository;
 
 
     @GetMapping("")
@@ -116,7 +118,7 @@ public class WebtoonController {
     @GetMapping("/detail")
     public String WebtoonDetail1(Model model, Long webtoonId, Principal principal) {
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-         ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
+        ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
         List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
         List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findWebtoonReview(webtoon.getWebtoonId());
@@ -145,6 +147,8 @@ public class WebtoonController {
                 member = this.memberService.getmember(providerID);
             }
 
+            Heart heart = this.heartRepository.findByMemberAndWebtoon(member, webtoon);
+
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "webtoon", String.valueOf(webtoonId)));
             if(payment.isPresent()){
                 paid ="true";
@@ -164,11 +168,13 @@ public class WebtoonController {
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
+            model.addAttribute("heart",heart);
         } else {
             model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
+            model.addAttribute("heart","");
         }
         return "contents/contents_detail";
     }
@@ -190,6 +196,7 @@ public class WebtoonController {
         Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
 
         model.addAttribute("category", "webtoon");
+        model.addAttribute("contents", webtoon);
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewList", reviewList);
@@ -202,6 +209,7 @@ public class WebtoonController {
             if (member == null) {
                 member = this.memberService.getmember(providerID);
             }
+            Heart heart = this.heartRepository.findByMemberAndWebtoon(member, webtoon);
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "webtoon", String.valueOf(webtoonId)));
             if(payment.isPresent()){
@@ -222,11 +230,13 @@ public class WebtoonController {
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
+            model.addAttribute("heart",heart);
         } else {
             model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
+            model.addAttribute("heart","");
         }
         return "contents/contents_detail";
     }

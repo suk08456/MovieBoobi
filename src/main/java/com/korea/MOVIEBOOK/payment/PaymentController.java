@@ -23,7 +23,10 @@ public class PaymentController {
 
     @GetMapping("/payment")
     public String kakao(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page) {
-        String providerID = principal.getName();
+        String providerID = "";
+        if(principal != null ) {
+            providerID = principal.getName();
+        }
 
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {

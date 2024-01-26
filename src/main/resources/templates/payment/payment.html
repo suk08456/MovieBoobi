@@ -11,8 +11,8 @@
 <body>
 <div layout:fragment="content" style="width : 100%; height : 30%;">
     <div style="display : flex; margin : auto; width : 1300px; height : 890px; margin-top : 3px;">
-<!--        <input type="hidden" class="_csrf"-->
-<!--               value="ELCsIKgKv7yGzeFZsXxrCtAcVBiiS-lvBrP8b-1scsRpPlrWHJoKfFsw4ioyr-thtgFFfbLF6eSCUctFCYICYW2l4gC57o4W1"/>-->
+        <!--        <input type="hidden" class="_csrf"-->
+        <!--               value="ELCsIKgKv7yGzeFZsXxrCtAcVBiiS-lvBrP8b-1scsRpPlrWHJoKfFsw4ioyr-thtgFFfbLF6eSCUctFCYICYW2l4gC57o4W1"/>-->
         <div style="width : 900px; display : flex; flex-direction : column; padding : 22px;">
             <span style="font-size: larger; font-weight: bold;"> 결제 및 구매 내역 </span>
             <div style="margin-left : 50px; margin-top : 40px;">
@@ -62,27 +62,35 @@
         <div style="width : 320px; display : flex; justify-content : center; border-left: 2.5px dotted #DEE2E6;">
             <div style="margin-top : 30px; margin-bottom : 20px;">
                 <div style="display : flex;">
+                    <img class="profile" sec:authorize="isAnonymous()"
+                         src="/member/defaultImage.jpg">
                     <img class="profile" sec:authorize="isAuthenticated()"
                          th:if="${not #strings.isEmpty(member.profileImage)}"
                          th:src="${member.profileImage}">
                     <div style="display : flex; flex-direction: column;">
-                    <span sec:authorize="isAuthenticated()"
+                        <span sec:authorize="isAuthenticated()"
                           th:text="${member.nickname} + ' 님 안녕하세요'"
                           style="font-size : large; width : 100%; height : 27px; margin-top : 33px; margin-left : 5px;"></span>
-                    <div style="display : flex; font-weight : bold;">
-                        <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
-                        <span style="margin-right : 3px;">보유 코인 : </span>
-                        <span th:text="${#numbers.formatDecimal(sum, 0,  'COMMA', 0, 'POINT')}"
-                              style="width : 95px; text-align : center;"></span>
-                        <span>Coin</span>
+
+                        <span sec:authorize="isAnonymous()"
+                              text="방문자님 안녕하세요'"
+                              style="font-size : large; width : 100%; height : 27px; margin-top : 33px; margin-left : 5px;"></span>
+                        <div style="display : flex; font-weight : bold;">
+                            <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
+                            <span style="margin-right : 3px;">보유 코인 : </span>
+                            <span th:text="${#numbers.formatDecimal(sum, 0,  'COMMA', 0, 'POINT')}"
+                                  style="width : 95px; text-align : center;"></span>
+                            <span>Coin</span>
+                        </div>
+
                     </div>
-                    </div>
+
                 </div>
                 <input class="s_name" name="s_name" sec:authorize="isAuthenticated()" th:value="${member.nickname}"
                        type="hidden">
                 <input class="m_id" name="m_id" sec:authorize="isAuthenticated()" th:value="${member.id}"
                        type="hidden">
-<!--                <input type="hidden" class="_csrf" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
+                <!--                <input type="hidden" class="_csrf" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
                 <div style=" margin-top : 20px;">
                     <div style="display : flex; justify-content : space-between; padding : 5px;">
                         <img src="/etc/coin.png" style="height : 20px; margin-top : 2px; margin-left : 8px;"> 1,000Coin
@@ -134,14 +142,14 @@
                         </button>
                     </div>
                     <div style="margin-top: 20px; padding : 5px; margin-left : 8px;">
-                        <div class="email">
+                        <div class="email" sec:authorize="isAuthenticated()">
                             <span>Email</span>
                             <input class="m_email" name="m_email" th:if="${not #strings.isEmpty(member.email)}"
                                    th:value="${member.email}" style="text-align : center; margin-left : 5px;"/>
                             <input class="m_email" name="m_email" th:if="${#strings.isEmpty(member.email)}"
                                    placeholder="이메일을 작성해주세요." style="text-align : center; margin-left : 5px;"/>
                         </div>
-                        <div class="phone" style="margin-top : 15px;">
+                        <div class="phone" style="margin-top : 15px;" sec:authorize="isAuthenticated()">
                             <span>Phone</span>
                             <input type="text" class="s_phone" id="s_phone" name="s_phone" maxlength="13"
                                    oninput="hypenTel(this)" placeholder="전화번호를 작성해주세요."

@@ -21,7 +21,7 @@
 <script>
     const username = (new URLSearchParams(location.search)).get("username");
     document.getElementById("username-holder").innerText = username;
-    const webSocket = new WebSocket("ws://192.168.3.26:8888/ws/chat");
+    const webSocket = new WebSocket("http://localhost:8888/ws/chat");
 
    webSocket.onopen = (event) => {
     console.log(event);

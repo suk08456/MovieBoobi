@@ -2,6 +2,8 @@ package com.korea.MOVIEBOOK.movie.movie;
 
 import com.korea.MOVIEBOOK.ContentsController;
 import com.korea.MOVIEBOOK.ContentsDTO;
+import com.korea.MOVIEBOOK.heart.Heart;
+import com.korea.MOVIEBOOK.heart.HeartRepository;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.movie.daily.MovieDailyAPI;
@@ -38,6 +40,7 @@ public class MovieController {
     private final PaymentRepository paymentRepository;
     private final MemberService memberService;
     private final ContentsController contentsController;
+    private final HeartRepository heartRepository;
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
     String date = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     LocalDateTime weeksago = LocalDateTime.now().minusDays(7);
@@ -144,6 +147,7 @@ public class MovieController {
             if (member == null) {
                 member = this.memberService.getmember(providerID);
             }
+            Heart heart = this.heartRepository.findByMemberAndMovie(member, movie);
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
             if(payment.isPresent()){
@@ -165,11 +169,13 @@ public class MovieController {
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
+            model.addAttribute("heart",heart);
         } else {
             model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
+            model.addAttribute("heart","");
         }
 
 

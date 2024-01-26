@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
 
 
+import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
 import jakarta.persistence.*;
@@ -47,6 +48,9 @@ public class Webtoon {
     @OneToMany(mappedBy = "webtoonList")
     private List<WebtoonDayList> webtoonDayLists;
 
-    @OneToMany(mappedBy = "webtoon")
+    @OneToMany(mappedBy = "webtoon",  cascade = CascadeType.ALL)
     private List<Review> reviewList;
+
+    @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
+    private List<Heart> heartList;
 }
