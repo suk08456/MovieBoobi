@@ -2,6 +2,7 @@ package com.korea.MOVIEBOOK.movie.movie;
 
 import com.korea.MOVIEBOOK.movie.daily.MovieDaily;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeekly;
+import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.review.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -54,5 +55,8 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     private List<Review> reviewList;
+
+    @OneToOne
+    private Payment payment;
 
 }

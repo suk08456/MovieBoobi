@@ -1,0 +1,45 @@
+<html layout:decorate="~{/member/contents_purchase_details/member_purchase_details}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="purchasedetails" style="width: 85%; height: 100%" class="profileContent" id="purchasedetails">
+
+    <div>
+        <div th:each="payment : ${PaymentList}">
+                <span th:text="${payment.title}"></span>
+                <img th:src="${payment.imageUrl}">
+        </div>
+    </div>
+
+    <div>
+        <div th:each="payment : ${PaymentList}">
+            <div th:if="${payment.drama}">
+                <span th:text="${payment.drama.title}"></span>
+                <img th:src="${'/dramaImage' + payment.drama.imageUrl}">
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div th:each="payment : ${PaymentList}">
+            <div th:if="${payment.book}">
+                <span th:text="${payment.book.title}"></span>
+                <img th:src="${payment.book.imageUrl}">
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div th:each="payment : ${PaymentList}">
+            <div th:if="${payment.webtoon}">
+                <span th:text="${payment.webtoon.title}"></span>
+                <img th:src="${payment.webtoon.imageUrl}">
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

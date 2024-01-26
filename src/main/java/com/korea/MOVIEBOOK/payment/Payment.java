@@ -1,11 +1,16 @@
 package com.korea.MOVIEBOOK.payment;
 
+import com.korea.MOVIEBOOK.book.Book;
+import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.movie.movie.Movie;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -29,7 +34,7 @@ public class Payment {
 
 //    private String email;           // 회원 email
 
-//    private String name;            // 회원 이름(= nickname)
+    //    private String name;            // 회원 이름(= nickname)
     @Column(columnDefinition = "text")
     private String content;
 
@@ -39,5 +44,17 @@ public class Payment {
 
     @ManyToOne
     private Member member;
+
+    @OneToOne
+    private Movie movie;
+
+    @OneToOne
+    private Book book;
+
+    @OneToOne
+    private Drama drama;
+
+    @OneToOne
+    private Webtoon webtoon;
 
 }
