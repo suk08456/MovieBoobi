@@ -1,8 +1,5 @@
 package com.korea.MOVIEBOOK.member;
 
-import com.korea.MOVIEBOOK.member.EmailService;
-import com.korea.MOVIEBOOK.member.Member;
-import com.korea.MOVIEBOOK.member.MemberRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,7 +54,7 @@ public class MemberService {
     public Member findByproviderId(String id){
         return this.memberRepository.findByproviderId(id);
     }
-    public Member getmember(String username) {
+    public Member getMember (String username) {
         Optional<Member> member = memberRepository.findByUsername(username);
 
         if (member.isPresent()) {

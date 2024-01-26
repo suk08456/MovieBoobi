@@ -208,10 +208,7 @@ public class MemberController {
     @RequestMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
     public String uploadProfileImg(MultipartHttpServletRequest mre, Principal principal) throws IOException {
-        Member member = memberService.findByusername(principal.getName());
-        if (member == null) {
-            member = memberService.findByproviderId(principal.getName());
-        }
+        Member member = memberService.getMember(principal.getName());
 
         MultipartFile mf = mre.getFile("file");
         String uploadPath = "";

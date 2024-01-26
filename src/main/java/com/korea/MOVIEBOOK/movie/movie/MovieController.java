@@ -140,7 +140,7 @@ public class MovieController {
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
-                member = this.memberService.getmember(providerID);
+                member = this.memberService.getMember(providerID);
             }
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
@@ -210,7 +210,7 @@ public class MovieController {
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
-                member = this.memberService.getmember(providerID);
+                member = this.memberService.getMember(providerID);
             }
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));

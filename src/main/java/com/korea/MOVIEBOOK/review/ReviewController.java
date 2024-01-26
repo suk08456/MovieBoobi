@@ -4,28 +4,20 @@ import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.book.BookRepository;
 import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.drama.DramaRepository;
-import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.heart.HeartService;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieRepository;
-import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java.security.Principal;
 
 @Controller
@@ -51,7 +43,7 @@ public class ReviewController {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         this.reviewService.saveDramaReview(dramaId, comment, rating, member);
@@ -64,7 +56,7 @@ public class ReviewController {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         this.reviewService.saveMovieReview(movieCD, comment, rating, member);
@@ -77,7 +69,7 @@ public class ReviewController {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         reviewService.saveBookReview(isbn, comment, rating, member);
@@ -90,7 +82,7 @@ public class ReviewController {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         this.reviewService.saveWebtoonReview(webtoonId, comment, rating, member);
@@ -124,7 +116,7 @@ public class ReviewController {
         }
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         if (Objects.equals(category, "movie")) {
@@ -176,7 +168,7 @@ public class ReviewController {
         }
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         if (Objects.equals(category, "movie")) {

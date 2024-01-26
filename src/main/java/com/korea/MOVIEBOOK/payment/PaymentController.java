@@ -8,9 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 
-import java.awt.*;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,7 +25,7 @@ public class PaymentController {
 
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
         List<Payment> payments = this.paymentService.findPaymentListByMember(member);
         long sum = 0;
@@ -88,7 +86,7 @@ public class PaymentController {
 
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
         this.paymentService.savePayment(member.getId(), "coin", paidAmount, "00000", "point", null, content, category, contentsID);
 

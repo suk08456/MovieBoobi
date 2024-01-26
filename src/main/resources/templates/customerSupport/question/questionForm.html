@@ -1,0 +1,26 @@
+<html lang="ko" layout:decorate="~{/customerSupport/customerSupportLayout}">
+<div layout:fragment="CScontent" class="menuDetail" id="question" style="padding: 40px 40px 0px 50px; min-width: 100vh">
+    <div style="height: 100%;">
+        <form th:action="@{/customerSupport/question/createQuestion}" method="post" style="height: 100%;">
+            <input class="input input-bordered w-full" name="title" type="text" placeholder="제목" style="margin-bottom: 10px;"/>
+            <div class="textarea textarea-bordered textarea-3xl w-full" id="container"
+                 oninput="onDivContentHandler()" contentEditable='true' style="height: 80%; resize: none; overflow: auto;">
+            </div>
+            <textarea name="content" id="hiddenTextarea" style="display:none;"></textarea>
+            <div style="display: flex; flex-direction: row-reverse;">
+                <input type="submit" class="btn btn-outline" th:value="저장하기">
+            </div>
+            <div>
+                <input type="file" name="img">
+            </div>
+        </form>
+    </div>
+    <script>
+        function onDivContentHandler() {
+            var divContent = document.getElementById('container').innerText;
+            document.getElementById('hiddenTextarea').value = divContent;
+        }
+    </script>
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+</div>
+</html>

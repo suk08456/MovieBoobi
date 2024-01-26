@@ -1,15 +1,15 @@
 <html lang="ko" layout:decorate="~{/customerSupport/customerSupportLayout}">
-<div layout:fragment="CScontent" class="menuDetail" id="notice" style="padding: 40px 40px 0px 50px;">
-    <div style="width: 100%;">
-        <div style="display: flex; height: 2.5rem; width: 40%; margin-left: 10%;">
+<div layout:fragment="CScontent" class="menuDetail" id="notice" style="padding: 40px 40px 0px 50px; min-width: 100vh">
+    <div style="width: 100%; display: flex; flex-direction: row-reverse;">
+        <div style="display: flex; height: 2.5rem; width: 40%; margin-right: 10%;">
             <input type="text" placeholder="제목, 내용 검색" class="input input-bordered w-full"
                    style="border-top-right-radius: 0; border-bottom-right-radius: 0;height: 2.5rem;"/>
             <button class="searchButton" style="height: 100%; padding: 5px; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
-                <img src="/imgs/돋보기.jpg" alt="" style="height: 100%;">
+                <img src="/imgs/dodbogi.svg" alt="" style="height: 100%;">
             </button>
         </div>
     </div>
-    <div style="display: flex; justify-content: center; width: 100%; margin-top: 3rem">
+    <div class="contentList">
         <table style="width: 80%;">
             <thead>
             <tr style="background: cyan; border-bottom: blue solid 2px;">

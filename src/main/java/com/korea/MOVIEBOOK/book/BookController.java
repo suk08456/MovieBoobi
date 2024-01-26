@@ -6,15 +6,12 @@ import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentRepository;
-import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.AbstractDocument;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -97,7 +94,7 @@ public class BookController {
             providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
-                member = this.memberService.getmember(providerID);
+                member = this.memberService.getMember(providerID);
             }
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "book", isbn));
@@ -165,7 +162,7 @@ public class BookController {
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
-                member = this.memberService.getmember(providerID);
+                member = this.memberService.getMember(providerID);
             }
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "book", isbn));
