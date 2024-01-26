@@ -1,5 +1,7 @@
 package com.korea.MOVIEBOOK.book;
 
+import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.review.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,4 +33,8 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Review> reviewList;
     private Boolean recommended;
+
+
+    @OneToOne
+    private Payment payment;
 }

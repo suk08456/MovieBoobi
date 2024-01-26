@@ -21,7 +21,7 @@ public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
 
 
     @Query("SELECT w FROM Webtoon w " +
-            "WHERE w.title LIKE %:kw% " +
-            "   OR w.author LIKE %:kw% ")
+            "WHERE SUBSTRING_INDEX(w.author, '(', 1) LIKE %:kw% " +
+            "   OR w.title LIKE %:kw% ")
     Page<Webtoon> findAllByWebtoonKeyword(@Param("kw") String kw, Pageable pageable);
 }

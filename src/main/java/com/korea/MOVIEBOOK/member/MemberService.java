@@ -57,6 +57,8 @@ public class MemberService {
     public Member findByproviderId(String id){
         return this.memberRepository.findByproviderId(id);
     }
+
+
     public Member getmember(String username) {
         Optional<Member> member = memberRepository.findByUsername(username);
 

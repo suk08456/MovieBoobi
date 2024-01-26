@@ -1,4 +1,5 @@
 package com.korea.MOVIEBOOK.drama;
+import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.review.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,4 +31,7 @@ public class Drama {
     private double rating;
     @OneToMany(mappedBy = "drama", cascade = CascadeType.ALL)
     private List<Review> reviewList;
+
+    @OneToOne
+    private Payment payment;
 }
