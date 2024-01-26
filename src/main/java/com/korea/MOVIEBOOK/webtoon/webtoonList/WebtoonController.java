@@ -113,12 +113,12 @@ public class WebtoonController {
         return webtoonListList;
     }
 
-    @PostMapping("/detail")
+    @GetMapping("/detail")
     public String WebtoonDetail1(Model model, Long webtoonId, Principal principal) {
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
-        ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
+         ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
         List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
+        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findWebtoonReview(webtoon.getWebtoonId());
         String paid = "false";
 
@@ -128,15 +128,15 @@ public class WebtoonController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
-
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
 
 
         model.addAttribute("category", "webtoon");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
         model.addAttribute("author_actor_ListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
-        model.addAttribute("reviewList", reviewList);
 
         if(principal != null){
             String providerID = principal.getName();
@@ -175,9 +175,9 @@ public class WebtoonController {
     @GetMapping("/detail/{webtoonId}")
     public String WebtoonDetail2(Model model, @PathVariable("webtoonId") Long webtoonId, Principal principal){
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
         ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
         List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
+        List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findWebtoonReview(webtoon.getWebtoonId());
         String paid = "false";
 
@@ -187,13 +187,14 @@ public class WebtoonController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
 
         model.addAttribute("category", "webtoon");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("reviewList", reviewList);
         model.addAttribute("author_actor_ListList", authorListList);
         model.addAttribute("avgRating", String.format("%.1f", avgRating));
-        model.addAttribute("reviewList", reviewList);
 
         if(principal != null){
             String providerID = principal.getName();

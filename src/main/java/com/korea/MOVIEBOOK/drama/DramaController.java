@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -48,13 +45,12 @@ public class DramaController {
         model.addAttribute("dramaListList", dramaListList);
         return "drama/drama_list";
     }
-    @PostMapping("/detail")
-    public String dramaDetail(Model model, Long dramaId, Principal principal) {
+    @GetMapping("/detail")
+    public String dramaDetail(Long dramaId, Model model, Principal principal) {
         Drama drama = dramaService.getDramaById(dramaId);
-
-        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
-        List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
         ContentsDTO contentsDTOS = this.contentsController.setDramaContentsDTO(drama);
+        List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
+        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = dramaService.getReviewByDramaId(dramaId);
         String paid = "false";
 
@@ -64,12 +60,14 @@ public class DramaController {
                 .average()
                 .orElse(0);
 
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
+
         model.addAttribute("category", "drama");
         model.addAttribute("contentsDTOS", contentsDTOS);
-        model.addAttribute("author_actor_ListList", actorListList);
-        model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("author_actor_ListList", actorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
         if(principal != null){
             String providerID = principal.getName();
@@ -106,12 +104,11 @@ public class DramaController {
     }
 
     @GetMapping("/detail/{dramaId}")
-    public String dramaDetail2(Model model,@PathVariable("dramaId") Long dramaId, Principal principal) {
+    public String dramaDetail2(@PathVariable("dramaId") Long dramaId, Model model, Principal principal) {
         Drama drama = dramaService.getDramaById(dramaId);
-
-        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
-        List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
         ContentsDTO contentsDTOS = this.contentsController.setDramaContentsDTO(drama);
+        List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
+        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = dramaService.getReviewByDramaId(dramaId);
         String paid = "false";
 
@@ -121,12 +118,14 @@ public class DramaController {
                 .average()
                 .orElse(0);
 
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
+
         model.addAttribute("category", "drama");
         model.addAttribute("contentsDTOS", contentsDTOS);
-        model.addAttribute("author_actor_ListList", actorListList);
-        model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("author_actor_ListList", actorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
         if(principal != null){
             String providerID = principal.getName();Member member = this.memberService.findByproviderId(providerID);

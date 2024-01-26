@@ -11,6 +11,7 @@ import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieRepository;
 import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
@@ -185,8 +186,16 @@ public class ReviewController {
         } else if (Objects.equals(category, "drama")) {
             Drama drama = this.dramaRepository.getReferenceById(Long.valueOf(contentsID));
             model.addAttribute("info",drama);
-        } else {
+        } else  if (Objects.equals(category, "webtoon")) {
             Webtoon webtoon = this.webtoonRepository.findByWebtoonId(Long.valueOf(contentsID));
+            StringBuilder updateDaysBuilder = new StringBuilder();
+
+            for (WebtoonDayList updateDay : webtoon.getWebtoonDayLists()) {
+                updateDaysBuilder.append(updateDay.getWebtoonDay().getUpdateDays());
+            }
+
+            String updateDays = updateDaysBuilder.toString();
+            model.addAttribute("updateDays",updateDays);
             model.addAttribute("info",webtoon);
         }
 

@@ -66,7 +66,7 @@ public class BookController {
         allList.add(newSpecialBookListList);
         allList.add(recommendListList);
         model.addAttribute("allList", allList);
-        return "book/bookMainPage";
+        return "book/book_list";
     }
 
     @GetMapping("/detail")
@@ -156,7 +156,6 @@ public class BookController {
                 .mapToDouble(Review::getRating) // 리뷰 객체에서 평점만 추출하여 정수 스트림 생성
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
-
 
         Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
 

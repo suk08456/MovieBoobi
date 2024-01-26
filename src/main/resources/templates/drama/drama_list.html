@@ -26,7 +26,7 @@
                     <div class="swiper-slide" style="display:flex; font-size: 18px; align-items: center; height : 100%;"
                          th:each="dramaList : ${dramaListList}">
                         <form style="display : grid; margin-left:15px;"
-                              th:action="@{/drama/detail}" method="post" th:each="drama : ${dramaList}">
+                              th:action="@{/drama/detail}" method="get" th:each="drama : ${dramaList}">
                             <button>
                                 <div class="img"
                                      style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">

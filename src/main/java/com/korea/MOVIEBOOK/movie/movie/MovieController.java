@@ -103,13 +103,13 @@ public class MovieController {
         model.addAttribute("movieWeeklyDate", weekInfo);
         model.addAttribute("allList", allList);
 
-        return "Movie/movie";
+        return "Movie/movie_list";
     }
-    @PostMapping("/detail")
+    @GetMapping("/detail")
     public String movieDetail(Model model, String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
-        List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
+        List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findReviews(movie.getId());
         String paid = "false";
 
@@ -117,6 +117,8 @@ public class MovieController {
         Integer hour = (int) Math.floor((double) runtime / 60);
         Integer minutes = runtime % 60;
         String movieruntime = String.valueOf(hour) + "시간" + String.valueOf(minutes) + "분";
+
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
 
         List<List<String>> actorListList =  this.movieService.getActorListList(movie);
 
@@ -129,11 +131,11 @@ public class MovieController {
 
         model.addAttribute("category", "movie");
         model.addAttribute("contentsDTOS", contentsDTOS);
-        model.addAttribute("author_actor_ListList", actorListList);
-        model.addAttribute("movieruntime", movieruntime);
-        model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("author_actor_ListList", actorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
+        model.addAttribute("movieruntime", movieruntime);
 
 
         if(principal != null){
@@ -177,8 +179,8 @@ public class MovieController {
     @GetMapping("/detail/{movieCD}")
     public String movieDetail2(Model model, @PathVariable("movieCD") String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
-        List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
+        List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findReviews(movie.getId());
         String paid = "false";
 
@@ -186,7 +188,6 @@ public class MovieController {
         Integer hour = (int) Math.floor((double) runtime / 60);
         Integer minutes = runtime % 60;
         String movieruntime = String.valueOf(hour) + "시간" + String.valueOf(minutes) + "분";
-
 
         List<List<String>> actorListList =  this.movieService.getActorListList(movie);
 
@@ -196,14 +197,15 @@ public class MovieController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
 
         model.addAttribute("category", "movie");
         model.addAttribute("contentsDTOS", contentsDTOS);
-        model.addAttribute("author_actor_ListList", actorListList);
-        model.addAttribute("movieruntime", movieruntime);
-        model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("author_actor_ListList", actorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
+        model.addAttribute("movieruntime", movieruntime);
 
 
         if(principal != null){
