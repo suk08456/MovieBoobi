@@ -1,6 +1,9 @@
 package com.korea.MOVIEBOOK.drama;
 import com.korea.MOVIEBOOK.ContentsController;
 import com.korea.MOVIEBOOK.ContentsDTO;
+import com.korea.MOVIEBOOK.book.Book;
+import com.korea.MOVIEBOOK.heart.Heart;
+import com.korea.MOVIEBOOK.heart.HeartRepository;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
@@ -30,6 +33,7 @@ public class DramaController {
     private final ContentsController contentsController;
     private final PaymentRepository paymentRepository;
     private final MemberService memberService;
+    private final HeartRepository heartRepository;
 
     @GetMapping("")
     public String dramaList (Model model) {
@@ -77,6 +81,8 @@ public class DramaController {
                 member = this.memberService.getMember(providerID);
             }
 
+            Heart heart = this.heartRepository.findByMemberAndDrama(member, drama);
+
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "drama", String.valueOf(dramaId)));
             if(payment.isPresent()){
                 paid ="true";
@@ -95,11 +101,13 @@ public class DramaController {
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
+            model.addAttribute("heart",heart);
         } else {
             model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
+            model.addAttribute("heart","");
         }
         return "contents/contents_detail";
     }

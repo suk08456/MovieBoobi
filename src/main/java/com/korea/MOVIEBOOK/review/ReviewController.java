@@ -150,9 +150,9 @@ public class ReviewController {
     public String reviewList(@PathVariable("category") String category, @PathVariable("contentsID") String contentsID, @PathVariable("reviewId") String reviewId, @PathVariable("heartClick") String heartClick, @PathVariable("gubun") String gubun, Model model, Principal principal) {
 
         if (Objects.equals(heartClick, "true")) {
-            this.heartService.plusHeart(principal, category, contentsID, reviewId);
+            this.heartService.plusReviewHeart(principal, category, contentsID, reviewId);
         } else {
-            this.heartService.minusHeart(principal, reviewId);
+            this.heartService.minusReviewHeart(principal, reviewId);
         }
 
         if(Objects.equals(gubun, "list")){
