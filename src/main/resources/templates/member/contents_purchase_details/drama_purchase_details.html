@@ -1,0 +1,24 @@
+<html layout:decorate="~{/member/contents_purchase_details/member_purchase_details}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="purchasedetails" style="width: 85%; height: 100%" class="profileContent" id="purchasedetails">
+
+    <form>
+        <span>드라마 구매 내역</span>
+        <form th:each="payment : ${PaymentList}" th:action="@{/drama/detail}" method="post">
+            <button>
+                <div th:if="${payment.drama}">
+                    <span th:text="${payment.dateTime}"></span>
+                    <span th:text="${payment.drama.title}"></span>
+                    <img th:src="${'/dramaImage' + payment.drama.imageUrl}">
+                    <input th:value="${payment.drama.id}" name="dramaId" type="hidden">
+                </div>
+            </button>
+        </form>
+
+</div>
+</body>
+</html>
