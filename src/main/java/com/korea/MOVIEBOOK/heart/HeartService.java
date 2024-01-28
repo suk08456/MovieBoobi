@@ -59,7 +59,7 @@ public class HeartService {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
         Heart heart = new Heart();
         heart.setCategory(category);
@@ -81,7 +81,7 @@ public class HeartService {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         Heart heart = null;
