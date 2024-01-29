@@ -3,53 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <title>WebSocket Chatting</title>
-    <!-- 필요한 스타일이 있다면 여기에 추가 -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        #room-name {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        #conversation {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #response {
+            overflow-y: auto;
+            max-height: 300px;
+            padding-bottom: 10px;
+            overflow-anchor: none;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column; /* 세로로 쌓이도록 설정 */
+        }
+
+       .my-message {
+            align-self: flex-start; /* 내 채팅은 왼쪽에 정렬 */
+            max-width: 300px; /* 말풍선의 최대 너비 설정 */
+            word-wrap: break-word;
+        }
+
+        .other-message {
+            align-self: flex-end; /* 상대방 채팅은 오른쪽에 정렬 */
+            max-width: 300px; /* 말풍선의 최대 너비 설정 */
+            word-wrap: break-word;
+        }
+
+
+        #chat-form {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #fff;
+            padding: 5px;
+            border-top: 1px solid #ccc;
+            bottom: 10px;
+            margin-left:-17px;
+        }
+
+        #message {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 8px;
+            width:500px;
+            word-break: break-all;
+        }
+
+        #chat-form button {
+            padding: 8px 15px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #username-holder {
+            color: #333;
+            font-weight: bold;
+        }
+
+        #response div {
+            margin-bottom: 10px;
+        }
+
+        #response p {
+            background-color: yellow;
+            word-break: break-all;
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+            .entry-message {
+            font-weight: bold;
+            background-color: #aeeeee;
+        }
+        #chat-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #participant-count {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        #participant-number {
+            color: #4caf50;
+        }
+    </style>
 </head>
 <body>
-<h3 id="room-name"></h3>
+<h3 id="room-name">Chat Room</h3>
 <div id="conversation">
-    <div id="response"></div>
+    <div id="chat-info">
+        <p id="participant-count">참여중인 인원: <span id="participant-number">0</span></p>
+    </div>
+    <div id="response">
+        <div class="message my-message"></div>
+        <div class="message other-message"></div>
+    </div>
     <form id="chat-form">
         <h4>
             닉네임: <span id="username-holder"></span>
         </h4>
-        <input type="text" id="message" placeholder="Write a message..." />
-        <button type="submit">Send</button>
+        <input type="text" id="message" placeholder="메시지를 입력하세요..." />
+        <button type="submit">전송</button>
     </form>
 </div>
 
 <script>
     const username = (new URLSearchParams(location.search)).get("username");
     document.getElementById("username-holder").innerText = username;
-    const webSocket = new WebSocket("http://localhost:8888/ws/chat");
+    const webSocket = new WebSocket("ws://localhost:8888/ws/chat");
+    let participantCount = 0;
 
-   webSocket.onopen = (event) => {
-    console.log(event);
-    const entryMessage = `님이 입장하셨습니다.`;
-    webSocket.send(JSON.stringify({
-        username,
-        message: entryMessage
-    }));
-};
+    webSocket.onopen = (event) => {
+        console.log(event);
+        participantCount++;
+        updateParticipantCount();
+    };
 
     webSocket.onmessage = (msg) => {
         console.log(msg);
         const data = JSON.parse(msg.data);
-        const chatMessage = document.createElement("div");
-        const message = document.createElement("p");
-        message.innerText = data.username + ": " + data.message;
+    if (data.entryMessage) {
+        // 채팅 메시지를 처리하는 로직
+        appendMessage(data.entryMessage, true);
+    } else if (data.participantCount !== undefined) {
+        // 참여자 수를 처리하는 로직
+        updateParticipantCount(data.participantCount);
+    } else {
+        const isMyMessage = data.username === username; // 현재 사용자의 메시지 여부 확인
+        const messagePrefix = isMyMessage ? "나: " : `${data.username}: `;
+        const messageToShow = messagePrefix + data.message;
 
-        chatMessage.appendChild(message);
-        document.getElementById("response").appendChild(chatMessage);
+        appendMessage(messageToShow, false, isMyMessage); // 내 채팅 여부를 전달하여 처리
+    }
     };
 
     webSocket.onclose = (event) => {
         console.log(event);
+        const exitMessage = `${username} 퇴장`;
+        appendMessage(exitMessage, true);
         webSocket.send(JSON.stringify({
             username,
-            message: `${username} 퇴장`
+            message: exitMessage
         }));
     };
+
+    function updateParticipantCount(count) {
+        document.getElementById("participant-number").innerText = count;
+    }
 
     document.getElementById("chat-form").addEventListener("submit", e => {
         e.preventDefault();
@@ -60,6 +192,31 @@
         }));
         messageInput.value = "";
     });
+
+    function appendMessage(message, isEntryMessage = false, isMyMessage = false) {
+    const responseDiv = document.getElementById("response");
+    const chatMessage = document.createElement("div");
+    const messageElement = document.createElement("p");
+
+    if (isEntryMessage) {
+        messageElement.className = "entry-message";
+    }
+
+    if (isMyMessage) {
+        chatMessage.className = "my-message"; // 내 채팅일 경우 클래스 추가
+    } else {
+        chatMessage.className = "other-message"; // 상대방 채팅일 경우 클래스 추가
+    }
+
+    messageElement.innerText = message;
+
+    chatMessage.appendChild(messageElement);
+    responseDiv.appendChild(chatMessage);
+
+    responseDiv.scrollTop = responseDiv.scrollHeight;
+    }
 </script>
 </body>
 </html>
+
+
