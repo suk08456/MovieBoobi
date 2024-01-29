@@ -1,7 +1,24 @@
 <html lang="ko" layout:decorate="~{/customerSupport/customerSupportLayout}">
-<div layout:fragment="CScontent" class="menuDetail" id="myQuestion">
-    <div>
-        <span>내 질문 입니다.</span>
+<div layout:fragment="CScontent" class="menuDetail" id="myQuestion" style="padding: 40px 40px 0px 50px; min-width: 100vh">
+    <div class="contentList" style="margin-top: 5.5rem">
+        <table style="width: 80%;">
+            <thead>
+            <tr style="background: cyan; border-bottom: blue solid 2px;">
+                <th class="noticeBoard" style="width: 10%">번호</th>
+                <th class="noticeBoard" style="width: 40%">제목</th>
+                <th class="noticeBoard">작성일</th>
+                <th class="noticeBoard">조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="border-bottom: gray solid 1px;">
+                <th class="noticeBoard" style="width: 10%">번호</th>
+                <th class="noticeBoard" style="width: 40%">제목</th>
+                <th class="noticeBoard">작성일</th>
+                <th class="noticeBoard">조회수</th>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 </html>

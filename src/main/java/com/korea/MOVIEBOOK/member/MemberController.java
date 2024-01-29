@@ -1,20 +1,21 @@
 package com.korea.MOVIEBOOK.member;
 
-import com.korea.MOVIEBOOK.member.*;
+import com.korea.MOVIEBOOK.book.BookService;
+import com.korea.MOVIEBOOK.drama.DramaService;
+import com.korea.MOVIEBOOK.movie.movie.Movie;
+import com.korea.MOVIEBOOK.movie.movie.MovieService;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentService;
-import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,8 +37,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
@@ -51,6 +54,10 @@ public class MemberController {
     private final ReviewService reviewService;
     private final PasswordEncoder passwordEncoder;
     private final PaymentService paymentService;
+    private final MovieService movieService;
+    private final BookService bookService;
+    private final DramaService dramaService;
+    private final WebtoonService webtoonService;
 
     @GetMapping("/signup")
     public String signup(MemberCreateForm memberCreateForm) {
@@ -162,7 +169,7 @@ public class MemberController {
 
     @GetMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
-    public String showmyPage(Model model, Principal principal){
+    public String showmyPage(Model model, Principal principal) {
         Member member = memberService.findByusername(principal.getName());
         if (member == null) {
             member = memberService.findByproviderId(principal.getName());
@@ -175,9 +182,6 @@ public class MemberController {
         }
         model.addAttribute("member", member);
 
-        Long reviewCount = reviewService.getReivewCount(member);
-        model.addAttribute("reviewCount", reviewCount);
-        model.addAttribute("parameter", 0);
 
 
         List<Payment> payments = this.paymentService.findPaymentListByMember(member);
@@ -190,9 +194,12 @@ public class MemberController {
                 sum -= Long.valueOf(payments.get(i).getPaidAmount());
             }
         }
+        Long reviewCount = reviewService.getReivewCount(member);
 
         model.addAttribute("sum", sum);
 
+        model.addAttribute("reviewCount", reviewCount);
+        model.addAttribute("parameter", 0);
 
 //        Page<Payment> paging = this.paymentService.getPaymentsByMember(member, page);
 
@@ -203,15 +210,14 @@ public class MemberController {
     }
 
 
+
+
     // 마이페이지
 
     @RequestMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
     public String uploadProfileImg(MultipartHttpServletRequest mre, Principal principal) throws IOException {
-        Member member = memberService.findByusername(principal.getName());
-        if (member == null) {
-            member = memberService.findByproviderId(principal.getName());
-        }
+        Member member = memberService.getMember(principal.getName());
 
         MultipartFile mf = mre.getFile("file");
         String uploadPath = "";
@@ -230,12 +236,12 @@ public class MemberController {
 
         String timestamp = String.valueOf(System.currentTimeMillis());
         String uniqueFileName = timestamp + "_" + origional;
-        uploadPath = path+uniqueFileName;
+        uploadPath = path + uniqueFileName;
 
-        try{
+        try {
             mf.transferTo(new File(uploadPath));
-            this.memberService.saveImg(member, "/profileimg/"+uniqueFileName);
-        }catch (IllegalStateException | IOException e){
+            this.memberService.saveImg(member, "/profileimg/" + uniqueFileName);
+        } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
 
@@ -246,23 +252,8 @@ public class MemberController {
     @GetMapping("/changeInformation")
     public String updateNm(Model model, NicknameForm nicknameForm, Principal principal) {
 
-        Member member = memberService.findByusername(principal.getName());
-        if (member == null) {
-            member = memberService.findByproviderId(principal.getName());
-        }
-        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
-        long sum = 0;
-
-        for (int i = 0; i < payments.size(); i++) {
-            if (payments.get(i).getContent().contains("충전")) {
-                sum += Long.valueOf(payments.get(i).getPaidAmount());
-            } else {
-                sum -= Long.valueOf(payments.get(i).getPaidAmount());
-            }
-        }
+        paymentMember(model, principal);
         model.addAttribute("parameter", 1);
-        model.addAttribute("member", member);
-        model.addAttribute("sum", sum);
         return "member/changeinfor";
     }
 
@@ -293,24 +284,8 @@ public class MemberController {
 
     @GetMapping("/changePw")
     public String changePw(Model model, PasswordChangeForm passwordChangeForm, Principal principal) {
-        Member member = memberService.findByusername(principal.getName());
-        if (member == null) {
-            member = memberService.findByproviderId(principal.getName());
-        }
-        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
-        long sum = 0;
-
-        for (int i = 0; i < payments.size(); i++) {
-            if (payments.get(i).getContent().contains("충전")) {
-                sum += Long.valueOf(payments.get(i).getPaidAmount());
-            } else {
-                sum -= Long.valueOf(payments.get(i).getPaidAmount());
-            }
-        }
-
+        paymentMember(model, principal);
         model.addAttribute("parameter", 2);
-        model.addAttribute("member", member);
-        model.addAttribute("sum", sum);
 
         return "member/changepw";
     }
@@ -348,40 +323,67 @@ public class MemberController {
     }
 
 
-    @GetMapping("/deleteForm")
-    public String deleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model) {
-        Member member = memberService.findByusername(principal.getName());
-        if (member == null) {
-            member = memberService.findByproviderId(principal.getName());
-        }
-        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
-        long sum = 0;
+    @GetMapping("/purchasedetails")
+    public String memberPurchaseDetails(PasswordResetForm passwordResetForm, Principal principal, Model model) {
+        paymentMember(model, principal);
+        model.addAttribute("parameter", 3);
+        return "member/contents_purchase_details/member_purchase_details";
+    }
 
-        for (int i = 0; i < payments.size(); i++) {
-            if (payments.get(i).getContent().contains("충전")) {
-                sum += Long.valueOf(payments.get(i).getPaidAmount());
-            } else {
-                sum -= Long.valueOf(payments.get(i).getPaidAmount());
-            }
-        }
 
-//        model.addAttribute("parameter", 2);
-        model.addAttribute("member", member);
-        model.addAttribute("sum", sum);
-        return "member/delete_form";
+    @GetMapping("/purchasedetails/movie")
+    public String moviepurchasedetails(Principal principal, Model model) {
+
+        paymentMember(model, principal);
+
+        return "member/contents_purchase_details/movie_purchase_details";
+    }
+
+    @GetMapping("/purchasedetails/drama")
+    public String dramapurchasedetails(Principal principal, Model model) {
+        paymentMember(model, principal);
+
+        return "member/contents_purchase_details/drama_purchase_details";
+    }
+
+    @GetMapping("/purchasedetails/book")
+    public String bookpurchasedetails(Principal principal, Model model) {
+
+        paymentMember(model, principal);
+        return "member/contents_purchase_details/book_purchase_details";
+    }
+
+    @GetMapping("/purchasedetails/webtoon")
+    public String webtoonpurchasedetails(Principal principal, Model model) {
+        paymentMember(model, principal);
+        return "member/contents_purchase_details/webtoon_purchase_details";
+    }
+
+
+    @GetMapping("/purchasedetails/total")
+    public String totalContentsPurchaseDetails(Principal principal, Model model){
+        paymentMember(model, principal);
+        return "member/contents_purchase_details/totalcontents_purchase_details";
     }
 
 
 
-   @PostMapping("/delete")
-    public String delete(Principal principal, @Valid PasswordResetForm passwordResetForm,
-                         BindingResult bindingResult, Model model) {
+    @GetMapping("/deleteForm")
+    public String memberDeleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model) {
+        paymentMember(model, principal);
+        return "member/delete_form";
+    }
+
+
+    @PostMapping("/delete")
+    public String memberDelete(Principal principal, @Valid PasswordResetForm passwordResetForm,
+                               BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             return "member/delete_form";
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("parameter", 3);
+        model.addAttribute("parameter", 4);
 
         if (passwordResetForm.getPassword().equals(passwordResetForm.getPasswordConfirm())) {
             Member member = memberService.findByusername(principal.getName());
@@ -406,5 +408,30 @@ public class MemberController {
         bindingResult.rejectValue("passwordConfirm", "passwordInCorrect",
                 "패스워드가 일치하지 않습니다.");
     }
+
+
+    public void paymentMember(Model model, Principal principal){
+        Member member = memberService.findByusername(principal.getName());
+        if (member == null) {
+            member = memberService.findByproviderId(principal.getName());
+        }
+        List<Payment> payments = this.paymentService.findPaymentListByMember(member);
+        long sum = 0;
+        Collections.sort(payments, Comparator.comparing(Payment::getDateTime).reversed());
+
+        for (int i = 0; i < payments.size(); i++) {
+            if (payments.get(i).getContent().contains("충전")) {
+                sum += Long.valueOf(payments.get(i).getPaidAmount());
+            } else {
+                sum -= Long.valueOf(payments.get(i).getPaidAmount());
+            }
+        }
+
+        model.addAttribute("sum", sum);
+        model.addAttribute("PaymentList", payments);
+        model.addAttribute("member", member);
+    }
+
+
 }
 

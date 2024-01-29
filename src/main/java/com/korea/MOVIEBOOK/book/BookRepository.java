@@ -22,7 +22,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
 
     @Query("SELECT b FROM Book b " +
-            "WHERE b.title LIKE %:kw% " +
-            "   OR b.author LIKE %:kw% ")
+            "  where REGEXP_REPLACE(REPLACE(REPLACE( b.author, '(', '<'), ')' ,'>'), '<([^<>]+)>', '') LIKE %:kw% " +
+            "   OR b.title LIKE %:kw% ")
     Page<Book> findAllByBookKeyword(@Param("kw") String kw, Pageable pageable);
 }

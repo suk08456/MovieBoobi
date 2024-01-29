@@ -1,0 +1,33 @@
+
+<div id="board-list">
+    <div>
+        <table class="board-table">
+            <thead>
+            <tr class="text-center">
+                <th style="width:15%">번호</th>
+                <th style="width:25%">제목</th>
+                <th style="width:30%">작성자</th>
+                <th style="width:20%">작성일시</th>
+                <th style="width:20%">조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" th:each="post, loop : ${paging.content}">
+                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+                <td class="text-start">
+                    <a class="Post-List" style="text-decoration: none;"
+                       th:href="@{|/post/detail/${post.id}|}"
+                       th:text="${post.title}"></a>
+                    <span class="text-danger small ms-2" th:if="${#lists.size(post.commentList) > 0}">
+                                    <span class="comment-text" th:text="${#lists.size(post.commentList)}"></span>
+                                    </span>
+                </td>
+                <td><span th:if="${post.customer != null}" th:text="${post.customer.nickname}"></span>
+                </td>
+                <td th:text="${#temporals.format(post.localDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${post.view != null ? post.view : 0}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

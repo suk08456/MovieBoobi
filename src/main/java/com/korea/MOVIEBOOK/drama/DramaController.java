@@ -2,11 +2,12 @@ package com.korea.MOVIEBOOK.drama;
 import com.korea.MOVIEBOOK.ContentsController;
 import com.korea.MOVIEBOOK.ContentsDTO;
 import com.korea.MOVIEBOOK.book.Book;
+import com.korea.MOVIEBOOK.heart.Heart;
+import com.korea.MOVIEBOOK.heart.HeartRepository;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentRepository;
-import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
+import java.util.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ public class DramaController {
     private final ContentsController contentsController;
     private final PaymentRepository paymentRepository;
     private final MemberService memberService;
+    private final HeartRepository heartRepository;
 
     @GetMapping("")
     public String dramaList (Model model) {
@@ -48,13 +50,12 @@ public class DramaController {
         model.addAttribute("dramaListList", dramaListList);
         return "drama/drama_list";
     }
-    @PostMapping("/detail")
-    public String dramaDetail(Model model, Long dramaId, Principal principal) {
+    @GetMapping("/detail")
+    public String dramaDetail(Long dramaId, Model model, Principal principal) {
         Drama drama = dramaService.getDramaById(dramaId);
-
-        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
-        List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
         ContentsDTO contentsDTOS = this.contentsController.setDramaContentsDTO(drama);
+        List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
+        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = dramaService.getReviewByDramaId(dramaId);
         String paid = "false";
 
@@ -64,19 +65,23 @@ public class DramaController {
                 .average()
                 .orElse(0);
 
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
+
         model.addAttribute("category", "drama");
         model.addAttribute("contentsDTOS", contentsDTOS);
-        model.addAttribute("author_actor_ListList", actorListList);
-        model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("author_actor_ListList", actorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
         if(principal != null){
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
-                member = this.memberService.getmember(providerID);
+                member = this.memberService.getMember(providerID);
             }
+
+            Heart heart = this.heartRepository.findByMemberAndDrama(member, drama);
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "drama", String.valueOf(dramaId)));
             if(payment.isPresent()){
@@ -96,22 +101,23 @@ public class DramaController {
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
+            model.addAttribute("heart",heart);
         } else {
             model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
+            model.addAttribute("heart","");
         }
         return "contents/contents_detail";
     }
 
     @GetMapping("/detail/{dramaId}")
-    public String dramaDetail2(Model model,@PathVariable("dramaId") Long dramaId, Principal principal) {
+    public String dramaDetail2(@PathVariable("dramaId") Long dramaId, Model model, Principal principal) {
         Drama drama = dramaService.getDramaById(dramaId);
-
-        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
-        List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
         ContentsDTO contentsDTOS = this.contentsController.setDramaContentsDTO(drama);
+        List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
+        List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = dramaService.getReviewByDramaId(dramaId);
         String paid = "false";
 
@@ -121,17 +127,19 @@ public class DramaController {
                 .average()
                 .orElse(0);
 
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
+
         model.addAttribute("category", "drama");
         model.addAttribute("contentsDTOS", contentsDTOS);
-        model.addAttribute("author_actor_ListList", actorListList);
-        model.addAttribute("avgRating", String.format("%.1f", avgRating));
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("author_actor_ListList", actorListList);
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
 
         if(principal != null){
             String providerID = principal.getName();Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
-                member = this.memberService.getmember(providerID);
+                member = this.memberService.getMember(providerID);
             }
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "drama", String.valueOf(dramaId)));

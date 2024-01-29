@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.member;
 
 import com.korea.MOVIEBOOK.comment.Comment;
+import com.korea.MOVIEBOOK.customerSupport.question.Question;
 import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.review.Review;
@@ -56,4 +57,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Comment> commentList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Question> questionList;
 }

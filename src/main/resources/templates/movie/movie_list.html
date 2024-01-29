@@ -38,7 +38,7 @@
                      style="display:flex; font-size: 18px; align-items: center; height : 100%;"
                      th:each="movieList : ${movieListList}">
                     <form style="display : grid; margin-left:15px;"
-                          th:action="@{/movie/detail}" method="post" th:each="movie : ${movieList}">
+                          th:action="@{/movie/detail}" method="get" th:each="movie : ${movieList}">
                         <button>
                             <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
                                 <div class="rank" th:if="${indexNum.index} == 0" th:text="${movie.dailyRank}">

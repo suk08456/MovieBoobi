@@ -28,3 +28,11 @@
     font-size: large;
     padding: 6px
 }
+
+.contentList {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 3rem;
+    min-width: 800px;
+}

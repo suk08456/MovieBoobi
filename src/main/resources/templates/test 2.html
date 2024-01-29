@@ -1,18 +1,40 @@
-<a href="javascript:void(0);" th:data-uri="@{|/review/detail/{category}/{contentsID}/delete/${comment.id}|}"
-   class="delete" sec:authorize="isAuthenticated()"
-   th:if="${comment.customer != null and #authentication.getPrincipal().getUsername() == comment.customer.username}"
-   th:text="삭제"></a>
+<div>
+    <div style="display: flex; justify-content: center; width: 100%; margin-top: 50px">
+        <table style="width: 80%;">
+            <thead>
+            <tr style="background: cyan; border-bottom: blue solid 2px;">
+                <th class="noticeBoard" style="width: 10%">번호</th>
+                <th class="noticeBoard" style="width: 40%">제목</th>
+                <th class="noticeBoard">작성일</th>
+                <th class="noticeBoard">조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <div style="margin-left: 180px; height: 100%;">
+                <div style="display: flex; flex-wrap: wrap; height: 100%;">
+                    <tr>
+                        <form th:each="payment : ${PaymentList}" th:action="@{/movie/detail}" method="post"
+                              style="width : 100%;">
+                            <button th:if="${payment.movie}">
+                                <div>
+                                    <td><span th:text="${payment.dateTime}"></span></td>
+                                    <td><span th:text="${payment.movie.title}"></span></td>
+                                    <td> <img th:src="${payment.movie.imageUrl}"></td>
+                                </div>
+                                <input th:value="${payment.movie.movieCode}" name="movieCD" type="hidden">
+                            </button>
+                        </form>
+                    </tr>
+                </div>
+            </div>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-
-
-<script layout:fragment="script" type='text/javascript'>
-    const delete_elements = document.getElementsByClassName("delete");
-    Array.from(delete_elements).forEach(function (element) {
-        element.addEventListener('click', function () {
-            if (confirm("정말로 삭제하시겠습니까?")) {
-                location.href = this.dataset.uri;
-            }
-            ;
-        });
-    });
-</script>
+<td class="text-start">
+    <a class="Post-List" style="text-decoration: none;"
+       th:each="payment : ${PaymentList}"
+       th:href="@{/movie/detail}"
+       th:text="${payment.movie.title}"></a>>
+</td>

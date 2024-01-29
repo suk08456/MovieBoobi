@@ -38,7 +38,7 @@
                          style="display:flex; font-size: 18px; align-items: center; height : 100%;"
                          th:each="webtoonList : ${webtoonListList}">
                         <form style="display : grid; margin-left:15px;"
-                              th:action="@{/webtoon/detail}" method="post" th:each="webtoon : ${webtoonList}">
+                              th:action="@{/webtoon/detail}" method="get" th:each="webtoon : ${webtoonList}">
                             <button>
                                 <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex;
                         justify-content: center; align-items: center;">

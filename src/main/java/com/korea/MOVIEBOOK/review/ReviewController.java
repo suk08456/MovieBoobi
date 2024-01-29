@@ -4,28 +4,22 @@ import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.book.BookRepository;
 import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.drama.DramaRepository;
-import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.heart.HeartService;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieRepository;
 import com.korea.MOVIEBOOK.payment.Payment;
+import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java.security.Principal;
 
 @Controller
@@ -51,7 +45,7 @@ public class ReviewController {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         this.reviewService.saveDramaReview(dramaId, comment, rating, member);
@@ -64,7 +58,7 @@ public class ReviewController {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         this.reviewService.saveMovieReview(movieCD, comment, rating, member);
@@ -77,7 +71,7 @@ public class ReviewController {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         reviewService.saveBookReview(isbn, comment, rating, member);
@@ -90,7 +84,7 @@ public class ReviewController {
         String providerID = principal.getName();
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         this.reviewService.saveWebtoonReview(webtoonId, comment, rating, member);
@@ -124,7 +118,7 @@ public class ReviewController {
         }
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         if (Objects.equals(category, "movie")) {
@@ -145,7 +139,6 @@ public class ReviewController {
             paging = this.reviewService.getPaymentsByWebtoon(webtoon, page);
         }
 
-
         model.addAttribute("memberInfo", member);
         model.addAttribute("category", category);
         model.addAttribute("contentsID", contentsID);
@@ -157,9 +150,9 @@ public class ReviewController {
     public String reviewList(@PathVariable("category") String category, @PathVariable("contentsID") String contentsID, @PathVariable("reviewId") String reviewId, @PathVariable("heartClick") String heartClick, @PathVariable("gubun") String gubun, Model model, Principal principal) {
 
         if (Objects.equals(heartClick, "true")) {
-            this.heartService.plusHeart(principal, category, contentsID, reviewId);
+            this.heartService.plusReviewHeart(principal, category, contentsID, reviewId);
         } else {
-            this.heartService.minusHeart(principal, reviewId);
+            this.heartService.minusReviewHeart(principal, reviewId);
         }
 
         if(Objects.equals(gubun, "list")){
@@ -176,7 +169,7 @@ public class ReviewController {
         }
         Member member = this.memberService.findByproviderId(providerID);
         if (member == null) {
-            member = this.memberService.getmember(providerID);
+            member = this.memberService.getMember(providerID);
         }
 
         if (Objects.equals(category, "movie")) {
@@ -188,8 +181,16 @@ public class ReviewController {
         } else if (Objects.equals(category, "drama")) {
             Drama drama = this.dramaRepository.getReferenceById(Long.valueOf(contentsID));
             model.addAttribute("info",drama);
-        } else {
+        } else  if (Objects.equals(category, "webtoon")) {
             Webtoon webtoon = this.webtoonRepository.findByWebtoonId(Long.valueOf(contentsID));
+            StringBuilder updateDaysBuilder = new StringBuilder();
+
+            for (WebtoonDayList updateDay : webtoon.getWebtoonDayLists()) {
+                updateDaysBuilder.append(updateDay.getWebtoonDay().getUpdateDays());
+            }
+
+            String updateDays = updateDaysBuilder.toString();
+            model.addAttribute("updateDays",updateDays);
             model.addAttribute("info",webtoon);
         }
 

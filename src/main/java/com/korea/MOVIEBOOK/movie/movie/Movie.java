@@ -1,7 +1,9 @@
 package com.korea.MOVIEBOOK.movie.movie;
 
+import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.movie.daily.MovieDaily;
 import com.korea.MOVIEBOOK.movie.weekly.MovieWeekly;
+import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.review.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -52,7 +54,12 @@ public class Movie {
     @OneToOne
     private MovieWeekly movieweekly;
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Review> reviewList;
 
+    @OneToOne
+    private Payment payment;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    private List<Heart> heartList;
 }

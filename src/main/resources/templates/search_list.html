@@ -142,7 +142,7 @@
                 <p class="webtoon_console" style="cursor: pointer; margin-top: 22px;">더보기</p>
             </div>
             <div style="display: flex; justify-content: center;">
-                <div style="width : 60%; max-height: 820px;">
+                <div style="width : 60%;">
                     <div class="result-container"
                          style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 15px; width : 100%; height: 100%;">
                         <form class="more_webtoonlist" th:action="@{/webtoon/detail}" method="post"
@@ -169,6 +169,28 @@
                             </button>
                         </form>
                     </div>
+                </div>
+                <div class="join" th:if="${pagingWebtoon.totalPages > 0}"
+                     style="display : flex; justify-content : space-around; margin-top : 18px;">
+                    <ul class="pagination justify-content-center" style="display : flex;">
+                        <li class="page-item" th:classappend="${!pagingWebtoon.hasPrevious} ? 'disabled'">
+                            <a class="join-item btn"
+                               th:href="@{|?page=${pagingWebtoon.number-1}|}">
+                                <span>«</span>
+                            </a>
+                        </li>
+                        <li th:each="page: ${#numbers.sequence(pagingWebtoon.number, pagingWebtoon.number)}"
+                            th:if="${page >= pagingWebtoon.number and page <= pagingWebtoon.number}"
+                            th:classappend="${page == pagingWebtoon.number} ? 'active'"
+                            class="page-item">
+                            <a th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${!pagingWebtoon.hasNext} ? 'disabled'">
+                            <a class="join-item btn" th:href="@{|?page=${pagingWebtoon.number+1}|}">
+                                <span>»</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

@@ -1,0 +1,26 @@
+<html layout:decorate="~{/member/contents_purchase_details/member_purchase_details}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="purchasedetails" style="width: 85%; height: 100%" class="profileContent" id="purchasedetails">
+
+
+    <div>
+        <span>웹툰 구매 내역</span>
+        <form th:each="payment : ${PaymentList}" th:action="@{/webtoon/detail}" method="post">
+            <button>
+                <div th:if="${payment.webtoon}">
+                    <span th:text="${payment.dateTime}"></span>
+                    <span th:text="${payment.webtoon.title}"></span>
+                    <img th:src="${payment.webtoon.imageUrl}">
+                    <input th:value="${payment.webtoon.webtoonId}" name="webtoonId" type="hidden">
+                </div>
+            </button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

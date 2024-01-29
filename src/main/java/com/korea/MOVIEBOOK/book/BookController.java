@@ -2,19 +2,18 @@ package com.korea.MOVIEBOOK.book;
 
 import com.korea.MOVIEBOOK.ContentsController;
 import com.korea.MOVIEBOOK.ContentsDTO;
+import com.korea.MOVIEBOOK.heart.Heart;
+import com.korea.MOVIEBOOK.heart.HeartRepository;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentRepository;
-import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.Review;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.AbstractDocument;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ public class BookController {
     private final ContentsController contentsController;
     private final MemberService memberService;
     private final PaymentRepository paymentRepository;
-
+    private final HeartRepository heartRepository;
     @GetMapping("")
     public String mainPage(Model model) {
         List<Book> bestSellerList = bookService.getBestSellerList();
@@ -66,7 +65,7 @@ public class BookController {
         allList.add(newSpecialBookListList);
         allList.add(recommendListList);
         model.addAttribute("allList", allList);
-        return "book/bookMainPage";
+        return "book/book_list";
     }
 
     @GetMapping("/detail")
@@ -85,6 +84,9 @@ public class BookController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
+
+
         model.addAttribute("category", "book");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
@@ -97,8 +99,9 @@ public class BookController {
             providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
-                member = this.memberService.getmember(providerID);
+                member = this.memberService.getMember(providerID);
             }
+            Heart heart = this.heartRepository.findByMemberAndBook(member, book);
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "book", isbn));
             if(payment.isPresent()){
@@ -119,11 +122,13 @@ public class BookController {
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
+            model.addAttribute("heart",heart);
         } else {
             model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
+            model.addAttribute("heart","");
         }
 
         return "contents/contents_detail";
@@ -154,6 +159,9 @@ public class BookController {
                 .average() // 평점의 평균값 계산
                 .orElse(0); // 리뷰가 없을 경우 0.0출력
 
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
+
+
         model.addAttribute("category", "book");
         model.addAttribute("contentsDTOS", contentsDTOS);
         model.addAttribute("reviews", reviews);
@@ -165,8 +173,9 @@ public class BookController {
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
-                member = this.memberService.getmember(providerID);
+                member = this.memberService.getMember(providerID);
             }
+            Heart heart = this.heartRepository.findByMemberAndBook(member, book);
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "book", isbn));
             if(payment.isPresent()){
@@ -186,11 +195,13 @@ public class BookController {
             model.addAttribute("login","true");
             model.addAttribute("member",member);
             model.addAttribute("sum",sum);
+            model.addAttribute("heart",heart);
         } else {
             model.addAttribute("paid",paid);
             model.addAttribute("login","false");
             model.addAttribute("member","");
             model.addAttribute("sum","");
+            model.addAttribute("heart","");
         }
 
         return "contents/contents_detail";
