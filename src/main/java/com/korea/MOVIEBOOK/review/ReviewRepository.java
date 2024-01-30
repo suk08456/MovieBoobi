@@ -9,6 +9,7 @@ import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -22,5 +23,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByBook(Book book, Pageable pageable);
     Page<Review> findByDrama(Drama drama, Pageable pageable);
     Page<Review> findByWebtoon(Webtoon webtoon, Pageable pageable);
+    @Query("SELECT r.movie.id, COUNT(r.movie.id) AS reviewCount " +
+            "FROM Review r " +
+            "INNER JOIN r.movie m " +
+            "WHERE r.Category = 'movie' " +
+            "GROUP BY r.movie.id " +
+            "ORDER BY reviewCount DESC, m.title ASC")
+    List<Object[]> findMovieRankings();
 
 }

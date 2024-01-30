@@ -25,6 +25,10 @@ public class main {
     private final MovieService movieService;
     private final WebtoonService webtoonService;
 
+    @GetMapping("/test")
+    public String aaaa() {
+        return "test";
+    }
     @GetMapping("/search")
     public String searchList(Model model,
                              @RequestParam(value = "page", defaultValue = "0") int page,

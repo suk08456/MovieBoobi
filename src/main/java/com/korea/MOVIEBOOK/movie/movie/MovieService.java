@@ -65,6 +65,10 @@ public class MovieService {
         this.movieRepository.save(movie);
     }
 
+    public Movie findMovieById(Long id){
+        return this.movieRepository.findById(id).get();
+    }
+
     public Movie findMovie(String title){
         return this.movieRepository.findByTitle(title);
     }
@@ -168,28 +172,43 @@ public class MovieService {
 
         String director = "";
         if(!movie.getDirector().isEmpty()) {
-            director = movie.getDirector() + "(감독)";
+            director = movie.getDirector();
         }
         String actor = movie.getActor();
         String[] actors = new String[]{};
         if(!actor.isEmpty()) {
             actors = actor.split(",");
         }
-        List<String> actorList = new ArrayList<>(Arrays.asList(actors));
+
+        List<String> actorName = new ArrayList<>();
+        List<String> actorRole = new ArrayList<>();
+
+        for (String actorList : actors) {
+            int idx = actorList.indexOf('(');
+            if (idx != -1) {
+                actorName.add(actorList.substring(0, idx).trim());
+                actorRole.add(actorList.substring(idx).trim());
+            }
+        }
+
+        List<String> actorList = new ArrayList<>();
+        for(int i = 0; i < actorName.size(); i++){
+            actorList.add(actorName.get(i));
+            actorList.add(actorRole.get(i));
+        }
 
         actorList.add(director);
+        actorList.add("(감독)");
 
-        List<List<String>>actorListList = new ArrayList<>();
-
-        Integer chunkSize = 8;
-        Integer totalElements = actorList.size();
+        List<List<String>> actorListList = new ArrayList<>();
+        int chunkSize = 16;
+        int totalElements = actorList.size();
 
         for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
             int start = i * chunkSize;
             int end = Math.min((i + 1) * chunkSize, totalElements);
             actorListList.add(actorList.subList(start, end));
         }
-
         return actorListList;
     }
 
@@ -200,5 +219,18 @@ public class MovieService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 
         return movieRepository.findAllByMovieKeyword(kw, pageable);
+    }
+
+    public List<Movie> getRandomMovies() {
+        List<Movie> allMovies = this.movieRepository.findAll();
+
+        List<Movie> randomMovies = getRandomElements(allMovies, 10);
+
+        return randomMovies;
+    }
+
+    private <T> List<T> getRandomElements(List<T> list, int count) {
+        Collections.shuffle(list);
+        return list.subList(0, Math.min(count, list.size()));
     }
 }

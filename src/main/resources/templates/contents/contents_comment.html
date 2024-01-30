@@ -43,14 +43,23 @@
 
             var login_check = [[${login}]] == true ? true : false;
 
+
+            function errMsg(title){
+                Swal.fire({
+                            icon: 'warning',
+                            title: title,
+                        });
+            }
+
             function logincheck() {
                 if (login_check == false) {
-                    Swal.fire({
-                            icon: 'warning',
-                            title: '로그인 후 이용해주세요.',
-                        });
+                    errMsg('로그인 후 이용해주세요.');
                     return false;
                 } else {
+                    if(document.getElementById("Rating").innerText == ""){
+                        errMsg('별점 선택 후 이용해주세요.');
+                        return false;
+                    }
                     modal('comment_modal');
                     calculateRemainingCoins();
                     $('textarea.body').focus();
