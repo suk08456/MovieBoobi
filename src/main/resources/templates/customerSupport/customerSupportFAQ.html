@@ -1,5 +1,5 @@
 <html lang="ko" layout:decorate="~{/customerSupport/customerSupportLayout}">
-<div layout:fragment="CScontent" class="menuDetail" id="FAQ" style="padding: 40px 40px 0px 50px; min-width: 100vh">
+<div layout:fragment="CScontent" class="menuDetail" id="FAQ">
     <div style="width: 100%; display: flex; flex-direction: row-reverse;">
         <div style="display: flex; height: 2.5rem; width: 40%; margin-right: 10%;">
             <input type="text" placeholder="제목, 내용 검색" class="input input-bordered w-full"
@@ -12,7 +12,7 @@
     <div class="contentList">
         <table style="width: 80%;">
             <thead>
-            <tr style="background: cyan; border-bottom: blue solid 2px;">
+            <tr class="textList">
                 <th class="noticeBoard" style="width: 10%">번호</th>
                 <th class="noticeBoard" style="width: 40%">제목</th>
                 <th class="noticeBoard">작성일</th>
@@ -20,14 +20,44 @@
             </tr>
             </thead>
             <tbody>
-            <tr style="border-bottom: gray solid 1px;">
-                <th class="noticeBoard" style="width: 10%">번호</th>
-                <th class="noticeBoard" style="width: 40%">제목</th>
-                <th class="noticeBoard">작성일</th>
+            <tr th:each="FAQ : ${paging}">
+                <th class="noticeBoard" style="width: 10%" th:text="${FAQ.id}"></th>
+                <th class="noticeBoard" style="width: 40%">
+                    <form th:action="@{/customerSupport/question/detail}" method="get">
+                        <input class="questionList" type="submit" th:value="${FAQ.title}">
+                        <input type="hidden" name="questionId" th:value="${FAQ.id}">
+                    </form>
+                </th>
+                <th class="noticeBoard" th:text="${FAQ.writeDate}"></th>
                 <th class="noticeBoard">조회수</th>
             </tr>
             </tbody>
         </table>
+    </div>
+    <div class="join" th:if="${paging.totalPages > 0}" style="display : flex; justify-content : space-around; margin-top : 18px;">
+        <ul class="pagination justify-content-center" style="display : flex;">
+            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'btn-disabled'">
+                <a class="join-item btn" th:if="${paging.hasPrevious}" th:href="@{|?page=${paging.number-1}|}">
+                    <span>«</span>
+                </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(paging.number, paging.number)}"
+                th:if="${page >= paging.number and page <= paging.number}"
+                th:classappend="${page == paging.number} ? 'active'"
+                class="page-item btn-disabled">
+                <span th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></span>
+            </li>
+            <li class="page-item" th:classappend="${!paging.hasNext} ? 'btn-disabled'">
+                <a class="join-item btn" th:if="${paging.hasNext}" th:href="@{|?page=${paging.number+1}|}">
+                    <span>»</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <a th:href="@{/customerSupport/question/FAQForm}">
+            <button class="btn btn-outline">자주 묻는 질문 작성</button>
+        </a>
     </div>
 </div>
 </html>
