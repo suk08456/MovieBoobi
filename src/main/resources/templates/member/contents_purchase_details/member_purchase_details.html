@@ -4,45 +4,67 @@
     <title>Title</title>
 </head>
 <body>
-<div layout:fragment="profileContent" style="width: 85%; height: 100%">
-    <span style="font-weight: bold; font-size: 25px;">구매 내역</span>
-
+<div layout:fragment="profileContent" style="width: 85%; height: 100%; margin-top: 80px">
     <div>
         <div>
             <div>
-                <li><a class="profileContents" type="moviepurchasedetails" th:href="@{/member/purchasedetails/total}">구매 내역</a></li>
-            </div>
+                <div>
+                    <div>
+                        <li><a class="profileContents" type="purchasedetails"
+                               th:href="@{/member/purchasedetails/total}">구매
+                            내역</a></li>
+                    </div>
 
-            <div>
-                <li><a class="profileContents" type="moviepurchasedetails" th:href="@{/member/purchasedetails/movie}">영화
-                    구매
-                    내역</a></li>
-            </div>
+                    <div>
+                        <li><a class="profileContents" type="moviepurchasedetails"
+                               th:href="@{/member/purchasedetails/movie}">영화
+                            구매
+                            내역</a></li>
+                    </div>
 
-            <div>
-                <li><a class="profileContents" type="moviepurchasedetails" th:href="@{/member/purchasedetails/drama}">드라마
-                    구매
-                    내역</a>
-                </li>
-            </div>
+                    <div>
+                        <li><a class="profileContents" type="dramapurchasedetails"
+                               th:href="@{/member/purchasedetails/drama}">드라마
+                            구매
+                            내역</a>
+                        </li>
+                    </div>
 
-            <div>
-                <li><a class="profileContents" type="moviepurchasedetails" th:href="@{/member/purchasedetails/book}">책
-                    구매
-                    내역</a>
-                </li>
-            </div>
+                    <div>
+                        <li><a class="profileContents" type="bookpurchasedetails"
+                               th:href="@{/member/purchasedetails/book}">책
+                            구매
+                            내역</a>
+                        </li>
+                    </div>
 
+                    <div>
+                        <li><a class="profileContents" type="webtoonpurchasedetails"
+                               th:href="@{/member/purchasedetails/webtoon}">웹툰
+                            구매
+                            내역</a>
+                        </li>
+                    </div>
+                </div>
+            </div>
             <div>
-                <li><a class="profileContents" type="moviepurchasedetails" th:href="@{/member/purchasedetails/webtoon}">웹툰
-                    구매
-                    내역</a>
-                </li>
+                <th:block layout:fragment="purchasedetails" style="overflow : auto;"></th:block>
             </div>
         </div>
     </div>
-    <th:block layout:fragment="purchasedetails" style="overflow : auto;"></th:block>
 
+    <script>
+        var target = document.querySelector('.menuDetail');
+        var targetId = target.id;
+
+        var menuTabs = document.querySelectorAll('.profileContents');
+
+        menuTabs.forEach(function (element) {
+            if (element.type === targetId) {
+                element.style.backgroundColor = "green";
+            }
+        });
+    </script>
 
 </div>
 </body>

@@ -38,14 +38,18 @@
                             </div>
                             <div class="short-info" style="display : flex; flex-direction: column; align-items: flex-start;
                         margin-left : 5px; padding-top: 16px;">
-                                <span class="mv-title"
-                                      th:text="${#strings.length(book.getTitle) > 16 ? #strings.substring(book.getTitle, 0, 16) + '..' : book.getTitle}"
-                                      style="font-size : 17px;"></span>
-                                <div class="mv-text" th:text="${book.getTitle}"></div>
+                                <form class="title-co">
+                                    <input class="title" name="title"
+                                           th:value="${#strings.length(book.title) > 17 ? #strings.substring(book.title, 0, 17) + '..' : book.title}"
+                                           style="font-size : 17px;" readonly>
+                                    <div class="mv-text" th:text="${book.title}"></div>
+                                </form>
                                 <div class="short-kind">
                                     <span style="color : #868e96; font-size : 15px;">출간일</span>
                                     <span th:text="${#temporals.format(book.Pubdate, 'yyyy.MM.dd')}" style="color: #868e96; font-size: 15px;"></span>
                                 </div>
+                                <div>asd</div>
+                                <div>vfgycy</div>
                             </div>
                             <input type="hidden" name="isbn" th:value="${book.getIsbn}">
                         </button>

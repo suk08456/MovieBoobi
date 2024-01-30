@@ -6,8 +6,8 @@
     <!-- 여기에 CSS 링크 또는 스타일을 추가할 수 있습니다. -->
 </head>
 <body layout:fragment="content">
-<div>
-    <div style="margin-top:10%; border:2px solid black; padding: 50px; border-radius: 10px">
+<div style="margin-top:10%; display: flex; justify-content: center;">
+    <div style="border:2px solid black; padding: 50px; border-radius: 10px;">
         <form th:action="@{/member/login}" method="post">
             <!-- 오류 메시지가 있다면 아래의 div에서 보여줍니다. -->
             <div th:if="${param.error}" class="alert alert-danger">

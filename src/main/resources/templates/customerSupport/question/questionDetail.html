@@ -2,7 +2,7 @@
 <div layout:fragment="CScontent" class="menuDetail" id="question" style="padding: 40px 40px 0px 50px; min-width: 100vh">
     <div style="height: 100%;">
         <h1 th:text="${question.title}"></h1>
-        <h2 th:text="${question.content}"></h2>
+        <h2 th:utext="${@commonUtil.markdown(question.content)}"></h2>
     </div>
 </div>
 </html>
