@@ -2,41 +2,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/member/purchase_detail.css}">
 </head>
 <body>
-<div layout:fragment="purchasedetails" style="width: 85%; height: 84%; margin-left: 50px;" class="profileContent" id="purchasedetails" >
+<div layout:fragment="purchasedetails" style="width: 85%; height: 84%; margin-left: 50px;" class="menuDetail"
+     id="moviepurchasedetails">
+    <table style="margin-top: -120px;">
+        <caption style="font-weight: bold; font-size: 23px;">구매 내역</caption>
+        <thead>
+        <tr style="background: black;">
+            <th></th>
+            <th>구매 일자</th>
+            <th>제목</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <form  th:each="payment :${PaymentList}" th:action="@{/movie/detail}" method="get">
+            <tbody>
+            <tr th:if="${payment.movie}">
+                <td><img th:src="${payment.movie.imageUrl}" style="width: 90px; height: 125px;"></td>
+                <td><span th:text="${payment.dateTime}"></span></td>
+                <td><span th:text="${#strings.length(payment.movie.getTitle) > 25 ? #strings.substring(payment.movie.getTitle, 0, 25) + '..' : payment.movie.getTitle}"
+                ></span></td>
+                <td>
+                <td>
+                    <button class="view"><input th:value="${payment.movie.movieCode}" name="movieCD" type="hidden">상세 정보
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </form>
+        <tfoot>
+        <td colspan="5" class="tablefoot"></td>
+        </tfoot>
+    </table>
 
-
-    <div>
-        <div>
-            <div style="display: flex; justify-content: center; width: 100%; margin-top: 50px">
-                <table style="width: 80%;">
-                    <thead>
-                    <tr style="background: green; border-bottom: black solid 2px;">
-                        <th class="noticeBoard" style="width: 17%">구매 일자</th>
-                        <th class="noticeBoard" style="width: 40%">제목</th>
-                        <th class="noticeBoard" style="width: 30%;">작성일</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-            <div style="margin-left: 180px; height: 100%;">
-                <div style="display: flex; flex-wrap: wrap; height: 100%;width : 100%;">
-                    <form th:each="payment , loop: ${PaymentList}" th:action="@{/movie/detail}" method="post"
-                          style="width : 100%;display: flex; ">
-                        <button th:if="${payment.movie}" style="display: flex; width: 88%; justify-content: space-between; border-bottom: solid 2px;
-font-size: 18px; font-weight: bold;">
-                            <span th:text="${loop.count}"></span>
-                            <span th:text="${payment.dateTime}" style=" margin-top: 50px;"></span>
-                            <span th:text="${payment.movie.title}" style="margin-left: -150px; margin-top: 50px;"></span>
-                            <img th:src="${payment.movie.imageUrl}" style="height: 150px; margin-right: 125px; padding: 10px;">
-                            <input th:value="${payment.movie.movieCode}" name="movieCD" type="hidden">
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>
 </body>

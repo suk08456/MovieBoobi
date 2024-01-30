@@ -2,25 +2,86 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/member/purchase_detail.css}">
 </head>
 <body>
-<div layout:fragment="purchasedetails" style="width: 85%; height: 100%" class="profileContent" id="purchasedetails">
+<div layout:fragment="purchasedetails" style="width: 85%; height: 100%; margin-left: 50px;" class="menuDetail" id="webtoonpurchasedetails">
 
 
-    <div>
-        <span>웹툰 구매 내역</span>
-        <form th:each="payment : ${PaymentList}" th:action="@{/webtoon/detail}" method="post">
-            <button>
-                <div th:if="${payment.webtoon}">
-                    <span th:text="${payment.dateTime}"></span>
-                    <span th:text="${payment.webtoon.title}"></span>
-                    <img th:src="${payment.webtoon.imageUrl}">
-                    <input th:value="${payment.webtoon.webtoonId}" name="webtoonId" type="hidden">
-                </div>
-            </button>
+    <table style="margin-top: -120px;">
+        <caption style="font-weight: bold; font-size: 23px;">구매 내역</caption>
+        <thead>
+        <tr style="background: black;">
+            <th></th>
+            <th>구매 일자</th>
+            <th>제목</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <form th:each="payment : ${PaymentList}" th:action="@{/webtoon/detail}" method="get">
+            <tbody>
+            <tr th:if="${payment.webtoon}">
+                <td> <img th:src="${payment.webtoon.imageUrl}" style="width: 90px; height: 125px;"></td>
+                <td><span th:text="${payment.dateTime}"></span></td>
+                <td><span th:text="${#strings.length(payment.webtoon.getTitle) > 25 ? #strings.substring(payment.webtoon.getTitle, 0, 25) + '..' : payment.webtoon.getTitle}"
+                ></span></td>
+                <td>
+
+                <td>
+                    <button class="view"><input th:value="${payment.webtoon.webtoonId}" name="webtoonId" type="hidden">상세 정보
+                    </button>
+                </td>
+            </tr>
+            </tbody>
         </form>
-    </div>
+        <tfoot>
+        <td colspan="5" class="tablefoot"></td>
+        </tfoot>
+    </table>
+    <!-- 페이징처리 시작 -->
+    <div th:if="${!paging.isEmpty()}" class="paging">
+        <ul class="pagination justify-content-center">
 
+            <!-- 추가: 맨 처음으로 가는 버튼 -->
+            <li class="page-item" th:classappend="${paging.number > 0} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{|?page=0|}">
+                    <span>처음</span>
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${!paging?.hasPrevious} ? 'disabled' : ''">
+                <a class="page-link" th:href="@{|?page=${(paging?.number ?: 0) - 1}|}">
+                    <span>이전</span>
+                </a>
+            </li>
+
+
+            <!-- 페이지 번호 링크 -->
+            <li th:each="i  : ${#numbers.sequence(paging.number - (paging.number % 10), (paging.number + (9 - (paging.number % 10))) < paging.totalPages ? (paging.number + (9 - (paging.number % 10))) : paging.totalPages - 1)}"
+                class="page-item">
+                <a th:text="${i+1}" class="page-link" th:href="@{|?page=${i}|}"
+                   th:classappend="${i == paging.number} ? 'active'"></a>
+            </li>
+
+
+            <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+                <a class="page-link" th:href="@{|?page=${paging.number+1}|}">
+                    <span>다음</span>
+                </a>
+            </li>
+
+
+            <!-- 추가: 맨 끝으로 가는 버튼 -->
+            <li class="page-item"
+                th:classappend="${paging.number < paging.totalPages - 1} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{|?page=${paging.totalPages - 1}|}">
+                    <span>마지막</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- 페이징처리 끝 -->
 </div>
 </body>
 </html>
