@@ -2,23 +2,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/member/purchase_detail.css}">
 </head>
 <body>
-<div layout:fragment="purchasedetails" style="width: 85%; height: 100%" class="profileContent" id="purchasedetails">
+<div layout:fragment="purchasedetails" style="width: 85%; height: 100%;  margin-left: 50px;" class="menuDetail" id="dramapurchasedetails">
 
-    <form>
-        <span>드라마 구매 내역</span>
-        <form th:each="payment : ${PaymentList}" th:action="@{/drama/detail}" method="post">
-            <button>
-                <div th:if="${payment.drama}">
-                    <span th:text="${payment.dateTime}"></span>
-                    <span th:text="${payment.drama.title}"></span>
-                    <img th:src="${'/dramaImage' + payment.drama.imageUrl}">
-                    <input th:value="${payment.drama.id}" name="dramaId" type="hidden">
-                </div>
-            </button>
+    <table style="margin-top: -120px;">
+        <caption style="font-weight: bold; font-size: 23px;">구매 내역</caption>
+        <thead>
+        <tr style="background: black;">
+            <th></th>
+            <th>구매 일자</th>
+            <th>제목</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <form th:each="payment : ${PaymentList}" th:action="@{/drama/detail}" method="get">
+            <tbody>
+            <tr th:if="${payment.drama}">
+                <td> <img th:src="${'/dramaImage' + payment.drama.imageUrl}" style="width: 90px; height: 125px;"></td>
+                <td><span th:text="${payment.dateTime}"></span></td>
+                <td><span th:text="${#strings.length(payment.drama.getTitle) > 25 ? #strings.substring(payment.drama.getTitle, 0, 25) + '..' : payment.drama.getTitle}"
+                ></span></td>
+                <td>
+                <td>
+                    <button class="view"><input th:value="${payment.drama.id}" name="dramaId" type="hidden">상세 정보
+                    </button>
+                </td>
+            </tr>
+            </tbody>
         </form>
-
+        <tfoot>
+        <td colspan="5" class="tablefoot"></td>
+        </tfoot>
+    </table>
 </div>
 </body>
 </html>

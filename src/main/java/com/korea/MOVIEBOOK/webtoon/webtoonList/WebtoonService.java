@@ -1,4 +1,6 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
+import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.webtoon.days.Day;
 import com.korea.MOVIEBOOK.webtoon.days.DayService;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
@@ -141,11 +143,18 @@ public class WebtoonService {
     public Page<Webtoon> getWebtoonList(int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("title"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, 8, Sort.by(sorts));
 
         return webtoonRepository.findAllByWebtoonKeyword(kw, pageable);
     }
 
+
+//    public Page<Webtoon> getWebtoonsPurchase(Member member, int page) {
+//        List<Sort.Order> sorts = new ArrayList<>();
+//        sorts.add(Sort.Order.desc("dateTime"));
+//        Pageable pageable = PageRequest.of(page, 8,Sort.by(sorts));
+//        return this.webtoonRepository.webtoonPurchase(member, pageable);
+//    }
 
 }
 
