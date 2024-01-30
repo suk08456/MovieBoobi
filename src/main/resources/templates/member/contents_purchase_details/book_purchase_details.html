@@ -2,22 +2,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/member/purchase_detail.css}">
 </head>
 <body>
-<div layout:fragment="purchasedetails" style="width: 85%; height: 100%" class="profileContent" id="purchasedetails">
+<div layout:fragment="purchasedetails" style="width: 85%; height: 100%; margin-left: 50px;" class="menuDetail" id="bookpurchasedetails">
 
-    <div>
-        <span>책 구매 내역</span>
-        <form th:each="payment : ${PaymentList}" th:action="@{/book/detail}"method="get">
-            <button>
-                <div th:if="${payment.book}">
-                    <span th:text="${payment.book.title}"></span>
-                    <img th:src="${payment.book.imageUrl}">
-                    <input th:value="${payment.book.isbn}" name="isbn" type="hidden">
-                </div>
-            </button>
+    <table style="margin-top: -120px;">
+        <caption style="font-weight: bold; font-size: 23px;">구매 내역</caption>
+        <thead>
+        <tr style="background: black;">
+            <th></th>
+            <th>구매 일자</th>
+            <th>제목</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <form th:each="payment : ${PaymentList}" th:action="@{/book/detail}" method="get">
+            <tbody>
+            <tr th:if="${payment.book}">
+                <td> <img th:src="${payment.book.imageUrl}" style="width: 90px; height: 125px;"></td>
+                <td><span th:text="${payment.dateTime}"></span></td>
+                <td><span th:text="${#strings.length(payment.book.getTitle) > 25 ? #strings.substring(payment.book.getTitle, 0, 25) + '..' : payment.book.getTitle}"
+                ></span></td>
+                <td>
+                    <button class="view"><input th:value="${payment.book.isbn}" name="isbn" type="hidden">상세 정보
+                    </button>
+                </td>
+            </tr>
+            </tbody>
         </form>
-    </div>
+        <tfoot>
+        <td colspan="5" class="tablefoot"></td>
+        </tfoot>
+    </table>
 
 </div>
 </body>
