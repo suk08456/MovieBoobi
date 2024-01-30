@@ -35,23 +35,21 @@
                         </tr>
                     </table>
                 </div>
-                <div class="join" th:if="${paging.totalPages > 0}"
-                     style="display : flex; justify-content : space-around; margin-top : 18px;">
+                <div class="join" th:if="${paging.totalPages > 0}" style="display : flex; justify-content : space-around; margin-top : 18px;">
                     <ul class="pagination justify-content-center" style="display : flex;">
-                        <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-                            <a class="join-item btn"
-                               th:href="@{|?page=${paging.number-1}|}">
+                        <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'btn-disabled'">
+                            <a class="join-item btn" th:if="${paging.hasPrevious}" th:href="@{|?page=${paging.number-1}|}">
                                 <span>«</span>
                             </a>
                         </li>
                         <li th:each="page: ${#numbers.sequence(paging.number, paging.number)}"
                             th:if="${page >= paging.number and page <= paging.number}"
                             th:classappend="${page == paging.number} ? 'active'"
-                            class="page-item">
-                            <a th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></a>
+                            class="page-item btn-disabled">
+                            <span th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></span>
                         </li>
-                        <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-                            <a class="join-item btn" th:href="@{|?page=${paging.number+1}|}">
+                        <li class="page-item" th:classappend="${!paging.hasNext} ? 'btn-disabled'">
+                            <a class="join-item btn" th:if="${paging.hasNext}" th:href="@{|?page=${paging.number+1}|}">
                                 <span>»</span>
                             </a>
                         </li>

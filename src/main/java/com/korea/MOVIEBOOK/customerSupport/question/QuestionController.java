@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.customerSupport.question;
 
+import com.korea.MOVIEBOOK.customerSupport.Category;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +22,42 @@ public class QuestionController {
     private final MemberService memberService;
 
     @GetMapping("/questionForm")
-    public String questionForm() {
+    public String questionForm(Model model) {
+        model.addAttribute("category", Category.QUESTION);
         return "/customerSupport/question/questionForm";
     }
 
     @PostMapping("/createQuestion")
     public String createQuestion(Principal principal, @RequestParam String title, @RequestParam String content) {
         Member member = memberService.getMember(principal.getName());
-        questionService.create(member, title, content);
+        questionService.create(member, title, content, Category.QUESTION);
         return "redirect:/customerSupport/question";
+    }
+
+    @GetMapping("/noticeForm")
+    public String noticeForm(Model model) {
+        model.addAttribute("category", Category.NOTICE);
+        return "/customerSupport/question/questionForm";
+    }
+
+    @PostMapping("/createNotice")
+    public String createNotice(Principal principal, @RequestParam String title, @RequestParam String content) {
+        Member member = memberService.getMember(principal.getName());
+        questionService.create(member, title, content, Category.NOTICE);
+        return "redirect:/customerSupport/notice";
+    }
+
+    @GetMapping("/FAQForm")
+    public String FAQForm(Model model) {
+        model.addAttribute("category", Category.FAQ);
+        return "/customerSupport/question/questionForm";
+    }
+
+    @PostMapping("/createFAQ")
+    public String createFAQ(Principal principal, @RequestParam String title, @RequestParam String content) {
+        Member member = memberService.getMember(principal.getName());
+        questionService.create(member, title, content, Category.FAQ);
+        return "redirect:/customerSupport/FAQ";
     }
 
     @GetMapping("/detail")
@@ -37,6 +65,7 @@ public class QuestionController {
         Question question = questionService.findByQuestionId(questionId);
         if (question != null) {
             model.addAttribute("question", question);
+            model.addAttribute("category", question.getCategory());
         }
         return "/customerSupport/question/questionDetail";
     }
