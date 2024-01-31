@@ -29,17 +29,17 @@
 <div layout:fragment="content" style="display : flex; width: 100%; min-height: 1110px">
 
 
-    <div class="profileMenu" style="width : 15%; background: #D2E1FF; min-height: 1110px; min-width: 310px;">
+    <div class="profileMenu" style="width : 15%; background: #969696; min-height: 1110px; min-width: 310px;">
         <div style="margin-top: 23px;">
             <div>
                  <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
-                       th:if="${member != null}" th:text="${#strings.concat(member.getNickname(), ' 님 무비부비에 오신것을 환영합니다')}" style="font-size : large; margin-left: 8px;"></span>
+                       th:if="${member != null}" th:text="${#strings.concat(member.getNickname(), ' 님 무비부비에 오신것을 환영합니다')}" style="font-size : large; margin-left: 8px; color: white;"></span>
                 <div style="display : flex; font-weight : bold; border-bottom : 2px solid black; margin-top: 15px;">
                     <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
-                    <span style="margin-right : 3px;">보유 코인 : </span>
+                    <span style="margin-right : 3px;  color: white;">보유 코인 : </span>
                     <span th:text="${#numbers.formatDecimal(sum, 0,  'COMMA', 0, 'POINT')}"
-                          style="width : 95px; text-align : center;"></span>
-                    <a class="layoutLink" href="/payment" style="display: flex; align-items: center;">
+                          style="width : 95px; text-align : center;  color: white;"></span>
+                    <a class="layoutLink" href="/payment" style="display: flex; align-items: center;  color: white;">
                         <div style="margin-right: 4px; width: 19px;">
                         </div>
                         코인충전
