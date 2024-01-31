@@ -2,21 +2,16 @@ package com.korea.MOVIEBOOK;
 
 import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.drama.Drama;
-import com.korea.MOVIEBOOK.movie.MovieDTO;
-import com.korea.MOVIEBOOK.movie.daily.MovieDaily;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-@Controller
-public class ContentsController {
+@Service
+public class ContentsService {
     public ContentsDTO setBookContentsDTO(Book book) {
         return ContentsDTO.builder()
                 .isbn(book.getIsbn())

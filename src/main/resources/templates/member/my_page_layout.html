@@ -26,14 +26,14 @@
     </script>
 </head>
 <body>
-<div layout:fragment="content" style="display : flex; width: 100%; min-height: 1110px">
-
-
-    <div class="profileMenu" style="width : 15%; background: #D2E1FF; min-height: 1110px; min-width: 310px;">
+<div layout:fragment="content" style="display : flex; width: 100%;">
+        <div class="profileMenu" style="width : 15%; background: #D2E1FF; height: 100vh; min-height: 1100px; min-width: 310px;">
         <div style="margin-top: 23px;">
             <div>
                  <span class="s_name" name="s_name" sec:authorize="isAuthenticated()"
-                       th:if="${member != null}" th:text="${#strings.concat(member.getNickname(), ' 님 무비부비에 오신것을 환영합니다')}" style="font-size : large; margin-left: 8px;"></span>
+                       th:if="${member != null}"
+                       th:text="${#strings.concat(member.getNickname(), ' 님 무비부비에 오신것을 환영합니다')}"
+                       style="font-size : large; margin-left: 8px;"></span>
                 <div style="display : flex; font-weight : bold; border-bottom : 2px solid black; margin-top: 15px;">
                     <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
                     <span style="margin-right : 3px;">보유 코인 : </span>
@@ -47,7 +47,7 @@
                     <img src="/etc/coin.png" style="height: 18px; margin-right: 4px;">
                 </div>
             </div>
-            <ul class="menu" style="height: 1200px;">
+            <ul class="menu">
                 <span class="menu-item">
                 <a class="menu-link" th:href="@{/member/mypage}" onclick="clickMenu(event, this)">내 정보</a>
             </span>
@@ -59,13 +59,14 @@
                 <a class="menu-link" th:href="@{/member/changePw(parameter='2')}" onclick="clickMenu(event, this)">비밀번호 변경</a>
             </span>
                 <span class="menu-item">
-                <a class="menu-link" th:href="@{/member/purchasedetails(parameter='3')}" onclick="clickMenu(event, this)">구매 내역</a>
+                <a class="menu-link" th:href="@{/member/purchasedetails(parameter='3')}"
+                   onclick="clickMenu(event, this)">구매 내역</a>
             </span>
                 <span class="menu-item">
-                 <a  class="menu-link" th:href="@{/member/deleteForm(parameter='4')}" th:value="회원탈퇴" onclick="clickMenu(event, this)">회원 탈퇴</a>
+                 <a class="menu-link" th:href="@{/member/deleteForm(parameter='4')}" th:value="회원탈퇴"
+                    onclick="clickMenu(event, this)">회원 탈퇴</a>
             </span>
             </ul>
-
         </div>
     </div>
     <th:block layout:fragment="profileContent" style="width : 85%; height : 100%;"></th:block>
