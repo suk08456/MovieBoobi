@@ -80,7 +80,7 @@
                     allowfullscreen></iframe>
         </div>
     </div>
-    <div class="swiper mySwiper" style="width: 70%;">
+    <div class="swiper mySwiper" style="width: 70%; min-width: 1000px;">
         <div class="swiper-wrapper">
             <div class="swiper-slide">
                 <div style="display: flex; justify-content: center;">
@@ -117,26 +117,26 @@
         </div>
         <div class="swiper-pagination"></div>
     </div>
-    <div class="swiper mySwiperA" style="width: 65%;">
+    <div class="swiper mySwiperA" style="width: 70%; min-width: 1000px; margin-top: 3%;">
         <div class="swiper-wrapper">
             <div class="swiper-slide">
                 <div style="display: flex; justify-content: center;">
-                    <div style="width: 400px; height: 400px; background: green;"></div>
+                    <form th:action="@{/movie/detail}" method="get" th:each="movie : ${movieList}" style="display: flex; align-items: center; border: solid 1px; margin: 5px;">
+                        <button class="img">
+                            <img th:src="${movie.getImageUrl}" style="height: 100%;">
+                        </button>
+                        <input type="hidden" name="movieCD" th:value="${movie.movieCode}">
+                    </form>
                 </div>
             </div>
             <div class="swiper-slide">
                 <div style="display: flex; justify-content: center;">
-                    <div style="width: 400px; height: 400px; background: green;"></div>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div style="display: flex; justify-content: center;">
-                    <div style="width: 400px; height: 400px; background: green;"></div>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div style="display: flex; justify-content: center;">
-                    <div style="width: 400px; height: 400px; background: green;"></div>
+                    <form th:action="@{/book/detail}" method="get" th:each="book : ${bookList}" style="display: flex; align-items: center; border: solid 1px; margin: 5px;">
+                        <button class="img">
+                            <img th:src="${book.getImageUrl}" style="height: 100%;">
+                        </button>
+                        <input type="hidden" name="isbn" th:value="${book.getIsbn}">
+                    </form>
                 </div>
             </div>
         </div>
