@@ -102,20 +102,20 @@ public class MovieController {
         }
 
 
-        List<Object[]> movieRankings = reviewRepository.findMovieRankings();
+        List<Object[]> movieRankings = null;
+        movieRankings = reviewRepository.findMovieRankings();
         List<Movie> movies = new ArrayList<>();
-        List<Integer> reviewCountOfMovie = new ArrayList<>();
 
-        if (movieRankings.size() > 5) {
+        if (movieRankings.size() > 9) {
             for (Object[] result : movieRankings) {
                 Long movieId = (Long) result[0];
                 Movie movie = this.movieService.findMovieById(movieId);
                 movies.add(movie);
-                reviewCountOfMovie.add(this.reviewRepository.findReviewsByMovieId(movie.getId()).size());
             }
-        } else {
+        }  else {
             movies = this.movieService.getRandomMovies();
         }
+
 
         List<List<Movie>> movieReviewListList = new ArrayList<>();
 
@@ -139,6 +139,7 @@ public class MovieController {
         model.addAttribute("movieWeeklyDate", weekInfo);
         model.addAttribute("allList", allList);
         model.addAttribute("allList2", allList2);
+        model.addAttribute("movieRankings", movieRankings);
 
         return "Movie/movie_list";
     }
