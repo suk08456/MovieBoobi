@@ -1,18 +1,15 @@
-
 <html layout:decorate="~{/member/my_page_layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<div layout:fragment="profileContent" style="width: 85%; height: 1110px">
-
-    <div style="margin-top: 60px; text-align: center">
-
-            <img id="img" th:src="${member.getProfileImage()}" style="width: 530px; height: 400px; margin-left: 500px">
-
-
-        <div class="info" style="font-size: 20px; margin-top: 60px; margin-left: -325px;">
+<div layout:fragment="profileContent" style="width: 85%; height: 100vh; min-height: 1100px;">
+    <div style="display: flex; margin-top: 60px; flex-direction: column; align-items: center;">
+        <div style="min-height: 400px; min-width: 400px; width: 30%; height: 30%; display: flex; flex-direction: column; justify-content: center;">
+            <img id="img" th:src="${member.getProfileImage()}">
+        </div>
+        <div class="info" style="font-size: 20px; margin-top: 60px;">
             <div style="margin-bottom: 5px;">
                 <span style="color : #868e96;">아이디 :</span>
                 <span th:text="${member.getUsername()}" style="color : #868e96;"></span>
@@ -26,11 +23,7 @@
                 <span th:text="${member.getEmail()}" style="color : #868e96;"></span>
             </div>
         </div>
-
     </div>
-
-
-
 </div>
 </body>
 </html>

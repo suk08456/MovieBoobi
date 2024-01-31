@@ -1,5 +1,5 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
-import com.korea.MOVIEBOOK.ContentsController;
+import com.korea.MOVIEBOOK.ContentsService;
 import com.korea.MOVIEBOOK.ContentsDTO;
 import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.heart.HeartRepository;
@@ -31,7 +31,7 @@ public class WebtoonController {
     private final DayService dayService;
     private final WebtoonDayListService webtoonDayListService;
     private final ReviewService reviewService;
-    private final ContentsController contentsController;
+    private final ContentsService contentsService;
     private final PaymentRepository paymentRepository;
     private final MemberService memberService;
     private final HeartRepository heartRepository;
@@ -116,7 +116,7 @@ public class WebtoonController {
     @GetMapping("/detail")
     public String WebtoonDetail1(Model model, Long webtoonId, Principal principal) {
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-        ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
+        ContentsDTO contentsDTOS = this.contentsService.setWetoonContentsDTO(webtoon);
         List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
         List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findWebtoonReview(webtoon.getWebtoonId());
@@ -179,7 +179,7 @@ public class WebtoonController {
     @GetMapping("/detail/{webtoonId}")
     public String WebtoonDetail2(Model model, @PathVariable("webtoonId") Long webtoonId, Principal principal){
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
-        ContentsDTO contentsDTOS = this.contentsController.setWetoonContentsDTO(webtoon);
+        ContentsDTO contentsDTOS = this.contentsService.setWetoonContentsDTO(webtoon);
         List<List<String>> authorListList =  this.webtoonService.getAuthorListList(webtoon);
         List<Review> reviews = this.reviewService.findWebtoonReview(webtoon.getWebtoonId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findWebtoonReview(webtoon.getWebtoonId());

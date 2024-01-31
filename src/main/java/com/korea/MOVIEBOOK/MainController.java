@@ -5,7 +5,6 @@ import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieService;
-import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonService;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-public class main {
+public class MainController {
     private final BookService bookService;
     private final DramaService dramaService;
     private final MovieService movieService;
@@ -49,20 +46,6 @@ public class main {
 
         return "search_list";
     }
-
-//    @GetMapping("/searchwebtoon")
-//    public String searchWebtoonList(Model model,
-//                             @RequestParam(value = "page", defaultValue = "0") int page,
-//                             @RequestParam(value = "kw", defaultValue = "") String kw) {
-//
-//
-//        Page<Webtoon> pagingWebtoon = webtoonService.getWebtoonList(page, kw);
-//
-//        model.addAttribute("pagingWebtoon", pagingWebtoon);
-//
-//        return "test2";
-//    }
-
 
     @GetMapping("/")
     public String test() {
