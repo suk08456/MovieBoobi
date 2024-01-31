@@ -58,12 +58,12 @@
                                      style="width : 213px; height : 303px;">
                                 <input type="hidden" name="movieCD" th:value="${movie.movieCode}">
                             </div>
-                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">
+                            <div class="short-info" th:data-id="${movie.movieCode}" th:onmouseenter="'onTitle(this, ' + ${movie.movieCode} + ')'" th:onmouseleave="'leaveTitle(' + ${movie.movieCode} + ')'" style="display : inline-grid; margin-left : 5px;">
                                 <form class="title-co">
                                     <input class="title" name="title"
                                            th:value="${#strings.length(movie.title) > 17 ? #strings.substring(movie.title, 0, 17) + '..' : movie.title}"
                                            style="font-size : 17px;" readonly>
-                                    <div class="mv-text" th:text="${movie.title}"></div>
+                                    <input class="title2" name="title" th:value="${movie.title}" hidden="hidden">
                                     <input type="hidden" name="date" th:value="${movieDailyDate}">
                                 </form>
                                 <div class="short-kind" style="text-align : left;">
@@ -119,12 +119,12 @@
                                      style="width : 213px; height : 303px;">
                                 <input type="hidden" name="movieCD" th:value="${movie.movieCode}">
                             </div>
-                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">
+                            <div class="short-info" th:data-id="${movie.movieCode}" th:onmouseenter="'onTitle(this, ' + ${movie.movieCode} + ')'" th:onmouseleave="'leaveTitle(' + ${movie.movieCode} + ')'" style="display : inline-grid; margin-left : 5px;">
                                 <form class="title-co">
                                     <input class="title" name="title"
                                            th:value="${#strings.length(movie.title) > 17 ? #strings.substring(movie.title, 0, 17) + '..' : movie.title}"
                                            style="font-size : 17px;" readonly>
-                                    <div class="mv-text" th:text="${movie.title}"></div>
+                                    <input class="title2" name="title" th:value="${movie.title}" hidden="hidden">
                                     <input type="hidden" name="date" th:value="${movieDailyDate}">
                                 </form>
                                 <div th:each="ranking : ${movieRankings}" th:if="${ranking[0] == movie.id}">
@@ -147,9 +147,65 @@
             <div class="swiper-button-next" style="color : #D1180B;"></div>
             <div class="swiper-button-prev" style="color : #D1180B;"></div>
         </div>
+        <div id="mv-text-box">
+
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
+
+    function leaveTitle(id) {
+        const mvText = document.querySelector('#mv-text-' + id);
+        mvText.style.opacity = 0;
+    }
+    function onTitle(el, id) {
+
+        const titleInput = el.querySelector('.title');
+        const titleInput2 = el.querySelector('.title2');
+        let element2 = document.querySelector('body');
+        let elementTop2 = window.pageYOffset + element2.getBoundingClientRect().top;
+
+        let mvText = document.querySelector('#mv-text-' + id);
+
+        if(mvText == null || mvText == undefined) {
+            const dinamicMvText = document.createElement('div');
+            dinamicMvText.innerText = titleInput2.value;
+            dinamicMvText.classList.add('mv-text');
+            dinamicMvText.setAttribute('id', 'mv-text-' + id);
+
+            dinamicMvText.style.top = window.pageYOffset + titleInput.getBoundingClientRect().top + 'px';
+            dinamicMvText.style.left = window.pageXOffset + titleInput.getBoundingClientRect().left + 'px';
+
+            document.querySelector('#mv-text-box').appendChild(dinamicMvText);
+            mvText = dinamicMvText;
+        }
+        mvText.style.opacity = '1';
+    }
+
+    function handleResize() {
+        const box = document.querySelector("#mv-text-box");
+        box.innerHTML="";
+
+        const infoList = document.querySelectorAll(".short-info");
+        infoList.forEach((info) => {
+            info.addEventListener('mouseenter', (e) => {
+                const id = e.target.dataset.id
+                onTitle(e.target, id);
+            });
+        });
+
+        infoList.forEach((info) => {
+            info.addEventListener('mouseleave', (e) => {
+                const id = e.target.dataset.id
+                leaveTitle(id);
+            });
+        });
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
         var swiper = new Swiper(".mySwiper", {
                 spaceBetween: 30,
                 pagination: {
