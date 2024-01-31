@@ -1,6 +1,6 @@
 package com.korea.MOVIEBOOK.movie.movie;
 
-import com.korea.MOVIEBOOK.ContentsController;
+import com.korea.MOVIEBOOK.ContentsService;
 import com.korea.MOVIEBOOK.ContentsDTO;
 import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.heart.HeartRepository;
@@ -40,7 +40,7 @@ public class MovieController {
     private final ReviewService reviewService;
     private final PaymentRepository paymentRepository;
     private final MemberService memberService;
-    private final ContentsController contentsController;
+    private final ContentsService contentsService;
     private final HeartRepository heartRepository;
     private final ReviewRepository reviewRepository;
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
@@ -149,7 +149,7 @@ public class MovieController {
     public String movieDetail(Model model, String movieCD, Principal principal) {
 
         Movie movie = this.movieService.findMovieByCD(movieCD);
-        ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
+        ContentsDTO contentsDTOS = this.contentsService.setMovieContentsDTO(movie);
         List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findReviews(movie.getId());
         String paid = "false";
@@ -223,7 +223,7 @@ public class MovieController {
     @GetMapping("/detail/{movieCD}")
     public String movieDetail2(Model model, @PathVariable("movieCD") String movieCD, Principal principal) {
         Movie movie = this.movieService.findMovieByCD(movieCD);
-        ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
+        ContentsDTO contentsDTOS = this.contentsService.setMovieContentsDTO(movie);
         List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = this.reviewService.findReviews(movie.getId());
         String paid = "false";

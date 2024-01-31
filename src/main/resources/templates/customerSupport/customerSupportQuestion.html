@@ -54,18 +54,17 @@
             </li>
         </ul>
     </div>
-    <span th:text="${category}"></span>
-    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${category} == 'QUESTION'">
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'QUESTION')}">
         <a th:href="@{/customerSupport/question/questionForm}">
             <button class="btn btn-outline">문의하기</button>
         </a>
     </div>
-    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${category} == 'FAQ'">
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'FAQ')}" sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/customerSupport/question/FAQForm}">
             <button class="btn btn-outline">자주 묻는 질문 작성</button>
         </a>
     </div>
-    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${category} == 'NOTICE'">
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'NOTICE')}" sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/customerSupport/question/noticeForm}">
             <button class="btn btn-outline">공지작성</button>
         </a>

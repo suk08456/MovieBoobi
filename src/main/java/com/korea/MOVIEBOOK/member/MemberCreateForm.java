@@ -24,6 +24,8 @@ public class MemberCreateForm {
     private String password2;
 
     @NotEmpty(message = "중복된 닉네임")
+    @Size(min = 2, max = 8)
+    @Pattern(regexp = "^[가-힣a-zA-Z0-9]*$", message = "한글, 영문 대,소문자, 숫자를 사용하여 2 ~ 8길이로 설정 해주세요.")
     private String nickname;
 
     @NotEmpty(message = "등록되지 않은 이메일입니다.")
