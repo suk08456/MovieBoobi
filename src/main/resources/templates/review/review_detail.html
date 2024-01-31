@@ -124,7 +124,10 @@
             <span th:text="${comment.content}"></span>
             <div sec:authorize="isAuthenticated()" th:if="${memberInfo.id == review.member.id}" style="display: flex; justify-content: flex-end;">
                 <input class="btnWhite" th:value="수정" style="letter-spacing : 0.2em; cursor : pointer;">
-                <input class="btnWhite" th:value="삭제" style="margin-left : 5px; letter-spacing : 0.2em; cursor : pointer;">
+                <button onclick="deleteComment();">
+                    <input id="comment_id" type="hidden" th:value="${comment.id}">
+                    <input class="btnWhite" th:value="삭제" style="margin-left : 5px; letter-spacing : 0.2em; cursor : pointer;">
+                </button>
             </div>
         </div>
 
@@ -299,6 +302,34 @@
                 },
                 error: function (xhr, status, error) {
                     console.error("Error saving comment: " + error);
+                }
+            });
+        }
+
+        function deleteComment() {
+            var commentID = document.getElementById('comment_id').value;
+            if(document.getElementById('member_id') == null){
+                Swal.fire({
+                    icon: 'warning',
+                    title: '로그인 후 이용해주세요.',
+                });
+                return false;
+            }
+            if (!confirm('댓글을 삭제하시겠습니까?')) {
+            }
+
+            $.ajax({
+                url: "/comment/delete/" + commentID,
+                type: "GET",
+                data: {
+                    category: '[[${category}]]',
+                    commentId: commentId
+                },
+                success: function (data) {
+                    location.reload(); // 페이지 새로고침
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error deleting comment: " + error);
                 }
             });
         }

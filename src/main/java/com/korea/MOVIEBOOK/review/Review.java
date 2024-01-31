@@ -32,6 +32,8 @@ public class Review {
 
     private LocalDateTime dateTime;   // 리뷰 작성 일자
 
+    private LocalDateTime modifyDate; // 리뷰 수정 일자
+
     @ManyToOne
     private Member member;
 
