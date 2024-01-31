@@ -27,6 +27,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers("/customerSupport/myQuestion").authenticated()
+                        .requestMatchers("/customerSupport/question/questionForm").authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/member/login")
