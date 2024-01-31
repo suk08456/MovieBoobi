@@ -12,6 +12,7 @@ import com.korea.MOVIEBOOK.movie.weekly.MovieWeeklyAPI;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentRepository;
 import com.korea.MOVIEBOOK.review.Review;
+import com.korea.MOVIEBOOK.review.ReviewRepository;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -41,6 +42,7 @@ public class MovieController {
     private final MemberService memberService;
     private final ContentsController contentsController;
     private final HeartRepository heartRepository;
+    private final ReviewRepository reviewRepository;
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
     String date = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     LocalDateTime weeksago = LocalDateTime.now().minusDays(7);
@@ -98,18 +100,53 @@ public class MovieController {
             startIndex += 5;
             endIndex += 5;
         }
+
+
+        List<Object[]> movieRankings = reviewRepository.findMovieRankings();
+        List<Movie> movies = new ArrayList<>();
+        List<Integer> reviewCountOfMovie = new ArrayList<>();
+
+        if (movieRankings.size() > 5) {
+            for (Object[] result : movieRankings) {
+                Long movieId = (Long) result[0];
+                Movie movie = this.movieService.findMovieById(movieId);
+                movies.add(movie);
+                reviewCountOfMovie.add(this.reviewRepository.findReviewsByMovieId(movie.getId()).size());
+            }
+        } else {
+            movies = this.movieService.getRandomMovies();
+        }
+
+        List<List<Movie>> movieReviewListList = new ArrayList<>();
+
+        startIndex = 0;
+        endIndex = 5;
+
+        for (int i = 0; i < movies.size() / 5; i++) {
+            movieReviewListList.add(movies.subList(startIndex, Math.min(endIndex, movies.size())));
+            startIndex += 5;
+            endIndex += 5;
+        }
+
+
         List<List<List<MovieDTO>>> allList = new ArrayList<>();
         allList.add(movieListList);
         allList.add(movieWeeklyListList);
+        List<List<List<Movie>>> allList2 = new ArrayList<>();
+        allList2.add(movieReviewListList);
 
         model.addAttribute("movieDailyDate", date);
         model.addAttribute("movieWeeklyDate", weekInfo);
         model.addAttribute("allList", allList);
+        model.addAttribute("allList2", allList2);
 
         return "Movie/movie_list";
     }
+
+
     @GetMapping("/detail")
     public String movieDetail(Model model, String movieCD, Principal principal) {
+
         Movie movie = this.movieService.findMovieByCD(movieCD);
         ContentsDTO contentsDTOS = this.contentsController.setMovieContentsDTO(movie);
         List<Review> reviews = this.reviewService.findReviews(movie.getId()).stream().limit(12).collect(Collectors.toList());
@@ -123,7 +160,7 @@ public class MovieController {
 
         Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
 
-        List<List<String>> actorListList =  this.movieService.getActorListList(movie);
+        List<List<String>> actorListList = this.movieService.getActorListList(movie);
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
                 .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
@@ -141,7 +178,7 @@ public class MovieController {
         model.addAttribute("movieruntime", movieruntime);
 
 
-        if(principal != null){
+        if (principal != null) {
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
@@ -150,32 +187,32 @@ public class MovieController {
             Heart heart = this.heartRepository.findByMemberAndMovie(member, movie);
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
-            if(payment.isPresent()){
-                paid ="true";
+            if (payment.isPresent()) {
+                paid = "true";
             }
 
 
-            List<Payment> payments  = this.paymentRepository.findBymember(member);
+            List<Payment> payments = this.paymentRepository.findBymember(member);
             long sum = 0;
 
-            for(int i  = 0 ; i < payments.size(); i++){
-                if(payments.get(i).getContent().contains("충전")){
+            for (int i = 0; i < payments.size(); i++) {
+                if (payments.get(i).getContent().contains("충전")) {
                     sum += Long.valueOf(payments.get(i).getPaidAmount());
                 } else {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
-            model.addAttribute("paid",paid);
-            model.addAttribute("login","true");
-            model.addAttribute("member",member);
-            model.addAttribute("sum",sum);
-            model.addAttribute("heart",heart);
+            model.addAttribute("paid", paid);
+            model.addAttribute("login", "true");
+            model.addAttribute("member", member);
+            model.addAttribute("sum", sum);
+            model.addAttribute("heart", heart);
         } else {
-            model.addAttribute("paid",paid);
-            model.addAttribute("login","false");
-            model.addAttribute("member","");
-            model.addAttribute("sum","");
-            model.addAttribute("heart","");
+            model.addAttribute("paid", paid);
+            model.addAttribute("login", "false");
+            model.addAttribute("member", "");
+            model.addAttribute("sum", "");
+            model.addAttribute("heart", "");
         }
 
 
@@ -195,7 +232,7 @@ public class MovieController {
         Integer minutes = runtime % 60;
         String movieruntime = String.valueOf(hour) + "시간" + String.valueOf(minutes) + "분";
 
-        List<List<String>> actorListList =  this.movieService.getActorListList(movie);
+        List<List<String>> actorListList = this.movieService.getActorListList(movie);
 
         double avgRating = reviews.stream() // reviews에서 stream 생성
                 .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
@@ -214,7 +251,7 @@ public class MovieController {
         model.addAttribute("movieruntime", movieruntime);
 
 
-        if(principal != null){
+        if (principal != null) {
             String providerID = principal.getName();
             Member member = this.memberService.findByproviderId(providerID);
             if (member == null) {
@@ -222,31 +259,32 @@ public class MovieController {
             }
 
             Optional<Payment> payment = Optional.ofNullable(this.paymentRepository.findByMemberAndContentsAndContentsID(member, "movie", movieCD));
-            if(payment.isPresent()){
-                paid ="true";
+            if (payment.isPresent()) {
+                paid = "true";
             }
-            List<Payment> payments  = this.paymentRepository.findBymember(member);
+            List<Payment> payments = this.paymentRepository.findBymember(member);
             long sum = 0;
 
-            for(int i  = 0 ; i < payments.size(); i++){
-                if(payments.get(i).getContent().contains("충전")){
+            for (int i = 0; i < payments.size(); i++) {
+                if (payments.get(i).getContent().contains("충전")) {
                     sum += Long.valueOf(payments.get(i).getPaidAmount());
                 } else {
                     sum -= Long.valueOf(payments.get(i).getPaidAmount());
                 }
             }
-            model.addAttribute("paid",paid);
-            model.addAttribute("login","true");
-            model.addAttribute("member",member);
-            model.addAttribute("sum",sum);
+            model.addAttribute("paid", paid);
+            model.addAttribute("login", "true");
+            model.addAttribute("member", member);
+            model.addAttribute("sum", sum);
         } else {
-            model.addAttribute("paid",paid);
-            model.addAttribute("login","false");
-            model.addAttribute("member","");
-            model.addAttribute("sum","");
+            model.addAttribute("paid", paid);
+            model.addAttribute("login", "false");
+            model.addAttribute("member", "");
+            model.addAttribute("sum", "");
         }
         return "contents/contents_detail";
     }
+
     //
     public void movieDailySize(List<Map> failedMovieList) {
         if (failedMovieList != null && !failedMovieList.isEmpty()) {

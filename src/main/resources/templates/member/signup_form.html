@@ -6,36 +6,36 @@
 </head>
 
 <body layout:fragment="content">
-<div>
-    <h4>회원가입</h4>
+<div style="display: flex; flex-direction: column; align-items: center; height: 65vh; margin-top: 5%;">
+    <form th:action="@{/member/signup}" th:object="${memberCreateForm}" method="post">
+        <h1 style="font-size: xx-large; font-weight: bold; margin-bottom: 20%;">회원가입</h1>
+        <div th:replace="member/form_errors :: formErrorsFragment"></div>
+        <div class="mb-3">
+            <label for="username" class="form-label">사용자ID</label>
+            <input type="text" th:field="*{username}" class="form-control">
+            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="alert alert-danger"></div>
+        </div>
+        <div class="mb-3">
+            <label for="password1" class="form-label">비밀번호</label>
+            <input type="password" th:field="*{password1}" class="form-control">
+            <div th:if="${#fields.hasErrors('password1')}" th:errors="*{password1}" class="alert alert-danger"></div>
+        </div>
+        <div class="mb-3">
+            <label for="password2" class="form-label">비밀번호 확인</label>
+            <input type="password" th:field="*{password2}" class="form-control">
+            <div th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}" class="alert alert-danger"></div>
+        </div>
+        <div class="mb-3">
+            <label for="nickname" class="form-label">닉네임</label>
+            <input type="text" th:field="*{nickname}" class="form-control">
+            <div th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="alert alert-danger"></div>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">이메일</label>
+            <input type="email" th:field="*{email}" class="form-control">
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="alert alert-danger"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">회원가입</button>
+    </form>
 </div>
-<form th:action="@{/member/signup}" th:object="${memberCreateForm}" method="post">
-    <div th:replace="member/form_errors :: formErrorsFragment"></div>
-    <div>
-        <label for="username" class="form-label">사용자ID</label>
-        <input type="text" th:field="*{username}" class="form-control">
-        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="alert alert-danger"></div>
-    </div>
-    <div>
-        <label for="password1" class="form-label">비밀번호</label>
-        <input type="password" th:field="*{password1}" class="form-control">
-        <div th:if="${#fields.hasErrors('password1')}" th:errors="*{password1}" class="alert alert-danger"></div>
-    </div>
-    <div class="mb-3">
-        <label for="password2" class="form-label">비밀번호 확인</label>
-        <input type="password" th:field="*{password2}" class="form-control">
-        <div th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}" class="alert alert-danger"></div>
-    </div>
-    <div>
-        <label for="nickname" class="form-label">닉네임</label>
-        <input type="text" th:field="*{nickname}" class="form-control">
-        <div th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="alert alert-danger"></div>
-    </div>
-    <div>
-        <label for="email" class="form-label">이메일</label>
-        <input type="email" th:field="*{email}" class="form-control">
-        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="alert alert-danger"></div>
-    </div>
-    <button type="submit" class="btn btn-primary">회원가입</button>
-</form>
 </body>

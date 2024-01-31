@@ -123,20 +123,31 @@ public class WebtoonService {
         if(!author.isEmpty()) {
             authors = author.split(",");
         }
-        List<String> authorList = new ArrayList<>(Arrays.asList(authors));
 
-        List<List<String>>authorListList = new ArrayList<>();
+        List<String> authorName = new ArrayList<>();
+        List<String> authorRole = new ArrayList<>();
 
-        Integer chunkSize = 8;
-        Integer totalElements = authorList.size();
+        for (String authorList : authors) {
+            authorName.add(authorList);
+            authorRole.add("()");
+        }
+
+        List<String> authorList = new ArrayList<>();
+        for(int i = 0; i < authorName.size(); i++){
+            authorList.add(authorName.get(i));
+            authorList.add(authorRole.get(i));
+        }
+
+        List<List<String>> actorListList = new ArrayList<>();
+        int chunkSize = 16;
+        int totalElements = authorList.size();
 
         for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
             int start = i * chunkSize;
             int end = Math.min((i + 1) * chunkSize, totalElements);
-            authorListList.add(authorList.subList(start, end));
+            actorListList.add(authorList.subList(start, end));
         }
-
-        return authorListList;
+        return actorListList;
     }
 
 

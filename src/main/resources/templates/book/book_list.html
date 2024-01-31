@@ -20,9 +20,9 @@
                           style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 6%">무비부비 추천 TOP 10</span>
                 </div>
             </div>
-            <div class="swiper-wrapper">
+            <div class="swiper-wrapper" style="position: relative;">
                 <div class="swiper-slide"
-                     style="display:flex; font-size: 18px; align-items: center; height : 100%;"
+                     style="display:flex; font-size: 18px; position: relative; align-items: center; height : 100%; z-index : 1;"
                      th:each="bookList : ${bookListList}">
                     <form style="display : grid; margin-left:15px;"
                           th:action="@{/book/detail}" method="get" th:each="book : ${bookList}">

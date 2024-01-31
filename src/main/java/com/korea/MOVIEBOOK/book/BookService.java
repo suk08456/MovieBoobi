@@ -212,18 +212,34 @@ public class BookService {
         if(!author.isEmpty()) {
             authors = author.split(",");
         }
-        List<String> authorList = new ArrayList<>(Arrays.asList(authors));
+
+        List<String> authorsName = new ArrayList<>();
+        List<String> authorsRole = new ArrayList<>();
+
+        for (String actorList : authors) {
+            int idx = actorList.indexOf('(');
+            if (idx != -1) {
+                authorsName.add(actorList.substring(0, idx).trim());
+                authorsRole.add(actorList.substring(idx).trim());
+            }
+        }
+
+        List<String> actorList = new ArrayList<>();
+        for(int i = 0; i < authorsName.size(); i++){
+            actorList.add(authorsName.get(i));
+            actorList.add(authorsRole.get(i));
+        }
 
         List<List<String>> authorListList = new ArrayList<>();
-
-        Integer chunkSize = 8;
-        Integer totalElements = authorList.size();
+        int chunkSize = 16;
+        int totalElements = actorList.size();
 
         for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
             int start = i * chunkSize;
             int end = Math.min((i + 1) * chunkSize, totalElements);
-            authorListList.add(authorList.subList(start, end));
+            authorListList.add(actorList.subList(start, end));
         }
+
         return authorListList;
     }
     public Book findByTitle(String title) {

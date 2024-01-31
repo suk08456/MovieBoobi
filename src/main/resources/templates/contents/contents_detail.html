@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 </head>
 <body>
-<div layout:fragment="content" style="width : 100%; height : 30%;">
+<div layout:fragment="content" style="width : 100%; min-height : 1100px;">
     <div class="content-co" style="width : 1300px; margin : auto; margin-bottom : 30px;">
         <div class="post-co" style="display : flex; flex-direction : row; ">
             <div style="margin-top: 30px; color: #868e96;" th:if="${contentsDTOS != null}">
@@ -26,7 +26,7 @@
                             <input type="radio" id="rating10" name="rating" value="10" onclick="updateRating(5)">
                             <label for="rating10" title="5점"></label>
                             <input type="radio" id="rating9" name="rating" value="9" onclick="updateRating(4.5)">
-                            <label class="half" fo`r="rating9" title="4.5점"></label>
+                            <label class="half" for="rating9" title="4.5점"></label>
                             <input type="radio" id="rating8" name="rating" value="8" onclick="updateRating(4)">
                             <label for="rating8" title="4점"></label>
                             <input type="radio" id="rating7" name="rating" value="7" onclick="updateRating(3.5)">
@@ -105,12 +105,14 @@
                 <span th:text="${contentsDTOS.gubun}"
                       style="font-size : 22px; width : 80%; font-weight : bold; color : black;"></span>
                 <div class="swiper-wrapper" style="margin-top : 20px; margin-bottom : 20px;">
-                    <div class="swiper-slide" th:each="author_actor : ${author_actor_ListList}"
-                         style="display : flex;flex-direction : row;">
-                        <div th:each="author_actor : ${author_actor}" style="width : 200px;">
-                            <div class="actor-co" style="width :165px; align-items: center;">
-                                <img src="/imgs/profile_icon.png" style="width: 48px; height: 48px; margin : auto;">
-                                <span th:text="${author_actor}" style="font-size: 15px;"></span>
+                    <div class="swiper-slide" th:each="actorList : ${author_actor_ListList}"
+                         style="margin-right:30px; display : flex;flex-direction : row; align-items: baseline;">
+                        <div th:each="i : ${#numbers.sequence(0, actorList.size()-1, 2)}" style="width: 200px;">
+                            <div class="actor-co" style="width: 165px; align-items: center; display : flex; flex-direction: column;">
+                                <img src="/imgs/profile_icon.png" style="width: 48px; height: 48px; margin: auto;">
+                                <span th:text="${actorList[i]}" style="font-size: 15px; margin-top : 5px;"></span>
+                                <span th:if="${actorList[i+1] != null and actorList[i+1] != '()'}" th:text="${actorList[i+1]}" style="font-size: 15px; max-width: 150px; word-break: auto-phrase; margin-top : 5px;"></span>
+
                             </div>
                         </div>
                     </div>
@@ -205,6 +207,7 @@
 
         function updateRating(rating) {
             document.getElementById("Rating").innerText = "⭐" + rating;
+            logincheck();
         }
 
         var swiper = new Swiper(".mySwiper", {
@@ -223,9 +226,6 @@
             var form = button.closest('.click_Contents_heart');
             let url = window.location.href;
 
-            alert(url);
-            alert(contentsID);
-
             if (classList.contains('likeit')) {
                 heartClick = false;
             }
@@ -240,19 +240,11 @@
         }
 
         function clickContentsHeart_Unclogging(){
-            Swal.fire({
-                    icon: 'warning',
-                    title: '로그인 후 이용해주세요.',
-            });
+           errMsg('로그인 후 이용해주세요.');
         }
 
         function loginError(){
-<!--        결제버튼 누를때 에러메세지 나오게 하기 위해 넣음 / contents_payment내부 script에 넣으면 작동 안함-->
-           Swal.fire({
-                       icon: 'warning',
-                       title: '로그인 후 이용해주세요.',
-                   });
-               return false;
+           errMsg('로그인 후 이용해주세요.');
        }
 
     </script>
