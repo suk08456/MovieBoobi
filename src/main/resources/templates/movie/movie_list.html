@@ -156,7 +156,7 @@
 
     function leaveTitle(id) {
         const mvText = document.querySelector('#mv-text-' + id);
-        mvText.style.opacity = 0;
+        mvText.remove();
     }
     function onTitle(el, id) {
 
@@ -175,6 +175,9 @@
 
             dinamicMvText.style.top = window.pageYOffset + titleInput.getBoundingClientRect().top + 'px';
             dinamicMvText.style.left = window.pageXOffset + titleInput.getBoundingClientRect().left + 'px';
+
+            console.log(dinamicMvText.style.top );
+            console.log(dinamicMvText.style.left);
 
             document.querySelector('#mv-text-box').appendChild(dinamicMvText);
             mvText = dinamicMvText;
