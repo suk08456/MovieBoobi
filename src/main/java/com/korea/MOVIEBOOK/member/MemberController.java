@@ -271,7 +271,7 @@ public class MemberController {
             return "member/changeinfor";
         }
 
-        if (nicknameForm.getNewNickname().length() >= 3 || nicknameForm.getNewNickname().length() > 20) {
+        if (nicknameForm.getNewNickname().length() >= 2 || nicknameForm.getNewNickname().length() > 8) {
             Member member = memberService.findByusername(principal.getName());
             if (member == null) {
                 member = memberService.findByproviderId(principal.getName());
@@ -370,6 +370,7 @@ public class MemberController {
     @GetMapping("/deleteForm")
     public String memberDeleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
         paymentMember(model, principal, page);
+        model.addAttribute("parameter", 4);
         return "member/delete_form";
     }
 
