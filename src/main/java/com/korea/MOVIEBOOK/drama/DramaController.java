@@ -34,18 +34,30 @@ public class DramaController {
     private final HeartRepository heartRepository;
 
     @GetMapping("")
-    public String dramaList (Model model) {
-        List<Drama> dramaList = dramaService.dramaList();
+    public String dramaLists(Model model) {
+        List<Drama> dramaList1 = dramaService.findDramasInRange(1, 10);
+        List<Drama> dramaList2 = dramaService.findDramasInRange(11, 20);
 
-        List<List<Drama>> dramaListList = new ArrayList<>();
+        List<List<Drama>> dramaListList1 = new ArrayList<>();
         int startIndex = 0;
         int endIndex = 5;
-        for (int i = 1; i <= dramaList.size()/5; i++) {
-            dramaListList.add(dramaList.subList(startIndex, Math.min(endIndex, dramaList.size())));
-            startIndex+=5;
-            endIndex+=5;
+        for (int i = 1; i <= dramaList1.size() / 5; i++) {
+            dramaListList1.add(dramaList1.subList(startIndex, Math.min(endIndex, dramaList1.size())));
+            startIndex += 5;
+            endIndex += 5;
         }
-        model.addAttribute("dramaListList", dramaListList);
+
+        List<List<Drama>> dramaListList2 = new ArrayList<>();
+        startIndex = 0;
+        endIndex = 5;
+        for (int i = 1; i <= dramaList2.size() / 5; i++) {
+            dramaListList2.add(dramaList2.subList(startIndex, Math.min(endIndex, dramaList2.size())));
+            startIndex += 5;
+            endIndex += 5;
+        }
+
+        model.addAttribute("dramaListList1", dramaListList1);
+        model.addAttribute("dramaListList2", dramaListList2);
         return "drama/drama_list";
     }
     @GetMapping("/detail")
