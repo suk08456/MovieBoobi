@@ -49,7 +49,8 @@ public class SecurityConfig {
 
                 .oauth2Login(oauth2Login -> oauth2Login
                         .loginPage("/member/login")  // OAuth2 로그인 페이지 설정
-                        .defaultSuccessUrl("/"))      // 로그인 성공 후 리다이렉트 URL
+                        .defaultSuccessUrl("/")
+                        .successHandler(savedRequestAwareAuthenticationSuccessHandler()))      // 로그인 성공 후 리다이렉트 URL3
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
                         .logoutSuccessUrl("/")
