@@ -1,5 +1,7 @@
 package com.korea.MOVIEBOOK.member;
 
+import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.authenticator.SavedRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +19,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
@@ -31,7 +34,19 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/member/login")
-                        .defaultSuccessUrl("/"))
+                        .defaultSuccessUrl("/")
+                        .successHandler(savedRequestAwareAuthenticationSuccessHandler()))
+
+//                        .successHandler((request, response, authentication) -> {
+//                            HttpSession session = request.getSession();
+//                            String destination = "/";
+//                            if(session.getAttribute("referer") != null) {
+//                                destination  = (String)session.getAttribute("referer");
+//                            }
+//                            System.out.println(destination);
+//                            response.sendRedirect(destination);
+//                        }))
+
                 .oauth2Login(oauth2Login -> oauth2Login
                         .loginPage("/member/login")  // OAuth2 로그인 페이지 설정
                         .defaultSuccessUrl("/"))      // 로그인 성공 후 리다이렉트 URL
@@ -53,10 +68,15 @@ public class SecurityConfig {
             Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
         return new InMemoryClientRegistrationRepository(this.kakaoClientRegistration(), this.googleClientRegistration(), naverClientRegistration());
+    }
+    @Bean
+    public SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
+        handler.setUseReferer(true);
+        return handler;
     }
 
     private ClientRegistration googleClientRegistration() {

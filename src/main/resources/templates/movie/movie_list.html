@@ -57,6 +57,7 @@
                                 <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(movie.imageUrl)}"
                                      style="width : 213px; height : 303px;">
                                 <input type="hidden" name="movieCD" th:value="${movie.movieCode}">
+                                <input type="hidden" id="currentPageUrl" name="currentPageUrl" value="">
                             </div>
                             <div class="short-info" th:data-id="${movie.movieCode}" th:onmouseenter="'onTitle(this, ' + ${movie.movieCode} + ')'" th:onmouseleave="'leaveTitle(' + ${movie.movieCode} + ')'" style="display : inline-grid; margin-left : 5px;">
                                 <form class="title-co">

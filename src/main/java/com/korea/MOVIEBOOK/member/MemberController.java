@@ -9,6 +9,8 @@ import com.korea.MOVIEBOOK.payment.PaymentService;
 import com.korea.MOVIEBOOK.review.ReviewService;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
@@ -109,14 +108,19 @@ public class MemberController {
 
     @GetMapping("/login")
     public String login() {
+
+//        String referer = request.getHeader("referer");
+//        session.setAttribute("referer", referer);
+//        session.setAttribute("currentPageUrl", currentPageUrl);
+
+//        System.out.println("====================refererrefere=====================" + referer);
         return "member/login_form";
     }
 
-    @PostMapping("/login/contents")
-    public String loginFromContents(@RequestParam(name = "url")String url) {
-        return "redirect:" + url;
+    @GetMapping("/login/contents")
+    public String loginFromContents() {
+        return "member/login_form";
     }
-
     @GetMapping("/login/google")
     public String googleLogin() {
         return "redirect:/oauth2/authorization/google";
