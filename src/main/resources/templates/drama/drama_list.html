@@ -24,9 +24,55 @@
                 </div>
                 <div class="swiper-wrapper">
                     <div class="swiper-slide" style="display:flex; font-size: 18px; align-items: center; height : 100%;"
-                         th:each="dramaList : ${dramaListList}">
+                         th:each="dramaList1 : ${dramaListList1}">
                         <form style="display : grid; margin-left:15px;"
-                              th:action="@{/drama/detail}" method="get" th:each="drama : ${dramaList}">
+                              th:action="@{/drama/detail}" method="get" th:each="drama : ${dramaList1}">
+                            <button>
+                                <div class="img"
+                                     style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
+                                    <img th:src="${'/dramaImage' + drama.imageUrl}"
+                                         th:if="${not #strings.isEmpty(drama.imageUrl)}">
+                                    <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(drama.imageUrl)}"
+                                         style="width : 213px; height : 303px;">
+                                </div>
+                                <div class="short-info" style="display : inline-grid; margin-left : 5px;">
+                                    <form class="title-co">
+                                        <input class="title" name="title"
+                                               th:value="${#strings.length(drama.title) > 17 ? #strings.substring(drama.title, 0, 17) + '..' : drama.title}"
+                                               style="font-size : 17px;" onclick="goDetail('.title-co');" readonly>
+                                        <div class="mv-text" th:text="${drama.title}"></div>
+                                    </form>
+                                    <div class="short-kind" style="display : flex; flex-direction : column; text-align : left;">
+                                        <span th:text="${drama.genre}" style="color : #868e96; font-size : 15px;"></span>
+                                        <span th:text="${#strings.length(drama.releaseDate) >= 8 ? '오픈' + #strings.substring(drama.releaseDate, 0, 4) + '.' +
+                                         #strings.substring(drama.releaseDate, 4, 6) + '.' + #strings.substring(drama.releaseDate, 6, 8) : ''}"
+                                              style="color: #868e96; font-size: 15px;"></span>
+                                    </div>
+                                    <input type="hidden" name="dramaId" th:value="${drama.getId()}">
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="swiper-button-next" style="color : #FFD400;"></div>
+                <div class="swiper-button-prev" style="color : #FFD400;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="swiper-2">
+        <div style="width : 1340px; margin : auto;">
+            <div class="swiper mySwiper" style="margin-top: 10px; margin-bottom: 55px; width: 95%;">
+                <div style="display : flex; flex-direction: column-reverse; padding:5px">
+                    <div class="swiper-pagination swiper-pagination"
+                         style="position:relative; margin-top:5px; display:flex; flex-direction:row; justify-content:flex-end;">
+                    </div>
+                    <span style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px; margin-left: 6%">해외 드라마</span>
+                </div>
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" style="display:flex; font-size: 18px; align-items: center; height : 100%;"
+                         th:each="dramaList2 : ${dramaListList2}">
+                        <form style="display : grid; margin-left:15px;"
+                              th:action="@{/drama/detail}" method="get" th:each="drama : ${dramaList2}">
                             <button>
                                 <div class="img"
                                      style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
@@ -72,6 +118,7 @@
                       prevEl: ".swiper-button-prev",
                   },
               });
+
     </script>
 </div>
 </body>
