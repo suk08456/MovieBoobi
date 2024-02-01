@@ -65,6 +65,22 @@ public class ReviewController {
         return "redirect:/movie/detail/" + movieCD;
     }
 
+
+    @GetMapping("/modify/{id}")
+    public String movieReviewModify(@RequestParam("movieCD") String movieCD, @RequestParam("comment") String comment, @RequestParam("rating") Double rating, Principal principal){
+        String providerID = "";
+        if(principal != null ) {
+            providerID = principal.getName();
+        }
+        Member member = this.memberService.findByproviderId(providerID);
+        if (member == null) {
+            member = this.memberService.getMember(providerID);
+        }
+
+        this.reviewService.modifyMovieReview(movieCD, comment, rating);
+        return "redirect:/movie/detail/"+ movieCD;
+    }
+
     @GetMapping("/create/book")
     public String createBookReview(@RequestParam("isbn") String isbn, @RequestParam("comment") String comment, @RequestParam("rating") Double rating, Principal principal) {
 
@@ -200,7 +216,6 @@ public class ReviewController {
         model.addAttribute("review", review);
         return "review/review_detail";
     }
-
 
 
 

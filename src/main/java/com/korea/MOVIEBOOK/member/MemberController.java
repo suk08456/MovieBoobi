@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -109,6 +110,11 @@ public class MemberController {
     @GetMapping("/login")
     public String login() {
         return "member/login_form";
+    }
+
+    @PostMapping("/login/contents")
+    public String loginFromContents(@RequestParam(name = "url")String url) {
+        return "redirect:" + url;
     }
 
     @GetMapping("/login/google")
@@ -253,9 +259,9 @@ public class MemberController {
 
 
     @GetMapping("/changeInformation")
-    public String updateNm(Model model, NicknameForm nicknameForm, Principal principal) {
+    public String updateNm(Model model, NicknameForm nicknameForm, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
 
-        paymentMember(model, principal);
+        paymentMember(model, principal, page);
         model.addAttribute("parameter", 1);
         return "member/changeinfor";
     }
@@ -273,7 +279,7 @@ public class MemberController {
             return "member/changeinfor";
         }
 
-        if (nicknameForm.getNewNickname().length() >= 3 || nicknameForm.getNewNickname().length() > 20) {
+        if (nicknameForm.getNewNickname().length() >= 2 || nicknameForm.getNewNickname().length() > 8) {
             Member member = memberService.findByusername(principal.getName());
             if (member == null) {
                 member = memberService.findByproviderId(principal.getName());
@@ -286,8 +292,8 @@ public class MemberController {
     }
 
     @GetMapping("/changePw")
-    public String changePw(Model model, PasswordChangeForm passwordChangeForm, Principal principal) {
-        paymentMember(model, principal);
+    public String changePw(Model model, PasswordChangeForm passwordChangeForm, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
+        paymentMember(model, principal, page);
         model.addAttribute("parameter", 2);
 
         return "member/changepw";
@@ -327,53 +333,52 @@ public class MemberController {
 
 
     @GetMapping("/purchasedetails")
-    public String memberPurchaseDetails(PasswordResetForm passwordResetForm, Principal principal, Model model) {
-        paymentMember(model, principal);
+    public String memberPurchaseDetails(PasswordResetForm passwordResetForm, Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
+
+
+        paymentMember(model, principal, page);
         model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/member_purchase_details";
     }
 
 
     @GetMapping("/purchasedetails/movie")
-    public String moviepurchasedetails(Principal principal, Model model) {
-
-        paymentMember(model, principal);
-
+    public String moviepurchasedetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        paymentMember(model, principal, page);
         return "member/contents_purchase_details/movie_purchase_details";
     }
 
     @GetMapping("/purchasedetails/drama")
-    public String dramapurchasedetails(Principal principal, Model model) {
-        paymentMember(model, principal);
-
+    public String dramapurchasedetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        paymentMember(model, principal, page);
         return "member/contents_purchase_details/drama_purchase_details";
     }
 
     @GetMapping("/purchasedetails/book")
-    public String bookpurchasedetails(Principal principal, Model model) {
-
-        paymentMember(model, principal);
+    public String bookpurchasedetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        paymentMember(model, principal, page);
         return "member/contents_purchase_details/book_purchase_details";
     }
 
     @GetMapping("/purchasedetails/webtoon")
-    public String webtoonpurchasedetails(Principal principal, Model model) {
-        paymentMember(model, principal);
+    public String webtoonpurchasedetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        paymentMember(model, principal, page);
         return "member/contents_purchase_details/webtoon_purchase_details";
     }
 
 
     @GetMapping("/purchasedetails/total")
-    public String totalContentsPurchaseDetails(Principal principal, Model model){
-        paymentMember(model, principal);
+    public String totalContentsPurchaseDetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page){
+        paymentMember(model, principal, page);
         return "member/contents_purchase_details/totalcontents_purchase_details";
     }
 
 
 
     @GetMapping("/deleteForm")
-    public String memberDeleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model) {
-        paymentMember(model, principal);
+    public String memberDeleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        paymentMember(model, principal, page);
+        model.addAttribute("parameter", 4);
         return "member/delete_form";
     }
 
@@ -413,7 +418,7 @@ public class MemberController {
     }
 
 
-    public void paymentMember(Model model, Principal principal){
+    public void paymentMember(Model model, Principal principal, @RequestParam(value="page", defaultValue="0") int page){
         Member member = memberService.findByusername(principal.getName());
         if (member == null) {
             member = memberService.findByproviderId(principal.getName());
@@ -429,12 +434,12 @@ public class MemberController {
                 sum -= Long.valueOf(payments.get(i).getPaidAmount());
             }
         }
+        Page<Payment> paging = this.paymentService.getPaymentsByMember(member, page);
 
+        model.addAttribute("paging", paging);
         model.addAttribute("sum", sum);
         model.addAttribute("PaymentList", payments);
         model.addAttribute("member", member);
     }
-
-
 }
 

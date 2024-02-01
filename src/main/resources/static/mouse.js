@@ -1,189 +1,153 @@
 
-            var colour="random"; // in addition to "random" can be set to any valid colour eg "#f0f" or "red"
-            var sparkles=50;
+// <![CDATA[
+var sparks=75; // how many sparks per clicksplosion
+var speed=33; // how fast - smaller is faster
+var bangs=5; // how many can be launched simultaneously (note that using too many can slow the script down)
+var colours=new Array('#03f', '#f03', '#0e0', '#93f', '#0cf', '#f93', '#f0c'); 
+//                     blue    red     green   purple  cyan    orange  pink
 
-            var x=ox=400;
-            var y=oy=300;
-            var swide=800;
-            var shigh=600;
-            var sleft=sdown=0;
-            var tiny=new Array();
-            var star=new Array();
-            var starv=new Array();
-            var starx=new Array();
-            var stary=new Array();
-            var tinyx=new Array();
-            var tinyy=new Array();
-            var tinyv=new Array();
+/****************************
+*   Clicksplosion Effect    *
+*(c)2012-3 mf2fm web-design *
+*  http://www.mf2fm.com/rv  *
+* DON'T EDIT BELOW THIS BOX *
+****************************/
+var intensity=new Array();
+var Xpos=new Array();
+var Ypos=new Array();
+var dX=new Array();
+var dY=new Array();
+var stars=new Array();
+var decay=new Array();
+var timers=new Array();
+var swide=800;
+var shigh=600;
+var sleft=sdown=0;
+var count=0;
 
-            window.onload=function() { if (document.getElementById) {
-              var i, rats, rlef, rdow;
-              for (var i=0; i<sparkles; i++) {
-                var rats=createDiv(3, 3);
-                rats.style.visibility="hidden";
-                rats.style.zIndex="999";
-                document.body.appendChild(tiny[i]=rats);
-                starv[i]=0;
-                tinyv[i]=0;
-                var rats=createDiv(5, 5);
-                rats.style.backgroundColor="transparent";
-                rats.style.visibility="hidden";
-                rats.style.zIndex="999";
-                var rlef=createDiv(1, 5);
-                var rdow=createDiv(5, 1);
-                rats.appendChild(rlef);
-                rats.appendChild(rdow);
-                rlef.style.top="2px";
-                rlef.style.left="0px";
-                rdow.style.top="0px";
-                rdow.style.left="2px";
-                document.body.appendChild(star[i]=rats);
-              }
-              set_width();
-              sparkle();
-            }}
+function addLoadEvent(funky) {
+  var oldonload=window.onload;
+  if (typeof(oldonload)!='function') window.onload=funky;
+  else window.onload=function() {
+    if (oldonload) oldonload();
+    funky();
+  }
+}
 
-            function sparkle() {
-              var c;
-              if (Math.abs(x-ox)>1 || Math.abs(y-oy)>1) {
-                ox=x;
-                oy=y;
-                for (c=0; c<sparkles; c++) if (!starv[c]) {
-                  star[c].style.left=(starx[c]=x)+"px";
-                  star[c].style.top=(stary[c]=y+1)+"px";
-                  star[c].style.clip="rect(0px, 5px, 5px, 0px)";
-                  star[c].childNodes[0].style.backgroundColor=star[c].childNodes[1].style.backgroundColor=(colour=="random")?newColour():colour;
-                  star[c].style.visibility="visible";
-                  starv[c]=50;
-                  break;
-                }
-              }
-              for (c=0; c<sparkles; c++) {
-                if (starv[c]) update_star(c);
-                if (tinyv[c]) update_tiny(c);
-              }
-              setTimeout("sparkle()", 40);
-            }
+addLoadEvent(clicksplode);
 
-            function update_star(i) {
-              if (--starv[i]==25) star[i].style.clip="rect(1px, 4px, 4px, 1px)";
-              if (starv[i]) {
-                stary[i]+=1+Math.random()*3;
-                starx[i]+=(i%5-2)/5;
-                if (stary[i]<shigh+sdown) {
-                  star[i].style.top=stary[i]+"px";
-                  star[i].style.left=starx[i]+"px";
-                }
-                else {
-                  star[i].style.visibility="hidden";
-                  starv[i]=0;
-                  return;
-                }
-              }
-              else {
-                tinyv[i]=50;
-                tiny[i].style.top=(tinyy[i]=stary[i])+"px";
-                tiny[i].style.left=(tinyx[i]=starx[i])+"px";
-                tiny[i].style.width="2px";
-                tiny[i].style.height="2px";
-                tiny[i].style.backgroundColor=star[i].childNodes[0].style.backgroundColor;
-                star[i].style.visibility="hidden";
-                tiny[i].style.visibility="visible"
-              }
-            }
+function clicksplode() { if (document.getElementById) {
+  var i, j;
+  window.onscroll=set_scroll;
+  window.onresize=set_width;
+  document.onclick=eksplode;
+  set_width();
+  set_scroll();
+  for (i=0; i<bangs; i++) for (j=sparks*i; j<sparks+sparks*i; j++) {
+    stars[j]=createDiv('*', 13);
+    document.body.appendChild(stars[j]);
+  }
+}}
 
-            function update_tiny(i) {
-              if (--tinyv[i]==25) {
-                tiny[i].style.width="1px";
-                tiny[i].style.height="1px";
-              }
-              if (tinyv[i]) {
-                tinyy[i]+=1+Math.random()*3;
-                tinyx[i]+=(i%5-2)/5;
-                if (tinyy[i]<shigh+sdown) {
-                  tiny[i].style.top=tinyy[i]+"px";
-                  tiny[i].style.left=tinyx[i]+"px";
-                }
-                else {
-                  tiny[i].style.visibility="hidden";
-                  tinyv[i]=0;
-                  return;
-                }
-              }
-              else tiny[i].style.visibility="hidden";
-            }
+function createDiv(char, size) {
+  var div, sty;
+  div=document.createElement('div');
+  sty=div.style;
+  sty.font=size+'px monospace';
+  sty.position='absolute';
+  sty.backgroundColor='transparent';
+  sty.visibility='hidden';
+  sty.zIndex='101';
+  div.appendChild(document.createTextNode(char));
+  return (div);
+}
 
-            document.onmousemove=mouse;
-            function mouse(e) {
-              if (e) {
-                y=e.pageY;
-                x=e.pageX;
-              }
-              else {
-                set_scroll();
-                y=event.y+sdown;
-                x=event.x+sleft;
-              }
-            }
+function bang(N) {
+  var i, Z, A=0;
+  for (i=sparks*N; i<sparks*(N+1); i++) { 
+    if (decay[i]) {
+      Z=stars[i].style;
+      Xpos[i]+=dX[i];
+      Ypos[i]+=(dY[i]+=1.25/intensity[N]);
+      if (Xpos[i]>=swide || Xpos[i]<0 || Ypos[i]>=shigh+sdown || Ypos[i]<0) decay[i]=1;
+	  else {
+        Z.left=Xpos[i]+'px';
+        Z.top=Ypos[i]+'px';
+	  }
+      if (decay[i]==15) Z.fontSize='7px';
+      else if (decay[i]==7) Z.fontSize='2px';
+      else if (decay[i]==1) Z.visibility='hidden';
+	  decay[i]--;
+	}
+	else A++;
+  }
+  if (A!=sparks) timers[N]=setTimeout('bang('+N+')', speed);
+}
 
-            window.onscroll=set_scroll;
-            function set_scroll() {
-              if (typeof(self.pageYOffset)=='number') {
-                sdown=self.pageYOffset;
-                sleft=self.pageXOffset;
-              }
-              else if (document.body && (document.body.scrollTop || document.body.scrollLeft)) {
-                sdown=document.body.scrollTop;
-                sleft=document.body.scrollLeft;
-              }
-              else if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.scrollLeft)) {
-                sleft=document.documentElement.scrollLeft;
-                sdown=document.documentElement.scrollTop;
-              }
-              else {
-                sdown=0;
-                sleft=0;
-              }
-            }
+function eksplode(e) { 
+  var x, y, i, M, Z, N;
+  set_scroll();
+  y=(e)?e.pageY:event.y+sdown;
+  x=(e)?e.pageX:event.x+sleft;
+  N=++count%bangs;
+  M=Math.floor(Math.random()*3*colours.length);
+  intensity[N]=5+Math.random()*4;
+  for (i=N*sparks; i<(N+1)*sparks; i++) {
+    Xpos[i]=x;
+    Ypos[i]=y-5;
+    dY[i]=(Math.random()-0.5)*intensity[N];
+    dX[i]=(Math.random()-0.5)*(intensity[N]-Math.abs(dY[i]))*1.25;
+    decay[i]=16+Math.floor(Math.random()*16);
+    Z=stars[i].style;
+    if (M<colours.length) Z.color=colours[i%2?count%colours.length:M];
+    else if (M<2*colours.length) Z.color=colours[count%colours.length];
+    else Z.color=colours[i%colours.length];
+    Z.fontSize='13px';
+    Z.visibility='visible';
+  }
+  clearTimeout(timers[N]);
+  bang(N);
+} 
 
-            window.onresize=set_width;
-            function set_width() {
-              var sw_min=999999;
-              var sh_min=999999;
-              if (document.documentElement && document.documentElement.clientWidth) {
-                if (document.documentElement.clientWidth>0) sw_min=document.documentElement.clientWidth;
-                if (document.documentElement.clientHeight>0) sh_min=document.documentElement.clientHeight;
-              }
-              if (typeof(self.innerWidth)=='number' && self.innerWidth) {
-                if (self.innerWidth>0 && self.innerWidth<sw_min) sw_min=self.innerWidth;
-                if (self.innerHeight>0 && self.innerHeight<sh_min) sh_min=self.innerHeight;
-              }
-              if (document.body.clientWidth) {
-                if (document.body.clientWidth>0 && document.body.clientWidth<sw_min) sw_min=document.body.clientWidth;
-                if (document.body.clientHeight>0 && document.body.clientHeight<sh_min) sh_min=document.body.clientHeight;
-              }
-              if (sw_min==999999 || sh_min==999999) {
-                sw_min=800;
-                sh_min=600;
-              }
-              swide=sw_min;
-              shigh=sh_min;
-            }
+function set_width() {
+  var sw_min=999999;
+  var sh_min=999999;
+  if (document.documentElement && document.documentElement.clientWidth) {
+    if (document.documentElement.clientWidth>0) sw_min=document.documentElement.clientWidth;
+    if (document.documentElement.clientHeight>0) sh_min=document.documentElement.clientHeight;
+  }
+  if (typeof(self.innerWidth)=='number' && self.innerWidth) {
+    if (self.innerWidth>0 && self.innerWidth<sw_min) sw_min=self.innerWidth;
+    if (self.innerHeight>0 && self.innerHeight<sh_min) sh_min=self.innerHeight;
+  }
+  if (document.body.clientWidth) {
+    if (document.body.clientWidth>0 && document.body.clientWidth<sw_min) sw_min=document.body.clientWidth;
+    if (document.body.clientHeight>0 && document.body.clientHeight<sh_min) sh_min=document.body.clientHeight;
+  }
+  if (sw_min==999999 || sh_min==999999) {
+    sw_min=800;
+    sh_min=600;
+  }
+  swide=sw_min-7;
+  shigh=sh_min-7;
+}
 
-            function createDiv(height, width) {
-              var div=document.createElement("div");
-              div.style.position="absolute";
-              div.style.height=height+"px";
-              div.style.width=width+"px";
-              div.style.overflow="hidden";
-              return (div);
-            }
-
-            function newColour() {
-              var c=new Array();
-              c[0]=255;
-              c[1]=Math.floor(Math.random()*256);
-              c[2]=Math.floor(Math.random()*(256-c[1]/2));
-              c.sort(function(){return (0.5 - Math.random());});
-              return ("rgb("+c[0]+", "+c[1]+", "+c[2]+")");
-            }
+function set_scroll() {
+  if (typeof(self.pageYOffset)=='number') {
+    sdown=self.pageYOffset;
+    sleft=self.pageXOffset;
+  }
+  else if (document.body && (document.body.scrollTop || document.body.scrollLeft)) {
+    sdown=document.body.scrollTop;
+    sleft=document.body.scrollLeft;
+  }
+  else if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.scrollLeft)) {
+    sleft=document.documentElement.scrollLeft;
+    sdown=document.documentElement.scrollTop;
+  }
+  else {
+    sdown=0;
+    sleft=0;
+  }
+}
+// ]]>

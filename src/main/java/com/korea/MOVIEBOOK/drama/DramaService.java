@@ -48,28 +48,45 @@ public class DramaService {
 
         String director = "";
         if(!drama.getDirector().isEmpty()) {
-            director = drama.getDirector() + "(감독)";
+            director = drama.getDirector();
         }
         String actor = drama.getActor();
         String[] actors = new String[]{};
         if(!actor.isEmpty()) {
             actors = actor.split(",");
         }
-        List<String> actorList = new ArrayList<>(Arrays.asList(actors));
+
+        List<String> dramaName = new ArrayList<>();
+        List<String> dramaRole = new ArrayList<>();
+
+        for (String actorList : actors) {
+            int idx = actorList.indexOf('(');
+            if (idx != -1) {
+                dramaName.add(actorList.substring(0, idx).trim());
+                dramaRole.add(actorList.substring(idx).trim());
+            }
+        }
+
+        List<String> actorList = new ArrayList<>();
+
+        for(int i = 0; i < dramaName.size(); i++){
+            actorList.add(dramaName.get(i));
+            actorList.add(dramaRole.get(i));
+        }
 
         actorList.add(director);
+        actorList.add("(감독)");
 
-        List<List<String>>actorListList = new ArrayList<>();
-
-        Integer chunkSize = 8;
-        Integer totalElements = actorList.size();
+        List<List<String>> actorListList = new ArrayList<>();
+        int chunkSize = 16;
+        int totalElements = actorList.size();
 
         for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
             int start = i * chunkSize;
             int end = Math.min((i + 1) * chunkSize, totalElements);
+
             actorListList.add(actorList.subList(start, end));
         }
-
         return actorListList;
     }
 

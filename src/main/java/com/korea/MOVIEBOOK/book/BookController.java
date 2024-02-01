@@ -1,6 +1,6 @@
 package com.korea.MOVIEBOOK.book;
 
-import com.korea.MOVIEBOOK.ContentsController;
+import com.korea.MOVIEBOOK.ContentsService;
 import com.korea.MOVIEBOOK.ContentsDTO;
 import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.heart.HeartRepository;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookService bookService;
-    private final ContentsController contentsController;
+    private final ContentsService contentsService;
     private final MemberService memberService;
     private final PaymentRepository paymentRepository;
     private final HeartRepository heartRepository;
@@ -71,7 +71,7 @@ public class BookController {
     @GetMapping("/detail")
     public String bookDetail(String isbn, Model model, Principal principal) {
         Book book = bookService.findByIsbn(isbn);
-        ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
+        ContentsDTO contentsDTOS = this.contentsService.setBookContentsDTO(book);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
         List<Review> reviews = book.getReviewList().stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = book.getReviewList();
@@ -147,7 +147,7 @@ public class BookController {
     @GetMapping("/detail/{isbn}")
     public String bookDetail1(@PathVariable("isbn") String isbn, Model model, Principal principal) {
         Book book = bookService.findByIsbn(isbn);
-        ContentsDTO contentsDTOS = this.contentsController.setBookContentsDTO(book);
+        ContentsDTO contentsDTOS = this.contentsService.setBookContentsDTO(book);
         List<List<String>> authorListList = bookService.getAuthorListList(book);
         List<Review> reviews = book.getReviewList().stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = book.getReviewList();

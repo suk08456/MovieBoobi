@@ -1,24 +1,48 @@
 <html lang="ko" layout:decorate="~{/customerSupport/customerSupportLayout}">
-<div layout:fragment="CScontent" class="menuDetail" id="question" style="padding: 40px 40px 0px 50px; min-width: 100vh">
+<div layout:fragment="CScontent" class="menuDetail" id="default" style="height: 100vh; padding: 40px 40px 0px 50px; min-width: 100vh;">
     <div style="height: 100%;">
-        <form th:action="@{/customerSupport/question/createQuestion}" method="post" style="height: 100%;">
+        <form th:action id="createForm" method="post" style="height: 100%;">
             <input class="input input-bordered w-full" name="title" type="text" placeholder="제목" style="margin-bottom: 10px;"/>
             <div class="textarea textarea-bordered textarea-3xl w-full" id="container"
                  oninput="onDivContentHandler()" contentEditable='true' style="height: 80%; resize: none; overflow: auto;">
             </div>
             <textarea name="content" id="hiddenTextarea" style="display:none;"></textarea>
             <div style="display: flex; flex-direction: row-reverse;">
-                <input type="submit" class="btn btn-outline" th:value="저장하기">
+                <input type="button" class="btn btn-outline" th:value="저장하기" onclick="createForm()">
             </div>
             <div>
                 <input type="file" name="img">
             </div>
+            <span th:text="${category}"></span>
         </form>
     </div>
-    <script>
+    <script th:inline="javascript">
         function onDivContentHandler() {
             var divContent = document.getElementById('container').innerText;
             document.getElementById('hiddenTextarea').value = divContent;
+        }
+
+        function createForm() {
+            var category = /*[[${category}]]*/ null;
+            if (category === "NOTICE") {
+                document.getElementById('createForm').action = '/customerSupport/question/createNotice';
+            } else if (category === "FAQ") {
+                document.getElementById('createForm').action = '/customerSupport/question/createFAQ';
+            } else if (category === "QUESTION") {
+                document.getElementById('createForm').action = '/customerSupport/question/createQuestion';
+            }
+            document.getElementById('createForm').submit();
+        }
+
+        var category = /*[[${category}]]*/ null;
+        var menuDetail = document.querySelector('.menuDetail');
+
+        if (category === "NOTICE") {
+            menuDetail.id = "notice";
+        } else if (category === "FAQ") {
+            menuDetail.id = "FAQ";
+        } else if (category === "QUESTION") {
+            menuDetail.id = "question";
         }
     </script>
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>

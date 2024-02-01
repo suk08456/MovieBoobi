@@ -1,7 +1,11 @@
 package com.korea.MOVIEBOOK.customerSupport.question;
 
+import com.korea.MOVIEBOOK.customerSupport.Category;
 import com.korea.MOVIEBOOK.member.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,22 +18,24 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public void create(Member member, String title, String content) {
+    public void create(Member member, String title, String content, Category category) {
         Question question = new Question();
         question.setTitle(title);
         question.setContent(content);
+        question.setCategory(category);
         question.setWriteDate(LocalDateTime.now());
         question.setMember(member);
         questionRepository.save(question);
     }
 
-    public List<Question> getQuestionList() {
-        return questionRepository.findAll();
+    public Page<Question> getQuestionList(Category category, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return questionRepository.findByCategory(category, pageable);
     }
 
-    public List<Question> getMyQuestionList(Member member) {
-        List<Question> myQuestion = questionRepository.findByMember(member);
-        return myQuestion;
+    public Page<Question> getMyQuestionList(Member member, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return questionRepository.findByMember(member, pageable);
     }
 
     public Question findByQuestionId(Long questionId) {

@@ -1,33 +1,27 @@
-
-<div id="board-list">
-    <div>
-        <table class="board-table">
-            <thead>
-            <tr class="text-center">
-                <th style="width:15%">번호</th>
-                <th style="width:25%">제목</th>
-                <th style="width:30%">작성자</th>
-                <th style="width:20%">작성일시</th>
-                <th style="width:20%">조회수</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="text-center" th:each="post, loop : ${paging.content}">
-                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
-                <td class="text-start">
-                    <a class="Post-List" style="text-decoration: none;"
-                       th:href="@{|/post/detail/${post.id}|}"
-                       th:text="${post.title}"></a>
-                    <span class="text-danger small ms-2" th:if="${#lists.size(post.commentList) > 0}">
-                                    <span class="comment-text" th:text="${#lists.size(post.commentList)}"></span>
-                                    </span>
-                </td>
-                <td><span th:if="${post.customer != null}" th:text="${post.customer.nickname}"></span>
-                </td>
-                <td th:text="${#temporals.format(post.localDateTime, 'yyyy-MM-dd HH:mm')}"></td>
-                <td th:text="${post.view != null ? post.view : 0}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+<table>
+    <caption style="font-weight: bold; font-size: 23px;">구매 내역</caption>
+    <thead>
+    <tr style="background: black;">
+        <th></th>
+        <th>구매 일자</th>
+        <th>제목</th>
+        <th></th>
+    </tr>
+    </thead>
+    <form th:each="payment : ${PaymentList}" th:action="@{/webtoon/detail}" method="get">
+        <tbody>
+        <tr th:if="${payment.webtoon}">
+            <td> <img th:src="${payment.webtoon.imageUrl}"></td>
+            <td><span th:text="${payment.dateTime}"></span></td>
+            <td><span th:text="${payment.webtoon.title}"></span></td>
+            <td>
+                <button class="view"><input th:value="${payment.webtoon.webtoonId}" name="webtoonId" type="hidden">상세 정보
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </form>
+    <tfoot>
+    <td colspan="5" class="tablefoot"></td>
+    </tfoot>
+</table>

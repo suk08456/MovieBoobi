@@ -16,7 +16,7 @@
         <div style="width : 900px; display : flex; flex-direction : column; padding : 22px;">
             <span style="font-size: larger; font-weight: bold;"> 결제 및 구매 내역 </span>
             <div style="margin-left : 50px; margin-top : 40px;">
-                <div style="min-height : 360px;">
+                <div style="min-height : 500px;">
                     <table>
                         <tr>
                             <th>순번</th>
@@ -35,23 +35,21 @@
                         </tr>
                     </table>
                 </div>
-                <div class="join" th:if="${paging.totalPages > 0}"
-                     style="display : flex; justify-content : space-around; margin-top : 18px;">
+                <div class="join" th:if="${paging.totalPages > 0}" style="display : flex; justify-content : space-around; margin-top : 18px;">
                     <ul class="pagination justify-content-center" style="display : flex;">
-                        <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-                            <a class="join-item btn"
-                               th:href="@{|?page=${paging.number-1}|}">
+                        <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'btn-disabled'">
+                            <a class="join-item btn" th:if="${paging.hasPrevious}" th:href="@{|?page=${paging.number-1}|}">
                                 <span>«</span>
                             </a>
                         </li>
                         <li th:each="page: ${#numbers.sequence(paging.number, paging.number)}"
                             th:if="${page >= paging.number and page <= paging.number}"
                             th:classappend="${page == paging.number} ? 'active'"
-                            class="page-item">
-                            <a th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></a>
+                            class="page-item btn-disabled">
+                            <span th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></span>
                         </li>
-                        <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-                            <a class="join-item btn" th:href="@{|?page=${paging.number+1}|}">
+                        <li class="page-item" th:classappend="${!paging.hasNext} ? 'btn-disabled'">
+                            <a class="join-item btn" th:if="${paging.hasNext}" th:href="@{|?page=${paging.number+1}|}">
                                 <span>»</span>
                             </a>
                         </li>
@@ -73,8 +71,7 @@
                           style="font-size : large; width : 100%; height : 27px; margin-top : 33px; margin-left : 5px;"></span>
 
                         <span sec:authorize="isAnonymous()"
-                              text="방문자님 안녕하세요'"
-                              style="font-size : large; width : 100%; height : 27px; margin-top : 33px; margin-left : 5px;"></span>
+                              style="font-size : large; width : 100%; height : 27px; margin-top : 33px; margin-left : 5px;">Guest님 안녕하세요</span>
                         <div style="display : flex; font-weight : bold;">
                             <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
                             <span style="margin-right : 3px;">보유 코인 : </span>
@@ -162,7 +159,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="margin-top : -19px; margin-left : 2px; display : flex; justify-content : space-evenly; ">
+                <div sec:authorize="isAuthenticated()" style="margin-top : -19px; margin-left : 2px; display : flex; justify-content : space-evenly;">
                     <button id="kakaoPayment" style="margin-top: 30px;">
                         <img src="/imgs/kakaopay.png" style="width : 95px;">
                     </button>
@@ -170,9 +167,16 @@
                         <img src="/imgs/tossPay.png" style="width: 95px; margin-bottom : 8px;">
                     </button>
                 </div>
+                <div sec:authorize="isAnonymous()" style="margin-top : -19px; margin-left : 2px; display : flex; justify-content : space-evenly;">
+                    <button style="margin-top: 30px; display : flex;" onclick="clickPayment_unlogging()">
+                        <img src="/imgs/kakaopay.png" style="width : 95px;">
+                        <img src="/imgs/tossPay.png" style="width: 95px; margin-bottom : 8px; margin-top : 7px; margin-left : 32px;">
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         ////////////////////////////////////////////////  결제 구현  ////////////////////////////////////////////////
             var today = new Date();
@@ -187,6 +191,31 @@
             var csrfToken = $("meta[name='_csrf']").attr("content");
             var csrfHeader = $("meta[name='_csrf_header']").attr("content");
 
+            function clickPayment_unlogging(){
+                error_page('로그인 후 이용해주세요.');
+            }
+
+            function error_page(title){
+                Swal.fire({
+                        icon: 'warning',
+                        title: title,
+                });
+            }
+
+            function check_info(m_email, s_phone, amount, msg) {
+                if (m_email == "" && s_phone == "") {
+                    error_page(msg + '\n이메일과 전화번호를 작성해주세요.');
+                    return false;
+                } else if (m_email == "") {
+                    error_page(msg + '\n이메일을 작성해주세요.');
+                    return false;
+                } else if (s_phone == "") {
+                    error_page(msg + '\n전화번호를 작성해주세요.');
+                    return false;
+                }
+                return true;
+            }
+
             $(document).ready(function(){
                 $("#kakaoPayment").click(function(){
                     var m_email = $("input.m_email").val();
@@ -196,6 +225,10 @@
                     var pg = kakaoPg;
                     var amount = $('input.totalAmount').val().replace(/,/g, '');
                     var url = 'kakaoPayCheck';
+                    if(amount == ""){
+                        error_page('결제금액을 선택해주세요')
+                        return false;
+                    }
                     payment(m_email, s_name, m_id, s_phone, pg, amount, url);
                 });
                 $("#TossPayment").click(function(){
@@ -206,6 +239,10 @@
                     var pg = tossPg;
                     var amount = $('input.totalAmount').val().replace(/,/g, '');
                     var url = 'tossPayCheck';
+                    if(amount == ""){
+                        error_page('결제금액을 선택해주세요')
+                        return false;
+                    }
                     payment(m_email, s_name, m_id, s_phone, pg, amount, url);
                 });
             })
@@ -254,9 +291,9 @@
                     });
                 } else {
                    var msg = '결제에 실패하였습니다.';
-                   msg += '에러내용 : ' + rsp.error_msg;
+<!--                   msg += '에러내용 : ' + rsp.error_msg;-->
                 }
-                 alert(msg);
+                 check_info(m_email, s_phone, amount, msg);
             });
            }
         ////////////////////////////////////////////////  결제 구현 끝  ////////////////////////////////////////////////

@@ -14,7 +14,8 @@
 <body layout:fragment="content">
 <div class="swiper-1">
     <div style="width : 1340px; margin : auto;">
-        <div class="swiper mySwiper" style="margin-top: 10px; margin-bottom: 55px; width: 95%;"
+        <div class="swiper mySwiper"
+             style="margin-top: 10px; margin-bottom: 55px; width: 95%; position : relative; z-index : 0;"
              th:each="movieListList, indexNum : ${allList}">
             <div style="display : flex; flex-direction: column-reverse; padding:5px">
                 <div class="swiper-pagination swiper-pagination"
@@ -23,13 +24,16 @@
                 <div>
                     <div>
                         <span th:if="${indexNum.index} == 0"
-                          style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 6%">영화 TOP 10</span>
-                        <span th:if="${indexNum.index} == 0" th:text="${'(' + #strings.substring(movieDailyDate, 4, 6) + '.' + #strings.substring(movieDailyDate, 6, 8) + '기준)'}"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 6%">영화 TOP 10</span>
+                        <span th:if="${indexNum.index} == 0"
+                              th:text="${'(' + #strings.substring(movieDailyDate, 4, 6) + '.' + #strings.substring(movieDailyDate, 6, 8) + '기준)'}"
                               style="color : #868e96; font-size : 15px;"></span>
                     </div>
                     <div>
-                        <span th:if="${indexNum.index} == 1" th:text="${movieWeeklyDate}" style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 6%"></span>
-                        <span th:if="${indexNum.index} == 1" style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;"> TOP 10</span>
+                        <span th:if="${indexNum.index} == 1" th:text="${movieWeeklyDate}"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 6%"></span>
+                        <span th:if="${indexNum.index} == 1"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;"> TOP 10</span>
                     </div>
                 </div>
             </div>
@@ -40,7 +44,8 @@
                     <form style="display : grid; margin-left:15px;"
                           th:action="@{/movie/detail}" method="get" th:each="movie : ${movieList}">
                         <button>
-                            <div class="img" style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
+                            <div class="img"
+                                 style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
                                 <div class="rank" th:if="${indexNum.index} == 0" th:text="${movie.dailyRank}">
                                 </div>
                                 <div class="rank" th:if="${indexNum.index} == 1"
@@ -53,12 +58,12 @@
                                      style="width : 213px; height : 303px;">
                                 <input type="hidden" name="movieCD" th:value="${movie.movieCode}">
                             </div>
-                            <div class="short-info" style="display : inline-grid; margin-left : 5px;">
+                            <div class="short-info" th:data-id="${movie.movieCode}" th:onmouseenter="'onTitle(this, ' + ${movie.movieCode} + ')'" th:onmouseleave="'leaveTitle(' + ${movie.movieCode} + ')'" style="display : inline-grid; margin-left : 5px;">
                                 <form class="title-co">
                                     <input class="title" name="title"
                                            th:value="${#strings.length(movie.title) > 17 ? #strings.substring(movie.title, 0, 17) + '..' : movie.title}"
                                            style="font-size : 17px;" readonly>
-                                    <div class="mv-text" th:text="${movie.title}"></div>
+                                    <input class="title2" name="title" th:value="${movie.title}" hidden="hidden">
                                     <input type="hidden" name="date" th:value="${movieDailyDate}">
                                 </form>
                                 <div class="short-kind" style="text-align : left;">
@@ -81,9 +86,129 @@
             <div class="swiper-button-next" style="color : #D1180B;"></div>
             <div class="swiper-button-prev" style="color : #D1180B;"></div>
         </div>
+        <div class="swiper mySwiper"
+             style="margin-top: 10px; margin-bottom: 55px; width: 95%; position : relative; z-index : 0;"
+             th:each="serverListList, indexNum : ${allList2}">
+            <div style="display : flex; flex-direction: column-reverse; padding:5px">
+                <div class="swiper-pagination swiper-pagination"
+                     style="position:relative; margin-top:5px; display:flex; flex-direction:row; justify-content:flex-end;">
+                </div>
+                <div>
+                    <div>
+                        <span th:if="${indexNum.index} == 0"
+                              style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 6%">리뷰 순위</span>
+                    </div>
+                    <!--                    <div>-->
+                    <!--                        <span th:if="${indexNum.index} == 1" th:text="${movieWeeklyDate}" style="color : #000000; font-size : 20px; font-weight : bold; margin-left: 6%"></span>-->
+                    <!--                        <span th:if="${indexNum.index} == 1" style="color : #000000; font-size : 20px; font-weight : bold; margin-bottom : 3px;"> TOP 10</span>-->
+                    <!--                    </div>-->
+                </div>
+            </div>
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"
+                     style="display:flex; font-size: 18px; align-items: center; height : 100%; align-items: baseline;"
+                     th:each="movieList : ${serverListList}">
+                    <form style="display : grid; margin-left:15px;"
+                          th:action="@{/movie/detail}" method="get" th:each="movie : ${movieList}">
+                        <button>
+                            <div class="img"
+                                 style="padding : 5px; width: 213px; height: 305px; display: flex; justify-content: center; align-items: center;">
+                                <img th:src="${movie.imageUrl}"
+                                     th:if="${not #strings.isEmpty(movie.imageUrl)}">
+                                <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(movie.imageUrl)}"
+                                     style="width : 213px; height : 303px;">
+                                <input type="hidden" name="movieCD" th:value="${movie.movieCode}">
+                            </div>
+                            <div class="short-info" th:data-id="${movie.movieCode}" th:onmouseenter="'onTitle(this, ' + ${movie.movieCode} + ')'" th:onmouseleave="'leaveTitle(' + ${movie.movieCode} + ')'" style="display : inline-grid; margin-left : 5px;">
+                                <form class="title-co">
+                                    <input class="title" name="title"
+                                           th:value="${#strings.length(movie.title) > 17 ? #strings.substring(movie.title, 0, 17) + '..' : movie.title}"
+                                           style="font-size : 17px;" readonly>
+                                    <input class="title2" name="title" th:value="${movie.title}" hidden="hidden">
+                                    <input type="hidden" name="date" th:value="${movieDailyDate}">
+                                </form>
+                                <div th:each="ranking : ${movieRankings}" th:if="${ranking[0] == movie.id}">
+                                    <div style="display : flex; color: #868e96; font-size: 15px; justify-content: space-between;">
+                                        <div>
+                                            <span>평균 별점</span>
+                                            <span th:text="${ranking[2] != null ? ranking[2] : 0}"></span>
+                                        </div>
+                                        <div>
+                                            <span>댓글 갯수</span>
+                                            <span th:text="${ranking[1]!= null ? ranking[1] : 0}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="swiper-button-next" style="color : #D1180B;"></div>
+            <div class="swiper-button-prev" style="color : #D1180B;"></div>
+        </div>
+        <div id="mv-text-box">
+
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
+
+    function leaveTitle(id) {
+        const mvText = document.querySelector('#mv-text-' + id);
+        mvText.remove();
+    }
+    function onTitle(el, id) {
+
+        const titleInput = el.querySelector('.title');
+        const titleInput2 = el.querySelector('.title2');
+        let element2 = document.querySelector('body');
+        let elementTop2 = window.pageYOffset + element2.getBoundingClientRect().top;
+
+        let mvText = document.querySelector('#mv-text-' + id);
+
+        if(mvText == null || mvText == undefined) {
+            const dinamicMvText = document.createElement('div');
+            dinamicMvText.innerText = titleInput2.value;
+            dinamicMvText.classList.add('mv-text');
+            dinamicMvText.setAttribute('id', 'mv-text-' + id);
+
+            dinamicMvText.style.top = window.pageYOffset + titleInput.getBoundingClientRect().top + 'px';
+            dinamicMvText.style.left = window.pageXOffset + titleInput.getBoundingClientRect().left + 'px';
+
+            console.log(dinamicMvText.style.top );
+            console.log(dinamicMvText.style.left);
+
+            document.querySelector('#mv-text-box').appendChild(dinamicMvText);
+            mvText = dinamicMvText;
+        }
+        mvText.style.opacity = '1';
+    }
+
+    function handleResize() {
+        const box = document.querySelector("#mv-text-box");
+        box.innerHTML="";
+
+        const infoList = document.querySelectorAll(".short-info");
+        infoList.forEach((info) => {
+            info.addEventListener('mouseenter', (e) => {
+                const id = e.target.dataset.id
+                onTitle(e.target, id);
+            });
+        });
+
+        infoList.forEach((info) => {
+            info.addEventListener('mouseleave', (e) => {
+                const id = e.target.dataset.id
+                leaveTitle(id);
+            });
+        });
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
         var swiper = new Swiper(".mySwiper", {
                 spaceBetween: 30,
                 pagination: {

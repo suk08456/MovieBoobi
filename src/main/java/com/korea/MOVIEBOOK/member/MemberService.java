@@ -2,6 +2,9 @@ package com.korea.MOVIEBOOK.member;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +57,8 @@ public class MemberService {
     public Member findByproviderId(String id){
         return this.memberRepository.findByproviderId(id);
     }
+
+
     public Member getMember (String username) {
         Optional<Member> member = memberRepository.findByUsername(username);
 
@@ -97,14 +102,5 @@ public class MemberService {
         this.memberRepository.save(member);
     }
 
-//    public void savefile(String origFileName, String filePath, PlaceOwner placeOwner, String name, String price){
-//        PlaceMenu placeMenu = new PlaceMenu();
-//        placeMenu.setOrigFileName(origFileName);
-//        placeMenu.setFilePath(filePath);
-//        placeMenu.setMenuName(name);
-//        placeMenu.setMenuPrice(price);
-//        placeMenu.setPlaceOwner(placeOwner);
-//
-//        this.placeMenuRepository.save(placeMenu);
-//    }
+
 }

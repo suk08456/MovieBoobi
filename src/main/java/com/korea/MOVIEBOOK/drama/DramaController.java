@@ -1,7 +1,6 @@
 package com.korea.MOVIEBOOK.drama;
-import com.korea.MOVIEBOOK.ContentsController;
+import com.korea.MOVIEBOOK.ContentsService;
 import com.korea.MOVIEBOOK.ContentsDTO;
-import com.korea.MOVIEBOOK.book.Book;
 import com.korea.MOVIEBOOK.heart.Heart;
 import com.korea.MOVIEBOOK.heart.HeartRepository;
 import com.korea.MOVIEBOOK.member.Member;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
@@ -30,7 +28,7 @@ import java.util.stream.Collectors;
 public class DramaController {
 
     private final DramaService dramaService;
-    private final ContentsController contentsController;
+    private final ContentsService contentsService;
     private final PaymentRepository paymentRepository;
     private final MemberService memberService;
     private final HeartRepository heartRepository;
@@ -65,7 +63,7 @@ public class DramaController {
     @GetMapping("/detail")
     public String dramaDetail(Long dramaId, Model model, Principal principal) {
         Drama drama = dramaService.getDramaById(dramaId);
-        ContentsDTO contentsDTOS = this.contentsController.setDramaContentsDTO(drama);
+        ContentsDTO contentsDTOS = this.contentsService.setDramaContentsDTO(drama);
         List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
         List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = dramaService.getReviewByDramaId(dramaId);
@@ -127,7 +125,7 @@ public class DramaController {
     @GetMapping("/detail/{dramaId}")
     public String dramaDetail2(@PathVariable("dramaId") Long dramaId, Model model, Principal principal) {
         Drama drama = dramaService.getDramaById(dramaId);
-        ContentsDTO contentsDTOS = this.contentsController.setDramaContentsDTO(drama);
+        ContentsDTO contentsDTOS = this.contentsService.setDramaContentsDTO(drama);
         List<List<String>> actorListList =  this.dramaService.getActorListList(drama);
         List<Review> reviews = dramaService.getReviewByDramaId(dramaId).stream().limit(12).collect(Collectors.toList());
         List<Review> reviewList = dramaService.getReviewByDramaId(dramaId);

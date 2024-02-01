@@ -1,4 +1,6 @@
 package com.korea.MOVIEBOOK.webtoon.webtoonList;
+import com.korea.MOVIEBOOK.member.Member;
+import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.webtoon.days.Day;
 import com.korea.MOVIEBOOK.webtoon.days.DayService;
 import com.korea.MOVIEBOOK.webtoon.webtoonDayList.WebtoonDayList;
@@ -121,31 +123,49 @@ public class WebtoonService {
         if(!author.isEmpty()) {
             authors = author.split(",");
         }
-        List<String> authorList = new ArrayList<>(Arrays.asList(authors));
 
-        List<List<String>>authorListList = new ArrayList<>();
+        List<String> authorName = new ArrayList<>();
+        List<String> authorRole = new ArrayList<>();
 
-        Integer chunkSize = 8;
-        Integer totalElements = authorList.size();
+        for (String authorList : authors) {
+            authorName.add(authorList);
+            authorRole.add("()");
+        }
+
+        List<String> authorList = new ArrayList<>();
+        for(int i = 0; i < authorName.size(); i++){
+            authorList.add(authorName.get(i));
+            authorList.add(authorRole.get(i));
+        }
+
+        List<List<String>> actorListList = new ArrayList<>();
+        int chunkSize = 16;
+        int totalElements = authorList.size();
 
         for (int i = 0; i < (totalElements + chunkSize - 1) / chunkSize; i++) {
             int start = i * chunkSize;
             int end = Math.min((i + 1) * chunkSize, totalElements);
-            authorListList.add(authorList.subList(start, end));
+            actorListList.add(authorList.subList(start, end));
         }
-
-        return authorListList;
+        return actorListList;
     }
 
 
     public Page<Webtoon> getWebtoonList(int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("title"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, 8, Sort.by(sorts));
 
         return webtoonRepository.findAllByWebtoonKeyword(kw, pageable);
     }
 
+
+//    public Page<Webtoon> getWebtoonsPurchase(Member member, int page) {
+//        List<Sort.Order> sorts = new ArrayList<>();
+//        sorts.add(Sort.Order.desc("dateTime"));
+//        Pageable pageable = PageRequest.of(page, 8,Sort.by(sorts));
+//        return this.webtoonRepository.webtoonPurchase(member, pageable);
+//    }
 
 }
 

@@ -45,6 +45,23 @@ public class ReviewService {
         this.reviewRepository.save(review);
     }
 
+    public List<Review> findReviews(Long id){
+        return this.reviewRepository.findReviewsByMovieId(id);
+    }
+
+    public void modifyMovieReview(String movieCD,String comment, Double rating){
+        Movie movie =  this.movieService.findMovieByCD(movieCD);
+        Review review = new Review();
+        review.setMovie(movie);
+        review.setComment(comment);
+        review.setCategory("movie");
+        review.setRating(rating);
+        review.setModifyDate(LocalDateTime.now());
+        this.reviewRepository.save(review);
+    }
+
+
+
     public void saveDramaReview(Long dramaId, String comment, Double rating, Member member){
         Drama drama = this.dramaService.getDramaById(dramaId);
         Review review = new Review();
@@ -69,9 +86,7 @@ public class ReviewService {
         this.reviewRepository.save(review);
     }
 
-    public List<Review> findReviews(Long id){
-       return this.reviewRepository.findReviewsByMovieId(id);
-    }
+
 
     public void saveWebtoonReview(Long webtoonId, String comment, Double rating, Member member) {
         Webtoon webtoon = this.webtoonService.findWebtoonByWebtoonId(webtoonId);
@@ -109,9 +124,7 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
-    public void deleteReviewById(Long id) {
-        reviewRepository.deleteById(id);
-    }
+
 
     public Page<Review> getPaymentsByMovie(Movie movie, int page) {
         List<Sort.Order> sorts = new ArrayList<>();
@@ -157,4 +170,5 @@ public class ReviewService {
         existingReview.setRating(updateReview.getRating());
         reviewRepository.save(existingReview);
     }
+
 }

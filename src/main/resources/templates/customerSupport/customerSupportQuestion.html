@@ -1,11 +1,10 @@
 <html lang="ko" layout:decorate="~{/customerSupport/customerSupportLayout}">
-<div layout:fragment="CScontent" class="menuDetail" id="question" style="padding: 40px 40px 0px 50px; min-width: 100vh">
+<div layout:fragment="CScontent" class="menuDetail" id="default">
     <div style="width: 100%; display: flex; flex-direction: row-reverse;">
         <div style="display: flex; height: 2.5rem; width: 40%; margin-right: 10%;">
             <input type="text" placeholder="제목, 내용 검색" class="input input-bordered w-full"
                    style="border-top-right-radius: 0; border-bottom-right-radius: 0;height: 2.5rem;"/>
-            <button class="searchButton"
-                    style="height: 100%; padding: 5px; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
+            <button class="searchButton" style="height: 100%; padding: 5px; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
                 <img src="/imgs/dodbogi.svg" alt="" style="height: 100%;">
             </button>
         </div>
@@ -13,7 +12,7 @@
     <div class="contentList">
         <table style="width: 80%;">
             <thead>
-            <tr style="background: cyan; border-bottom: blue solid 2px;">
+            <tr class="textList">
                 <th class="noticeBoard" style="width: 10%">번호</th>
                 <th class="noticeBoard" style="width: 40%">제목</th>
                 <th class="noticeBoard">작성일</th>
@@ -21,11 +20,11 @@
             </tr>
             </thead>
             <tbody style="border-bottom: gray solid 1px;">
-            <tr th:each="question : ${questionList}">
+            <tr th:each="question : ${paging}">
                 <th class="noticeBoard" style="width: 10%" th:text="${question.id}"></th>
                 <th class="noticeBoard" style="width: 40%">
                     <form th:action="@{/customerSupport/question/detail}" method="get">
-                        <input type="submit" th:value="${question.title}">
+                        <input class="questionList" type="submit" th:value="${question.title}">
                         <input type="hidden" name="questionId" th:value="${question.id}">
                     </form>
                 </th>
@@ -35,10 +34,54 @@
             </tbody>
         </table>
     </div>
-    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;">
+    <div class="join" th:if="${paging.totalPages > 0}" style="display : flex; justify-content : space-around; margin-top : 18px;">
+        <ul class="pagination justify-content-center" style="display : flex;">
+            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'btn-disabled'">
+                <a class="join-item btn" th:if="${paging.hasPrevious}" th:href="@{|?page=${paging.number-1}|}">
+                    <span>«</span>
+                </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(paging.number, paging.number)}"
+                th:if="${page >= paging.number and page <= paging.number}"
+                th:classappend="${page == paging.number} ? 'active'"
+                class="page-item btn-disabled">
+                <span th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></span>
+            </li>
+            <li class="page-item" th:classappend="${!paging.hasNext} ? 'btn-disabled'">
+                <a class="join-item btn" th:if="${paging.hasNext}" th:href="@{|?page=${paging.number+1}|}">
+                    <span>»</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'QUESTION')}">
         <a th:href="@{/customerSupport/question/questionForm}">
             <button class="btn btn-outline">문의하기</button>
         </a>
     </div>
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'FAQ')}" sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/customerSupport/question/FAQForm}">
+            <button class="btn btn-outline">자주 묻는 질문 작성</button>
+        </a>
+    </div>
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'NOTICE')}" sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/customerSupport/question/noticeForm}">
+            <button class="btn btn-outline">공지작성</button>
+        </a>
+    </div>
+    <script th:inline="javascript">
+        var category = /*[[${category}]]*/ null;
+        var menuDetail = document.querySelector('.menuDetail');
+
+        if (category === "NOTICE") {
+            menuDetail.id = "notice";
+        } else if (category === "FAQ") {
+            menuDetail.id = "FAQ";
+        } else if (category === "QUESTION") {
+            menuDetail.id = "question";
+        } else if (category === "MYQUESTION") {
+            menuDetail.id = "myQuestion";
+        }
+    </script>
 </div>
 </html>

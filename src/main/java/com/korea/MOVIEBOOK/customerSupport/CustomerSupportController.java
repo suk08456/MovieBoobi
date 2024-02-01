@@ -5,10 +5,14 @@ import com.korea.MOVIEBOOK.customerSupport.question.QuestionService;
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
@@ -22,27 +26,35 @@ public class CustomerSupportController {
     private final MemberService memberService;
 
     @GetMapping("notice")
-    public String mainPage() {
-        return "customerSupport/customerSupportNotice";
-    }
-
-    @GetMapping("myQuestion")
-    public String myQuestion(Principal principal, Model model) {
-        Member member = memberService.getMember(principal.getName());
-        List<Question> myQuestion = questionService.getMyQuestionList(member);
-        model.addAttribute("myQuestion", myQuestion);
-        return "customerSupport/customerSupportMyQuestion";
+    public String mainPage(Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        Page<Question> paging = questionService.getQuestionList(Category.NOTICE, page);
+        model.addAttribute("paging", paging);
+        model.addAttribute("category", Category.NOTICE);
+        return "customerSupport/customerSupportQuestion";
     }
 
     @GetMapping("question")
-    public String question(Model model) {
-        List<Question> questionList = questionService.getQuestionList();
-        model.addAttribute("questionList", questionList);
+    public String question(Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        Page<Question> paging = questionService.getQuestionList(Category.QUESTION, page);
+        model.addAttribute("paging", paging);
+        model.addAttribute("category", Category.QUESTION);
         return "customerSupport/customerSupportQuestion";
     }
 
     @GetMapping("FAQ")
-    public String FAQ() {
-        return "customerSupport/customerSupportFAQ";
+    public String FAQ(Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        Page<Question> paging = questionService.getQuestionList(Category.FAQ, page);
+        model.addAttribute("paging", paging);
+        model.addAttribute("category", Category.FAQ);
+        return "customerSupport/customerSupportQuestion";
+    }
+
+    @GetMapping("myQuestion")
+    public String myQuestion(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
+        Member member = memberService.getMember(principal.getName());
+        Page<Question> paging = questionService.getMyQuestionList(member, page);
+        model.addAttribute("paging", paging);
+        model.addAttribute("category", Category.MYQUESTION);
+        return "customerSupport/customerSupportQuestion";
     }
 }

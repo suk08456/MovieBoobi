@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.customerSupport.question;
 
+import com.korea.MOVIEBOOK.customerSupport.Category;
 import com.korea.MOVIEBOOK.customerSupport.answer.Answer;
 import com.korea.MOVIEBOOK.member.Member;
 import jakarta.persistence.*;
@@ -21,6 +22,8 @@ public class Question {
     private String title;
 
     private String content;
+
+    private Category category;
 
     private LocalDateTime writeDate;
 
