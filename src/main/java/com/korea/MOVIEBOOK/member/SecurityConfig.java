@@ -78,7 +78,6 @@ public class SecurityConfig {
         handler.setUseReferer(true);
         return handler;
     }
-
     private ClientRegistration googleClientRegistration() {
         return ClientRegistration.withRegistrationId("google")
                 .clientId("286082206804-488g2m1ncjkn87hq3g1c1m406crijhre.apps.googleusercontent.com")
