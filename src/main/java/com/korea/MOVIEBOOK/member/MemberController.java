@@ -111,6 +111,11 @@ public class MemberController {
         return "member/login_form";
     }
 
+    @PostMapping("/login/contents")
+    public String loginFromContents(@RequestParam(name = "url")String url) {
+        return "redirect:" + url;
+    }
+
     @GetMapping("/login/google")
     public String googleLogin() {
         return "redirect:/oauth2/authorization/google";

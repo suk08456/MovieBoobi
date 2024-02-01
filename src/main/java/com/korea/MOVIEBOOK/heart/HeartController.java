@@ -21,10 +21,6 @@ public class HeartController {
         } else {
             this.heartService.minusContentsHeart(principal, category, contentsID);
         }
-
-        System.out.println("category : " + category + "contentsId : " + contentsID + "heartClick : " + heartClick + " url : "+ url);
-
-
         return "redirect:" + url;
     }
 }
