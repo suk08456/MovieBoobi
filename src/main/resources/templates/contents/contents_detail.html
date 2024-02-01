@@ -8,55 +8,43 @@
 </head>
 <body>
 <div layout:fragment="content" style="width : 100%; min-height : 1100px;">
-
-    <div class="popup-box-1 popup-box-type-a">
+    <div class="popup-box-1 popup-box-type-a" style="white-space : nowrap;">
         <div class="popup">
             <div class="head" style="display : flex; flex-direction: column-reverse; margin-top : 5px;">
-                <div class="logo" style="display : flex; flex-direction: column; font-size : 34px;">
-                    <div style="display : flex; justify-content: center;">
-                        <span style="color : #fbd7ed;">무비</span>
-                        <span style="color : #000000;">MOVIE</span>
-                    </div>
-                    <div style="display : flex; justify-content: center;">
-                        <span style="color : #fbd7ed;">부비</span>
-                        <span style="color : #000000;">BOOK</span>
-                    </div>
+                <div style="display: flex; justify-content: center;">
+                <span class="login_btn" >로그인</span>
                 </div>
                 <div class="btn-close"></div>
             </div>
-
-            <p style="display: flex; justify-content: center; font-weight: bold; font-size: 17px;">로그인</p>
-
             <div class="body">
-                </div>
-                <form class="login-form">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <form class="login-form" id="urlForm" th:action="@{/member/login}" method="post">
                     <div style="display: flex; flex-direction: column; align-items: center; margin-top : 4%;">
-                        <div class="form-group" style="padding: 4px 0px">
+                        <div class="form-group" style="padding: 4px 0px; margin-top:5%;">
                             <input type="text" name="username" id="username" class="form-control"
                                    style="padding: 8px; border-radius: 6px; background: rgb(245, 245, 245);"
                                    placeholder="사용자 ID" required>
                         </div>
-                        <div class="form-group" style="padding: 4px 0px">
+                        <div class="form-group" style="padding: 4px 0px; margin-top:5%;">
                             <input type="password" name="password" id="password" class="form-control"
                                    style="padding: 8px; border-radius: 6px; background: rgb(245, 245, 245);"
                                    placeholder="비밀번호" required>
                         </div>
                         <div>
-                            <button type="submit" onclick="longinForm();"
-                                    style="margin-top:15px; padding: 5px 82px; font-size: 16px; font-weight: bold; border: none; background-color: red; color: white; cursor: pointer;">
+                            <button type="submit"
+                                    style="margin-top:5%; padding: 5px 82px; font-size: 16px; font-weight: bold; border: none; background-color: red; color: white; cursor: pointer;">
                                 로그인
                             </button>
                         </div>
                     </div>
-                    <div class="form-group" style="padding: 10px; display: flex; justify-content: space-evenly;">
+                    <div class="form-group" style="padding: 10px; display: flex; justify-content: space-evenly; margin-top : 5%; margin-bottom : 5%;">
                         <a th:href="@{/member/findUsername}">아이디 찾기</a>
                         <a>|</a>
                         <a th:href="@{/member/resetPassword}">비밀번호 찾기</a>
                     </div>
                 </form>
 
-                <div style="display: flex; justify-content: center; padding: 10px;">
+                <a style="margin-left : 8%;">------------------ OR ------------------</a>
+                <div style="display: flex; justify-content: center; padding: 10px; margin-top : 5%;">
                     <a th:href="@{/member/login/google}">
                         <img src="/loginButton/btn_google.svg" alt="Google 로그인" style="width:100px; height:50px;">
                     </a>
@@ -68,7 +56,6 @@
                     </a>
                 </div>
             </div>
-
         </div>
     </div>
     <div class="box-1 con">
@@ -121,7 +108,6 @@
                     <div class="event-co"
                          style="display : flex; margin-left : 70px; margin-top : 33px; color : #868e96; font-weight : bold;">
                         <nav th:replace="~{contents/contents_comment :: commentLayout}"></nav>
-
 
                         <div style="margin-right : 50px; margin-left : 50px;">
                             <form class="click_Contents_heart" sec:authorize="isAuthenticated()"
@@ -279,78 +265,71 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
 
-        $('.btn-show-popup-1').click(function() {
-            $('html').addClass('popup-1-active');
-        });
+
+    <!--        document.getElementById('urlForm').submit();-->
+    <!--        sessionsStorage.setItem("currentPageUrl", url);-->
+
+            $('.btn-show-popup-1').click(function() {
+                $('html').addClass('popup-1-active');
+            });
 
 
-        $('.popup-box-1, .popup-box-1 > .popup > .head > .btn-close').click(function() {
-            $('html').removeClass('popup-1-active');
-        });
+            $('.popup-box-1, .popup-box-1 > .popup > .head > .btn-close').click(function() {
+                $('html').removeClass('popup-1-active');
+            });
 
 
-        $('.popup-box-1 > .popup').click(function(e) {
-          e.stopPropagation();
-        });
+            $('.popup-box-1 > .popup').click(function(e) {
+              e.stopPropagation();
+            });
 
 
-        var contentsID = document.getElementsByName('contentsID')[0].value;
-        var category = '[[${category}]]';
+            var contentsID = document.getElementsByName('contentsID')[0].value;
+            var category = '[[${category}]]';
 
-        function updateRating(rating) {
-            document.getElementById("Rating").innerText = "⭐" + rating;
-            logincheck();
-        }
-
-        var swiper = new Swiper(".mySwiper", {
-            scrollbar: {
-                el: ".swiper-scrollbar",
-                hide: true,
-            },
-        });
-
-
-        function clickContentsHeart(button){
-            var heartIcon = button.querySelector('.like-co');
-            var innerSpan = heartIcon.querySelector('span');
-            var classList = innerSpan.classList;
-            var heartClick = true;
-            var form = button.closest('.click_Contents_heart');
-            let url = window.location.href;
-
-            if (classList.contains('likeit')) {
-                heartClick = false;
+            function updateRating(rating) {
+                document.getElementById("Rating").innerText = "⭐" + rating;
+                logincheck();
             }
 
-            if (form) {
-                form.method = "POST";
-                form.action = "/heart/" + '[[${category}]]' + "/" + contentsID +"/" + heartClick + "?url="+ url;
-                form.submit();
-            } else {
-                console.error("Form element is null");
+            var swiper = new Swiper(".mySwiper", {
+                scrollbar: {
+                    el: ".swiper-scrollbar",
+                    hide: true,
+                },
+            });
+
+
+            function clickContentsHeart(button){
+                var heartIcon = button.querySelector('.like-co');
+                var innerSpan = heartIcon.querySelector('span');
+                var classList = innerSpan.classList;
+                var heartClick = true;
+                var form = button.closest('.click_Contents_heart');
+                let url = window.location.href;
+
+                if (classList.contains('likeit')) {
+                    heartClick = false;
+                }
+
+                if (form) {
+                    form.method = "POST";
+                    form.action = "/heart/" + '[[${category}]]' + "/" + contentsID +"/" + heartClick + "?url="+ url;
+                    form.submit();
+                } else {
+                    console.error("Form element is null");
+                }
             }
-        }
 
-        function longinForm(){
-            var form = document.querySelector('.login-form');
-            let url = window.location.href;
-
-            if (form) {
-                form.method = "POST";
-                form.action = "/member/login/contents" + "?url="+ url;
-                form.submit();
-            } else {
-                console.error("Form element is null");
+            function clickContentsHeart_Unclogging(){
+                 var url = window.location.href;
+                document.getElementById('currentPageUrl').value = url;
+                $('html').addClass('popup-1-active');
             }
-        }
 
-        function clickContentsHeart_Unclogging(){
-           errMsg('로그인 후 이용해주세요.');
-        }
-
-        function loginError(){
-           errMsg('로그인 후 이용해주세요.');
-       }
+            function loginError(){
+               errMsg('로그인 후 이용해주세요.');
+           }
 
     </script>
 </div>
