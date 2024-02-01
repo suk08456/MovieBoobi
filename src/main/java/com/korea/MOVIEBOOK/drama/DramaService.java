@@ -24,6 +24,10 @@ public class DramaService {
         return dramaRepository.findAll();
     } // drama 에 모든 엔티티 조회 List<Drama>에 반환
 
+    public List<Drama> findDramasInRange(int startId, int endId) {
+        return dramaRepository.findDramasByIdRange(startId, endId);
+    }
+
     public Drama getDramaById(Long id) {
         return dramaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 드라마는 존재하지 않습니다. " + id));

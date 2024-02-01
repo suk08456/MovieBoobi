@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,7 +87,7 @@ public class MemberController {
             bindingResult.reject("signupFailed", e.getMessage());
             return "member/signup_form";
         }
-        return "redirect:/member/emailVerification";
+        return "redirect:/member/login";
     }
 
     @GetMapping("/verify")
@@ -97,7 +98,7 @@ public class MemberController {
 
     @GetMapping("/emailVerificationSuccess")
     public String emailVerificationSuccess() {
-        return "member/email_verification_success";
+        return "member/login_form";
     }
 
     @GetMapping("/emailVerification")
@@ -126,45 +127,47 @@ public class MemberController {
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<String> resetPassword(@RequestParam String username, @RequestParam String email) {
+    public String resetPassword(@RequestParam String username, @RequestParam String email, RedirectAttributes redirectAttributes) {
         Member member = memberService.getMemberByEmail(email);
         if (member != null && member.getUsername().equals(username)) {
             try {
                 memberService.resetPassword(member);
-                return ResponseEntity.ok("당신 이메일로 임시번호 발송");
+                redirectAttributes.addFlashAttribute("successMessage", "이메일로 임시 비밀번호가 발송되었습니다.");
             } catch (MessagingException e) {
-                // 여기서 예외를 처리하거나, 적절한 로깅 또는 알림을 구현할 수 있습니다.
                 e.printStackTrace();
-                return ResponseEntity.badRequest().body("이메일 전송 중 오류가 발생했습니다.");
+                redirectAttributes.addFlashAttribute("errorMessage", "이메일 전송 중 오류가 발생했습니다.");
             }
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일 또는 아이디와 일치하는 회원 정보를 찾을 수 없습니다.");
         }
-        return ResponseEntity.badRequest().body("Failed to reset password");
+        return "member/login_form";
     }
 
     @PostMapping("/findUsername")
-    public ResponseEntity<String> findUsername(@RequestParam String email) {
+    public String findUsername(@RequestParam String email, RedirectAttributes redirectAttributes) {
         Member member = memberService.getMemberByEmail(email);
         if (member != null) {
             try {
                 emailService.sendTemporaryUsername(member.getEmail(), member.getUsername());
-                return ResponseEntity.ok("이메일로 아이디를 발송");
+                redirectAttributes.addFlashAttribute("successMessage", "이메일로 아이디가 발송되었습니다.");
             } catch (MessagingException e) {
                 e.printStackTrace();
-                return ResponseEntity.badRequest().body("이메일 전송 중 오류 발생");
+                redirectAttributes.addFlashAttribute("errorMessage", "이메일 전송 중 오류 발생");
             }
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일로 등록된 아이디 없음");
         }
-        return ResponseEntity.badRequest().body("해당 이메일로 등록된 아이디 없음");
+        return "member/login_form";
     }
-
 
     @GetMapping("/resetPassword")
     public String showResetPasswordPage() {
-        return "member/reset_password"; // Thymeleaf 템플릿 이름 (reset_password.html)
+        return "member/find_account"; // Thymeleaf 템플릿 이름 (reset_password.html)
     }
 
     @GetMapping("/findUsername")
     public String findUsernamePage() {
-        return "/member/find_username";
+        return "member/find_account";
     }
 
     @GetMapping("/mypage")
