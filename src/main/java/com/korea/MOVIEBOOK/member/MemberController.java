@@ -24,10 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
@@ -133,47 +130,66 @@ public class MemberController {
     }
 
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestParam String username, @RequestParam String email, RedirectAttributes redirectAttributes) {
-        Member member = memberService.getMemberByEmail(email);
-        if (member != null && member.getUsername().equals(username)) {
-            try {
-                memberService.resetPassword(member);
-                redirectAttributes.addFlashAttribute("successMessage", "이메일로 임시 비밀번호가 발송되었습니다.");
-            } catch (MessagingException e) {
-                e.printStackTrace();
-                redirectAttributes.addFlashAttribute("errorMessage", "이메일 전송 중 오류가 발생했습니다.");
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일 또는 아이디와 일치하는 회원 정보를 찾을 수 없습니다.");
+    public String resetPassword(@Valid Member member, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "입력한 정보가 올바르지 않습니다.");
+            return "member/reset_password";
         }
+
+        Member member1 = memberService.getMemberByEmail(member.getEmail());
+        if (member1 == null || !member1.getUsername().equals(member.getUsername())) {
+            model.addAttribute("errorMessage", "해당 이메일 또는 아이디와 일치하는 회원 정보를 찾을 수 없습니다.");
+            return "member/reset_password";
+        }
+
+        try {
+            memberService.resetPassword(member1);
+            model.addAttribute("successMessage", "이메일로 임시 비밀번호가 발송되었습니다.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "이메일 전송 중 오류가 발생했습니다.");
+            return "member/login_form";
+        }
+
         return "member/login_form";
     }
 
     @PostMapping("/findUsername")
-    public String findUsername(@RequestParam String email, RedirectAttributes redirectAttributes) {
-        Member member = memberService.getMemberByEmail(email);
-        if (member != null) {
+    public String findUsername(@Valid @ModelAttribute Member member, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "유효하지 않은 이메일 형식입니다.");
+            return "member/find_username";
+        }
+
+        Member member1 = memberService.getMemberByEmail(member.getEmail());
+        if (member1 != null) {
             try {
-                emailService.sendTemporaryUsername(member.getEmail(), member.getUsername());
-                redirectAttributes.addFlashAttribute("successMessage", "이메일로 아이디가 발송되었습니다.");
+                emailService.sendTemporaryUsername(member1.getEmail(), member1.getUsername());
+                model.addAttribute("successMessage", "이메일로 아이디가 발송되었습니다.");
+                return "member/login_form";
             } catch (MessagingException e) {
                 e.printStackTrace();
-                redirectAttributes.addFlashAttribute("errorMessage", "이메일 전송 중 오류 발생");
+                model.addAttribute("errorMessage", "이메일 전송 중 오류 발생");
+                return "member/find_username";
             }
         } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일로 등록된 아이디 없음");
+            model.addAttribute("errorMessage", "해당 이메일로 등록된 아이디 없음");
+            return "member/find_username";
         }
-        return "member/login_form";
     }
+
+
+
+
 
     @GetMapping("/resetPassword")
     public String showResetPasswordPage() {
-        return "member/find_account"; // Thymeleaf 템플릿 이름 (reset_password.html)
+        return "member/reset_password"; // Thymeleaf 템플릿 이름 (reset_password.html)
     }
 
     @GetMapping("/findUsername")
     public String findUsernamePage() {
-        return "member/find_account";
+        return "member/find_username";
     }
 
     @GetMapping("/mypage")
