@@ -20,4 +20,6 @@ public interface MovieRepository extends JpaRepository<Movie,Long> {
             "  where REGEXP_REPLACE(REPLACE(REPLACE( m.actor, '(', '<'), ')' ,'>'), '<([^<>]+)>', '') LIKE %:kw% " +
             "   OR m.title LIKE %:kw% ")
     Page<Movie> findAllByMovieKeyword(@Param("kw") String kw, Pageable pageable);
+
+//    Page<Movie> findByMemberId(Long paymentId, Pageable pageable);
 }
