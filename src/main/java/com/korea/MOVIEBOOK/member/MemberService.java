@@ -41,7 +41,7 @@ public class MemberService {
 
     public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+                .orElse(null);
     }
 
     public void resetPassword(Member member) throws MessagingException {
