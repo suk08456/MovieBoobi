@@ -10,6 +10,7 @@ import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieService;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -62,6 +63,7 @@ public class MainController {
 
     @GetMapping("/")
     public String mainPage(Model model) {
+
         List<ContentsDTO> contentsDTOList = new ArrayList<>();
         List<Book> bestSellerList = bookService.getBestSellerList();
         List<MovieDTO> boxofficeList = movieService.listOfMovieDailyDTO();

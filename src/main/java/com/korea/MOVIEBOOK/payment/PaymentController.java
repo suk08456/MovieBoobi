@@ -2,6 +2,7 @@ package com.korea.MOVIEBOOK.payment;
 
 import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,15 @@ public class PaymentController {
     private final MemberService memberService;
 
     @GetMapping("/payment")
-    public String kakao(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page) {
+    public String kakao(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page, HttpServletRequest request) {
+
+
+        String url = request.getRequestURI();
+        String referer = request.getHeader("Referer");
+
+        System.out.println(url);
+        System.out.println(referer);
+
         String providerID = "";
         if(principal != null ) {
             providerID = principal.getName();
