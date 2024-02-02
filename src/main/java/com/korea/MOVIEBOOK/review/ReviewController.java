@@ -176,6 +176,9 @@ public class ReviewController {
         }
         return "redirect:/review/detail?category="+category+"&contentsID=" + contentsID + "&reviewId=" + reviewId;
     }
+
+
+
     @GetMapping("/detail")
     public String getreviewDetailList(String category, String contentsID, String reviewId, Model model,Principal principal) {
         Review review = this.reviewService.findReviewById(Long.valueOf(reviewId));

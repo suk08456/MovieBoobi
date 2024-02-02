@@ -9,7 +9,7 @@
 
 
     <table style="margin-top: -120px;">
-        <caption style="font-weight: bold; font-size: 23px;">구매 내역</caption>
+        <caption style="font-weight: bold; font-size: 23px;">웹툰 구매 내역</caption>
         <thead>
         <tr style="background: black;">
             <th></th>
@@ -19,7 +19,7 @@
             <th></th>
         </tr>
         </thead>
-        <form th:each="payment : ${PaymentList}" th:action="@{/webtoon/detail}" method="get">
+        <form th:each="payment : ${paging}" th:action="@{/webtoon/detail}" method="get">
             <tbody>
             <tr th:if="${payment.webtoon}">
                 <td> <img th:src="${payment.webtoon.imageUrl}" style="width: 90px; height: 125px;"></td>
@@ -39,49 +39,27 @@
         <td colspan="5" class="tablefoot"></td>
         </tfoot>
     </table>
-    <!-- 페이징처리 시작 -->
-    <div th:if="${!paging.isEmpty()}" class="paging">
-        <ul class="pagination justify-content-center">
 
-            <!-- 추가: 맨 처음으로 가는 버튼 -->
-            <li class="page-item" th:classappend="${paging.number > 0} ? '' : 'disabled'">
-                <a class="page-link" th:href="@{|?page=0|}">
-                    <span>처음</span>
-                </a>
-            </li>
-
-            <li class="page-item" th:classappend="${!paging?.hasPrevious} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{|?page=${(paging?.number ?: 0) - 1}|}">
-                    <span>이전</span>
-                </a>
-            </li>
-
-
-            <!-- 페이지 번호 링크 -->
-            <li th:each="i  : ${#numbers.sequence(paging.number - (paging.number % 10), (paging.number + (9 - (paging.number % 10))) < paging.totalPages ? (paging.number + (9 - (paging.number % 10))) : paging.totalPages - 1)}"
-                class="page-item">
-                <a th:text="${i+1}" class="page-link" th:href="@{|?page=${i}|}"
-                   th:classappend="${i == paging.number} ? 'active'"></a>
-            </li>
-
-
-            <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-                <a class="page-link" th:href="@{|?page=${paging.number+1}|}">
-                    <span>다음</span>
-                </a>
-            </li>
-
-
-            <!-- 추가: 맨 끝으로 가는 버튼 -->
-            <li class="page-item"
-                th:classappend="${paging.number < paging.totalPages - 1} ? '' : 'disabled'">
-                <a class="page-link" th:href="@{|?page=${paging.totalPages - 1}|}">
-                    <span>마지막</span>
-                </a>
-            </li>
-        </ul>
+            <div class="join" th:if="${paging.totalPages > 0}" style="display : flex; justify-content : space-around; margin-top : 18px;">
+                <ul class="pagination justify-content-center" style="display : flex;">
+                    <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'btn-disabled'">
+                        <a class="join-item btn" th:if="${paging.hasPrevious}" th:href="@{|?page=${paging.number-1}|}">
+                            <span>«</span>
+                        </a>
+                    </li>
+                    <li th:each="page: ${#numbers.sequence(paging.number, paging.number)}"
+                        th:if="${page >= paging.number and page <= paging.number}"
+                        th:classappend="${page == paging.number} ? 'active'"
+                        class="page-item btn-disabled">
+                        <span th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></span>
+                    </li>
+                    <li class="page-item" th:classappend="${!paging.hasNext} ? 'btn-disabled'">
+                        <a class="join-item btn" th:if="${paging.hasNext}" th:href="@{|?page=${paging.number+1}|}">
+                            <span>»</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
     </div>
-    <!-- 페이징처리 끝 -->
-</div>
 </body>
 </html>

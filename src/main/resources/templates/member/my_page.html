@@ -5,6 +5,7 @@
 </head>
 <body>
 <div layout:fragment="profileContent" style="width: 85%; height: 100vh; min-height: 1100px;">
+
     <div style="display: flex; margin-top: 60px; flex-direction: column; align-items: center;">
         <div style="min-height: 400px; min-width: 400px; width: 30%; height: 30%; display: flex; flex-direction: column; justify-content: center;">
             <img id="img" th:src="${member.getProfileImage()}">
@@ -24,6 +25,7 @@
             </div>
         </div>
     </div>
+
 </div>
 </body>
 </html>

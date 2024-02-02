@@ -1,44 +1,18 @@
-public void create(String title, String content, Customer customer, int category) {
-Post p = new Post();
-p.setTitle(title);
-p.setContent(content);
-p.setLocalDateTime(LocalDateTime.now());
-p.setCustomer(customer);
-p.setCategory(category);
-this.postRepository.save(p);
-}
+<ul class="menu rounded-box">
+    <li><a class="menu-item" th:href="@{/member/mypage}" onclick="clickMenu(event, this)">내 정보</a></li>
+    <li><a class="menu-item" th:href="@{/member/changeInformation(parameter='1')}" onclick="clickMenu(event, this)">회원 정보 수정</a></li>
+    <li><a class="menu-item" th:href="@{/member/changePw(parameter='2')}" onclick="clickMenu(event, this)">비밀번호 변경</a></li>
+    <li>
+        <details open>
+            <summary style="margin-left: 7px;">구매 내역</summary>
+            <ul>
+                <li><a th:href="@{/member/purchasedetails/movie(parameter='3')}">영화 구매 내역</a></li>
+                <li><a th:href="@{/member/purchasedetails/drama(parameter='3')}">드라마 구매 내역</a></li>
+                <li><a th:href="@{/member/purchasedetails/book(parameter='3')}">책 구매 내역</a></li>
+                <li><a th:href="@{/member/purchasedetails/webtoon(parameter='3')}">웹툰 구매 내역</a></li>
 
-public void modify(Post post, String title, String content) {
-post.setTitle(title);
-post.setContent(content);
-post.setModifyDate(LocalDateTime.now());
-this.postRepository.save(post);
-}
-
-@PreAuthorize("isAuthenticated()")
-@GetMapping("/modify/{id}")
-public String postModify(PostForm postForm, @PathVariable("id") Long id, Principal principal, Model model) {
-Post post = this.postService.getPost(id);
-if(!post.getCustomer().getUsername().equals(principal.getName())) {
-throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
-}
-
-postForm.setTitle(post.getTitle());
-postForm.setContent(post.getContent());
-return "Board/post_form";
-}
-
-@PreAuthorize("isAuthenticated()")
-@PostMapping("/modify/{id}")
-public String postModify(@Valid PostForm postForm, BindingResult bindingResult,
-Principal principal, @PathVariable("id") Long id) {
-if (bindingResult.hasErrors()) {
-return "Board/post_form";
-}
-Post post = this.postService.getPost(id);
-if (!post.getCustomer().getUsername().equals(principal.getName())) {
-throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
-}
-this.postService.modify(post, postForm.getTitle(), postForm.getContent());
-return String.format("redirect:/post/detail/%s", id);
-}
+            </ul>
+        </details>
+    </li>
+    <li><a class="menu-item" th:href="@{/member/deleteForm(parameter='4')}" onclick="clickMenu(event, this)">회원 탈퇴</a></li>
+</ul>

@@ -8,7 +8,7 @@
 <div layout:fragment="purchasedetails" style="width: 85%; height: 100%;  margin-left: 50px;" class="menuDetail" id="dramapurchasedetails">
 
     <table style="margin-top: -120px;">
-        <caption style="font-weight: bold; font-size: 23px;">구매 내역</caption>
+        <caption style="font-weight: bold; font-size: 23px;">드라마 구매 내역</caption>
         <thead>
         <tr style="background: black;">
             <th></th>
@@ -18,7 +18,7 @@
             <th></th>
         </tr>
         </thead>
-        <form th:each="payment : ${PaymentList}" th:action="@{/drama/detail}" method="get">
+        <form th:each="payment : ${paging}" th:action="@{/drama/detail}" method="get">
             <tbody>
             <tr th:if="${payment.drama}">
                 <td> <img th:src="${'/dramaImage' + payment.drama.imageUrl}" style="width: 90px; height: 125px;"></td>
@@ -37,6 +37,26 @@
         <td colspan="5" class="tablefoot"></td>
         </tfoot>
     </table>
+    <div class="join" th:if="${paging.totalPages > 0}" style="display : flex; justify-content : space-around; margin-top : 18px;">
+        <ul class="pagination justify-content-center" style="display : flex;">
+            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'btn-disabled'">
+                <a class="join-item btn" th:if="${paging.hasPrevious}" th:href="@{|?page=${paging.number-1}|}">
+                    <span>«</span>
+                </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(paging.number, paging.number)}"
+                th:if="${page >= paging.number and page <= paging.number}"
+                th:classappend="${page == paging.number} ? 'active'"
+                class="page-item btn-disabled">
+                <span th:text="${'Page ' + (page + 1)}" class="join-item btn" th:href="@{|?page=${page}|}"></span>
+            </li>
+            <li class="page-item" th:classappend="${!paging.hasNext} ? 'btn-disabled'">
+                <a class="join-item btn" th:if="${paging.hasNext}" th:href="@{|?page=${paging.number+1}|}">
+                    <span>»</span>
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
 </body>
 </html>
