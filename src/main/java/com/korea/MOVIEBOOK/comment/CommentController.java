@@ -30,8 +30,6 @@ public class CommentController {
         return "redirect:/review/detail?category="+category+"&contentsID=" + contentsId + "&reviewId=" + reviewId;
     }
 
-
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
     public String commentDelete(Principal principal, Model model,  @RequestParam String category, @RequestParam String contentsId, @RequestParam Long reviewId, @PathVariable("id") Long commentid) {

@@ -17,4 +17,6 @@ public class QuestionCreateForm {
     @Size(min = 2, message = "내용은 최소 2자 이상이어야 합니다.")
     @NotEmpty(message = "내용을 입력해주세요.")
     private String content;
+
+    private boolean checkBox;
 }
