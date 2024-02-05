@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,7 @@ import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -73,6 +75,11 @@ public class MemberController {
             // 검증에 실패한 경우
             return "member/signup_form";
         }
+        // 닉네임 중복 확인
+        if (!memberService.nicknameUnique(memberCreateForm.getNickname())) {
+            bindingResult.rejectValue("nickname", "duplicate", "이미 사용 중인 닉네임입니다.");
+            return "member/signup_form";
+        }
         try {
             Member member = memberService.create(memberCreateForm.getUsername(),
                     memberCreateForm.getPassword1(), memberCreateForm.getNickname(), memberCreateForm.getEmail());
@@ -91,6 +98,7 @@ public class MemberController {
         }
         return "redirect:/member/login";
     }
+
 
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam("userId") long userId) {
