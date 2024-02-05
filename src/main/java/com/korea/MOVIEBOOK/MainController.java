@@ -88,5 +88,8 @@ public class MainController {
             movieDailySize(failedMoiveList);
         }
     }
+
+
+
 }
 

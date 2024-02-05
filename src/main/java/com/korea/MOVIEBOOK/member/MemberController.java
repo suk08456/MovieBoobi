@@ -6,7 +6,9 @@ import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieService;
 import com.korea.MOVIEBOOK.payment.Payment;
 import com.korea.MOVIEBOOK.payment.PaymentService;
+import com.korea.MOVIEBOOK.review.Review;
 import com.korea.MOVIEBOOK.review.ReviewService;
+import com.korea.MOVIEBOOK.webtoon.webtoonList.Webtoon;
 import com.korea.MOVIEBOOK.webtoon.webtoonList.WebtoonService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -354,6 +356,14 @@ public class MemberController {
         return "redirect:/member/logout";
     }
 
+//@GetMapping("/find/review")
+//public String memberFindReview(String reviewId, Principal principal, Model model){
+//    Member member = memberService.getMember(principal.getName());
+//    Review review = this.reviewService.findReviewById(Long.valueOf(reviewId));
+//
+//}
+
+
 
     @GetMapping("/purchasedetails")
     public String memberPurchaseDetails(PasswordResetForm passwordResetForm, Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
@@ -367,33 +377,34 @@ public class MemberController {
 
     @GetMapping("/purchasedetails/movie")
     public String moviepurchasedetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
-        paymentMember(model, principal, page);
+        Member member = memberService.getMember(principal.getName());
+        Page<Payment> paging = paymentService.getPaidMovieList(member, page);
+        model.addAttribute("paging", paging);
         return "member/contents_purchase_details/movie_purchase_details";
     }
 
     @GetMapping("/purchasedetails/drama")
     public String dramapurchasedetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
-        paymentMember(model, principal, page);
+        Member member = memberService.getMember(principal.getName());
+        Page<Payment> paging = paymentService.getPaidDramaList(member, page);
+        model.addAttribute("paging", paging);
         return "member/contents_purchase_details/drama_purchase_details";
     }
 
     @GetMapping("/purchasedetails/book")
     public String bookpurchasedetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
-        paymentMember(model, principal, page);
+        Member member = memberService.getMember(principal.getName());
+        Page<Payment> paging = paymentService.getPaidBookList(member, page);
+        model.addAttribute("paging", paging);
         return "member/contents_purchase_details/book_purchase_details";
     }
 
     @GetMapping("/purchasedetails/webtoon")
     public String webtoonpurchasedetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
-        paymentMember(model, principal, page);
+        Member member = memberService.getMember(principal.getName());
+        Page<Payment> paging = paymentService.getPaidWebtoonList(member, page);
+        model.addAttribute("paging", paging);
         return "member/contents_purchase_details/webtoon_purchase_details";
-    }
-
-
-    @GetMapping("/purchasedetails/total")
-    public String totalContentsPurchaseDetails(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page){
-        paymentMember(model, principal, page);
-        return "member/contents_purchase_details/totalcontents_purchase_details";
     }
 
 
@@ -442,10 +453,7 @@ public class MemberController {
 
 
     public void paymentMember(Model model, Principal principal, @RequestParam(value="page", defaultValue="0") int page){
-        Member member = memberService.findByusername(principal.getName());
-        if (member == null) {
-            member = memberService.findByproviderId(principal.getName());
-        }
+        Member member = memberService.getMember(principal.getName());
         List<Payment> payments = this.paymentService.findPaymentListByMember(member);
         long sum = 0;
         Collections.sort(payments, Comparator.comparing(Payment::getDateTime).reversed());
@@ -457,9 +465,8 @@ public class MemberController {
                 sum -= Long.valueOf(payments.get(i).getPaidAmount());
             }
         }
-        Page<Payment> paging = this.paymentService.getPaymentsByMember(member, page);
 
-        model.addAttribute("paging", paging);
+
         model.addAttribute("sum", sum);
         model.addAttribute("PaymentList", payments);
         model.addAttribute("member", member);

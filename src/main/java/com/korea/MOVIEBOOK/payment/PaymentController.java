@@ -4,6 +4,7 @@ import com.korea.MOVIEBOOK.member.Member;
 import com.korea.MOVIEBOOK.member.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,14 +63,14 @@ public class PaymentController {
     @PostMapping("/kakaoPayCheck")
     public String kakaoPayCheck(@RequestBody PaymentDTO paymentDTO) {
         String content = paymentDTO.getO_paidAmount() + "Coin 충전";
-        this.paymentService.savePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content, "", "");
+        this.paymentService.savePayment(paymentDTO.getM_id(), "kakao", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content, "", "", Pageable.unpaged());
         return "redirect:/payment";
     }
 
     @PostMapping("/tossPayCheck")
     public String tossPayCheck(@RequestBody PaymentDTO paymentDTO) {
         String content = paymentDTO.getO_paidAmount() + "Coin 충전";
-        this.paymentService.savePayment(paymentDTO.getM_id(), "toss", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content, "", "");
+        this.paymentService.savePayment(paymentDTO.getM_id(), "toss", paymentDTO.getO_paidAmount(), paymentDTO.getO_shipno(), paymentDTO.getO_paytype(), paymentDTO.getS_phone(), content, "", "", Pageable.unpaged());
         return "redirect:/payment";
     }
 //    @PostMapping("/kakaoPayCheck")
@@ -100,7 +101,7 @@ public class PaymentController {
         if (member == null) {
             member = this.memberService.getMember(providerID);
         }
-        this.paymentService.savePayment(member.getId(), "coin", paidAmount, "00000", "point", null, content, category, contentsID);
+        this.paymentService.savePayment(member.getId(), "coin", paidAmount, "00000", "point", null, content, category, contentsID, Pageable.unpaged());
 
         if (Objects.equals(category, "movie")) {
             return "redirect:/movie/detail/" + contentsID;

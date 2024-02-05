@@ -216,10 +216,11 @@ public class MovieService {
     public Page<Movie> getMovieList(int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("title"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));
 
         return movieRepository.findAllByMovieKeyword(kw, pageable);
     }
+
 
     public List<Movie> getRandomMovies() {
         List<Movie> allMovies = this.movieRepository.findAll();
@@ -233,4 +234,12 @@ public class MovieService {
         Collections.shuffle(list);
         return list.subList(0, Math.min(count, list.size()));
     }
+
+//    public Page<Movie> moviePurchasePageForMember(Long paymentId, int page) {
+//        List<Sort.Order> sorts = new ArrayList<>();
+//        sorts.add(Sort.Order.desc("dateTime")); // dateTime을 올바르게 사용하는지 확인해주세요.
+//        Pageable pageable = PageRequest.of(page, 8, Sort.by(sorts));
+//
+//        return movieRepository.findByMemberId(paymentId, pageable);
+//    }
 }

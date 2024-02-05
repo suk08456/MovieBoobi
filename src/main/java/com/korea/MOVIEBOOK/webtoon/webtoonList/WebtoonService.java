@@ -160,6 +160,15 @@ public class WebtoonService {
     }
 
 
+//    public Page<Webtoon> getWebtoonPurchase(Member member, int page) {
+//        List<Sort.Order> sorts = new ArrayList<>();
+//        sorts.add(Sort.Order.desc("datetime"));
+//        Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));
+//
+//        return webtoonRepository.findWebtoonPurchase(member, pageable);
+//    }
+
+
 //    public Page<Webtoon> getWebtoonsPurchase(Member member, int page) {
 //        List<Sort.Order> sorts = new ArrayList<>();
 //        sorts.add(Sort.Order.desc("dateTime"));

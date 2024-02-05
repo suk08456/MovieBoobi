@@ -32,4 +32,6 @@ public class Question {
 
     @ManyToOne
     private Member member;
+
+    private boolean isPrivate;
 }
