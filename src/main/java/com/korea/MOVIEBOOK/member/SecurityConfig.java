@@ -35,17 +35,16 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/member/login")
                         .defaultSuccessUrl("/")
-                        .successHandler(savedRequestAwareAuthenticationSuccessHandler()))
-
-//                        .successHandler((request, response, authentication) -> {
-//                            HttpSession session = request.getSession();
-//                            String destination = "/";
-//                            if(session.getAttribute("referer") != null) {
-//                                destination  = (String)session.getAttribute("referer");
-//                            }
-//                            System.out.println(destination);
-//                            response.sendRedirect(destination);
-//                        }))
+//                        .successHandler(savedRequestAwareAuthenticationSuccessHandler()))
+                        .successHandler((request, response, authentication) -> {
+                            HttpSession session = request.getSession();
+                            String destination = "/";
+                            if(session.getAttribute("referer") != null) {
+                                destination  = (String)session.getAttribute("referer");
+                            }
+                            System.out.println(destination);
+                            response.sendRedirect(destination);
+                        }))
 
                 .oauth2Login(oauth2Login -> oauth2Login
                         .loginPage("/member/login")  // OAuth2 로그인 페이지 설정
