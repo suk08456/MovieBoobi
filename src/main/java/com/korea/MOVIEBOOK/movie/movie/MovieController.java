@@ -143,7 +143,7 @@ public class MovieController {
         model.addAttribute("allList2", allList2);
         model.addAttribute("movieRankings", movieRankings);
 
-        return "Movie/movie_list";
+        return "movie/movie_list";
     }
 
 
