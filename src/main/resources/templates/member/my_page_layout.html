@@ -1,7 +1,7 @@
 <html lang="en" layout:decorate="~{layout2}">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/member/my_page.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/member/my_page.css}">
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var parameter = [[${parameter}]];
@@ -37,10 +37,10 @@
                        style="font-size : large; margin-left: 8px;"></span>
                 <div style="display : flex; font-weight : bold; border-bottom : 2px solid black; margin-top: 15px;">
                     <img src="/etc/coin.png" style="height : 20px; margin-top : 1px; margin-right : 1px;">
-                    <span style="margin-right : 3px;  color: white;">보유 코인 : </span>
+                    <span style="margin-right : 3px;  color: black;">보유 코인 : </span>
                     <span th:text="${#numbers.formatDecimal(sum, 0,  'COMMA', 0, 'POINT')}"
-                          style="width : 95px; text-align : center;  color: white;"></span>
-                    <a class="layoutLink" href="/payment" style="display: flex; align-items: center;  color: white;">
+                          style="width : 95px; text-align : center;  color: black;"></span>
+                    <a class="layoutLink" href="/payment" style="display: flex; align-items: center;  color: black;">
                         <div style="margin-right: 4px; width: 19px;">
                         </div>
                         코인충전
@@ -48,12 +48,23 @@
                     <img src="/etc/coin.png" style="height: 18px; margin-right: 4px;">
                 </div>
             </div>
-            <ul class="menu">
-                <a id="test1" class="menu-item" th:href="@{/member/mypage}" onclick="clickMenu(event, this)">내 정보</a>
-                <a class="menu-item" th:href="@{/member/changeInformation(parameter='1')}" onclick="clickMenu(event, this)">회원 정보 수정</a>
-                <a class="menu-item" th:href="@{/member/changePw(parameter='2')}" onclick="clickMenu(event, this)">비밀번호 변경</a>
-                <a class="menu-item" th:href="@{/member/purchasedetails(parameter='3')}" onclick="clickMenu(event, this)">구매 내역</a>
-                <a class="menu-item" th:href="@{/member/deleteForm(parameter='4')}" onclick="clickMenu(event, this)">회원 탈퇴</a>
+            <ul class="menu rounded-box">
+                <li><a class="menu-item" th:href="@{/member/mypage}" onclick="clickMenu(event, this)">내 정보</a></li>
+                <li><a class="menu-item" th:href="@{/member/changeInformation(parameter='1')}" onclick="clickMenu(event, this)">회원 정보 수정</a></li>
+                <li><a class="menu-item" th:href="@{/member/changePw(parameter='2')}" onclick="clickMenu(event, this)">비밀번호 변경</a></li>
+                <li>
+                    <details close>
+                        <summary style="margin-left: 7px;" class="menu-item">구매 내역</summary>
+                        <ul>
+                            <li><a class="menu-item" th:href="@{/member/purchasedetails/movie(parameter='3')}">영화 구매 내역</a></li>
+                            <li><a class="menu-item" th:href="@{/member/purchasedetails/drama(parameter='3')}">드라마 구매 내역</a></li>
+                            <li><a class="menu-item" th:href="@{/member/purchasedetails/book(parameter='3')}">책 구매 내역</a></li>
+                            <li><a class="menu-item" th:href="@{/member/purchasedetails/webtoon(parameter='3')}">웹툰 구매 내역</a></li>
+
+                        </ul>
+                    </details>
+                </li>
+                <li><a class="menu-item" th:href="@{/member/deleteForm(parameter='4')}" onclick="clickMenu(event, this)">회원 탈퇴</a></li>
             </ul>
         </div>
     </div>

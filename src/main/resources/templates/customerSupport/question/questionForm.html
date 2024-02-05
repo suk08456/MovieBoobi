@@ -8,7 +8,11 @@
                 <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="alert alert-danger"></div>
             </div>
             <textarea name="content" id="content" th:field="*{content}" style="display:none;"></textarea>
-            <div style="display: flex; flex-direction: row-reverse;">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="display: flex; align-items: center;">
+                    <span style="padding-right: 6px;">비밀글</span>
+                    <input type="checkbox" class="checkbox" name="checkBox"/>
+                </div>
                 <input type="button" class="btn btn-outline" th:value="저장하기" onclick="createForm()">
             </div>
             <div>
