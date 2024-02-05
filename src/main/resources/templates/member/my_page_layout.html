@@ -49,7 +49,7 @@
                 </div>
             </div>
             <ul class="menu">
-                <a class="menu-item" th:href="@{/member/mypage}" onclick="clickMenu(event, this)">내 정보</a>
+                <a id="test1" class="menu-item" th:href="@{/member/mypage}" onclick="clickMenu(event, this)">내 정보</a>
                 <a class="menu-item" th:href="@{/member/changeInformation(parameter='1')}" onclick="clickMenu(event, this)">회원 정보 수정</a>
                 <a class="menu-item" th:href="@{/member/changePw(parameter='2')}" onclick="clickMenu(event, this)">비밀번호 변경</a>
                 <a class="menu-item" th:href="@{/member/purchasedetails(parameter='3')}" onclick="clickMenu(event, this)">구매 내역</a>

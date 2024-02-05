@@ -107,7 +107,12 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpServletRequest request) {
+
+        String uri = request.getHeader("Referer");
+        if (uri != null && !uri.contains("/login")) {
+            request.getSession().setAttribute("prevPage", uri);
+        }
 
 //        String referer = request.getHeader("referer");
 //        session.setAttribute("referer", referer);
@@ -235,7 +240,8 @@ public class MemberController {
         MultipartFile mf = mre.getFile("file");
         String uploadPath = "";
 
-        String path = "C:\\" + "Project2\\" + "profileimg\\";
+//        String path = "C:\\" + "Project2\\" + "profileimg\\";
+        String path = System.getProperty("user.dir") + "/Project2/" + "/profileimg/";
 
         File Folder = new File(path);
         if (!Folder.exists()) {

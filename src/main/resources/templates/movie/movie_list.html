@@ -2,7 +2,7 @@
 <html lang="ko" layout:decorate="~{layout2}">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/Movie/movieDaily.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/movie/movieDaily.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <style>
@@ -53,9 +53,10 @@
                                      style="font-size: 16px; letter-spacing: 2px;">
                                 </div>
                                 <img th:src="${movie.imageUrl}"
-                                     th:if="${not #strings.isEmpty(movie.imageUrl)}">
+                                     th:if="${not #strings.isEmpty(movie.imageUrl)}"
+                                     style="width : 203px; height : 286px;">
                                 <img src="/imgs/noimg.jpg" th:if="${#strings.isEmpty(movie.imageUrl)}"
-                                     style="width : 213px; height : 303px;">
+                                     style="width : 203px; height : 286px;">
                                 <input type="hidden" name="movieCD" th:value="${movie.movieCode}">
                                 <input type="hidden" id="currentPageUrl" name="currentPageUrl" value="">
                             </div>
