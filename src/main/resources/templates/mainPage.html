@@ -146,13 +146,10 @@
         <div class="swiper-button-next"></div>
     </div>
     <div>
-
         <button onclick="clickChat()">
-            <img class="chatImg" src="/etc/chattingRoom.png" style="position: fixed; bottom: 10px; right: 153px; padding: 10px; width : 78px;">
+            <img class="chatImg" src="/etc/chattingRoom.png" style="position: fixed; bottom: 10px; right: 153px; padding: 10px; width : 78px; z-index : 998;">
         </button>
-
-        <form id="enter-form" style="position: fixed; bottom: 10px; right: 10px; background-color: white; padding: 10px;; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); z-index: 9999; border-radius:30px; background:pink">
-
+        <form id="enter-form">
             <label for="username">
                 닉네임:
                 <input id="username" type="text" required style="background:pink;"  placeholder="사용할 닉네임" >
