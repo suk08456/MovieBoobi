@@ -30,6 +30,10 @@ public class MemberService {
         return member;
     }
 
+    public boolean nicknameUnique(String nickname) {
+        return memberRepository.findByNickname(nickname).isEmpty();
+    }
+
     public void verifyEmail(long memberId) {
         Optional<Member> memberOpt = memberRepository.findById(memberId);
         // memberId를 통해 특정 member 데이터 조회
@@ -41,7 +45,7 @@ public class MemberService {
 
     public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+                .orElse(null);
     }
 
     public void resetPassword(Member member) throws MessagingException {

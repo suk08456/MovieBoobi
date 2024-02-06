@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,7 @@ import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -74,6 +76,11 @@ public class MemberController {
             // 검증에 실패한 경우
             return "member/signup_form";
         }
+        // 닉네임 중복 확인
+        if (!memberService.nicknameUnique(memberCreateForm.getNickname())) {
+            bindingResult.rejectValue("nickname", "duplicate", "이미 사용 중인 닉네임입니다.");
+            return "member/signup_form";
+        }
         try {
             Member member = memberService.create(memberCreateForm.getUsername(),
                     memberCreateForm.getPassword1(), memberCreateForm.getNickname(), memberCreateForm.getEmail());
@@ -93,6 +100,7 @@ public class MemberController {
         return "redirect:/member/login";
     }
 
+
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam("userId") long userId) {
         memberService.verifyEmail(userId);  // userId를 사용하여 이메일 인증 처리
@@ -110,13 +118,18 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpServletRequest request) {
 
-//        String referer = request.getHeader("referer");
-//        session.setAttribute("referer", referer);
-//        session.setAttribute("currentPageUrl", currentPageUrl);
+//        String uri = request.getHeader("Referer");
+//        if (uri != null && !uri.contains("/login")) {
+//            request.getSession().setAttribute("prevPage", uri);
+//        }
 
-//        System.out.println("====================refererrefere=====================" + referer);
+        HttpSession session = request.getSession();
+        String referer = request.getHeader("referer");
+        session.setAttribute("referer", referer);
+        session.setAttribute("currentPageUrl", request.getRequestURI());
+
         return "member/login_form";
     }
 
@@ -140,47 +153,66 @@ public class MemberController {
     }
 
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestParam String username, @RequestParam String email, RedirectAttributes redirectAttributes) {
-        Member member = memberService.getMemberByEmail(email);
-        if (member != null && member.getUsername().equals(username)) {
-            try {
-                memberService.resetPassword(member);
-                redirectAttributes.addFlashAttribute("successMessage", "이메일로 임시 비밀번호가 발송되었습니다.");
-            } catch (MessagingException e) {
-                e.printStackTrace();
-                redirectAttributes.addFlashAttribute("errorMessage", "이메일 전송 중 오류가 발생했습니다.");
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일 또는 아이디와 일치하는 회원 정보를 찾을 수 없습니다.");
+    public String resetPassword(@Valid Member member, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "입력한 정보가 올바르지 않습니다.");
+            return "member/reset_password";
         }
+
+        Member member1 = memberService.getMemberByEmail(member.getEmail());
+        if (member1 == null || !member1.getUsername().equals(member.getUsername())) {
+            model.addAttribute("errorMessage", "해당 이메일 또는 아이디와 일치하는 회원 정보를 찾을 수 없습니다.");
+            return "member/reset_password";
+        }
+
+        try {
+            memberService.resetPassword(member1);
+            model.addAttribute("successMessage", "이메일로 임시 비밀번호가 발송되었습니다.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "이메일 전송 중 오류가 발생했습니다.");
+            return "member/login_form";
+        }
+
         return "member/login_form";
     }
 
     @PostMapping("/findUsername")
-    public String findUsername(@RequestParam String email, RedirectAttributes redirectAttributes) {
-        Member member = memberService.getMemberByEmail(email);
-        if (member != null) {
+    public String findUsername(@Valid @ModelAttribute Member member, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "유효하지 않은 이메일 형식입니다.");
+            return "member/find_username";
+        }
+
+        Member member1 = memberService.getMemberByEmail(member.getEmail());
+        if (member1 != null) {
             try {
-                emailService.sendTemporaryUsername(member.getEmail(), member.getUsername());
-                redirectAttributes.addFlashAttribute("successMessage", "이메일로 아이디가 발송되었습니다.");
+                emailService.sendTemporaryUsername(member1.getEmail(), member1.getUsername());
+                model.addAttribute("successMessage", "이메일로 아이디가 발송되었습니다.");
+                return "member/login_form";
             } catch (MessagingException e) {
                 e.printStackTrace();
-                redirectAttributes.addFlashAttribute("errorMessage", "이메일 전송 중 오류 발생");
+                model.addAttribute("errorMessage", "이메일 전송 중 오류 발생");
+                return "member/find_username";
             }
         } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일로 등록된 아이디 없음");
+            model.addAttribute("errorMessage", "해당 이메일로 등록된 아이디 없음");
+            return "member/find_username";
         }
-        return "member/login_form";
     }
+
+
+
+
 
     @GetMapping("/resetPassword")
     public String showResetPasswordPage() {
-        return "member/find_account"; // Thymeleaf 템플릿 이름 (reset_password.html)
+        return "member/reset_password"; // Thymeleaf 템플릿 이름 (reset_password.html)
     }
 
     @GetMapping("/findUsername")
     public String findUsernamePage() {
-        return "member/find_account";
+        return "member/find_username";
     }
 
     @GetMapping("/mypage")
@@ -238,7 +270,8 @@ public class MemberController {
         MultipartFile mf = mre.getFile("file");
         String uploadPath = "";
 
-        String path = "C:\\" + "Project2\\" + "profileimg\\";
+//        String path = "C:\\" + "Project2\\" + "profileimg\\";
+        String path = System.getProperty("user.dir") + "/Project2/" + "/profileimg/";
 
         File Folder = new File(path);
         if (!Folder.exists()) {

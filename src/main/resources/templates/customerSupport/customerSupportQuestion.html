@@ -4,19 +4,21 @@
         <div style="display: flex; height: 2.5rem; width: 40%; margin-right: 10%;">
             <input type="text" placeholder="제목, 내용 검색" class="input input-bordered w-full"
                    style="border-top-right-radius: 0; border-bottom-right-radius: 0;height: 2.5rem;"/>
-            <button class="searchButton" style="height: 100%; padding: 5px; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
+            <button class="searchButton"
+                    style="height: 100%; padding: 5px; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
                 <img src="/imgs/dodbogi.svg" alt="" style="height: 100%;">
             </button>
         </div>
     </div>
     <div class="contentList">
-        <table style="width: 80%;">
+        <table style="width: 80%; min-width: 840px;">
             <thead>
             <tr class="textList">
                 <th class="noticeBoard" style="width: 10%">번호</th>
                 <th class="noticeBoard" style="width: 40%">제목</th>
                 <th class="noticeBoard">작성일</th>
                 <th class="noticeBoard">조회수</th>
+                <th class="noticeBoard" style="width: 10%;">비밀글</th>
             </tr>
             </thead>
             <tbody style="border-bottom: gray solid 1px;">
@@ -28,13 +30,15 @@
                         <input type="hidden" name="questionId" th:value="${question.id}">
                     </form>
                 </th>
-                <th class="noticeBoard" th:text="${question.writeDate}"></th>
+                <th class="noticeBoard" th:text="${#temporals.format(question.writeDate, 'yyyy-MM-dd')}"></th>
                 <th class="noticeBoard">조회수</th>
+                <th style="text-align: -webkit-center; vertical-align: middle;"><img th:if="${question.isPrivate}" src="/imgs/lock.png" alt="" style="width: 35px;"></th>
             </tr>
             </tbody>
         </table>
     </div>
-    <div class="join" th:if="${paging.totalPages > 0}" style="display : flex; justify-content : space-around; margin-top : 18px;">
+    <div class="join" th:if="${paging.totalPages > 0}"
+         style="display : flex; justify-content : space-around; margin-top : 18px;">
         <ul class="pagination justify-content-center" style="display : flex;">
             <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'btn-disabled'">
                 <a class="join-item btn" th:if="${paging.hasPrevious}" th:href="@{|?page=${paging.number-1}|}">
@@ -54,21 +58,26 @@
             </li>
         </ul>
     </div>
-    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'QUESTION')}">
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;"
+         th:if="${#strings.equals(category, 'QUESTION')}">
         <a th:href="@{/customerSupport/question/questionForm}">
             <button class="btn btn-outline">문의하기</button>
         </a>
     </div>
-    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'FAQ')}" sec:authorize="hasRole('ADMIN')">
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;"
+         th:if="${#strings.equals(category, 'FAQ')}" sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/customerSupport/question/FAQForm}">
             <button class="btn btn-outline">자주 묻는 질문 작성</button>
         </a>
     </div>
-    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;" th:if="${#strings.equals(category, 'NOTICE')}" sec:authorize="hasRole('ADMIN')">
+    <div style="margin: 1% 10% 0px 0px; display: flex; flex-direction: row-reverse;"
+         th:if="${#strings.equals(category, 'NOTICE')}" sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/customerSupport/question/noticeForm}">
             <button class="btn btn-outline">공지작성</button>
         </a>
     </div>
+    <button class="btn btn-outline" onclick="error_page('안녕하세요')">버튼</button>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script th:inline="javascript">
         var category = /*[[${category}]]*/ null;
         var menuDetail = document.querySelector('.menuDetail');
@@ -81,6 +90,21 @@
             menuDetail.id = "question";
         } else if (category === "MYQUESTION") {
             menuDetail.id = "myQuestion";
+        }
+
+        var errorMsg = /*[[${session.error}]]*/ null;
+
+        if (errorMsg) {
+            $(document).ready(function() {
+                error_page(errorMsg);
+            }
+        }
+
+        function error_page(title) {
+            Swal.fire({
+                icon: 'warning',
+                title: title,
+            });
         }
     </script>
 </div>
