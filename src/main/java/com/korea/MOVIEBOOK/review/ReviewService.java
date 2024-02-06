@@ -113,10 +113,6 @@ public class ReviewService {
     }
 
 
-//    public List<Review> getReviewList(Member member) {
-//        return reviewRepository.findByReviewList(member);
-//    }
-
 
     public List<Review> getReviewByBookId(Long BookId) {
         return reviewRepository.findReviewsByBookId(BookId);
@@ -161,6 +157,15 @@ public class ReviewService {
         return this.reviewRepository.findByWebtoon(webtoon, pageable);
     }
 
+
+
+
+//    public Page<Review> getReviewsByMember(Member member, int page) {
+//        List<Sort.Order> sorts = new ArrayList<>();
+//        sorts.add(Sort.Order.desc("dateTime"));
+//        Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
+//        return this.reviewRepository.MemberReviewPage(member, pageable);
+//    }
 
 
 
