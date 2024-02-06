@@ -54,7 +54,7 @@
                 <li><a class="menu-item" th:href="@{/member/changePw(parameter='2')}" onclick="clickMenu(event, this)">비밀번호 변경</a></li>
                 <li>
                     <details close>
-                        <summary style="margin-left: 7px;" class="menu-item">구매 내역</summary>
+                        <summary th:href="@{/member/purchasedetails/movie(parameter='3')}" style="margin-left: 7px;" class="menu-item">구매 내역</summary>
                         <ul>
                             <li><a class="menu-item" th:href="@{/member/purchasedetails/movie(parameter='3')}">영화 구매 내역</a></li>
                             <li><a class="menu-item" th:href="@{/member/purchasedetails/drama(parameter='3')}">드라마 구매 내역</a></li>
