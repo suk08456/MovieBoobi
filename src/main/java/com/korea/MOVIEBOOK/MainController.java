@@ -69,7 +69,7 @@ public class MainController {
         Page<Webtoon> pagingWebtoon = webtoonService.getWebtoonList(page, kw);
 
         model.addAttribute("pagingWebtoon", pagingWebtoon);
-
+        model.addAttribute("kw", kw);
         return "webtoon_search_list";
     }
 

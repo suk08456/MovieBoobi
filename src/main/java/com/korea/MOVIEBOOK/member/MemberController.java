@@ -245,7 +245,6 @@ public class MemberController {
 
         model.addAttribute("sum", sum);
         model.addAttribute("reviewCount", reviewCount);
-        model.addAttribute("parameter", 0);
 
 //        Page<Payment> paging = this.paymentService.getPaymentsByMember(member, page);
 
@@ -300,7 +299,6 @@ public class MemberController {
     public String updateNm(Model model, NicknameForm nicknameForm, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
 
         paymentMember(model, principal, page);
-        model.addAttribute("parameter", 1);
         return "member/changeinfor";
     }
 
@@ -309,8 +307,6 @@ public class MemberController {
                                  Principal principal) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        GrantedAuthority authority = authentication.getAuthorities().iterator().next();
-        model.addAttribute("parameter", 1);
 
 
         if (bindingResult.hasErrors()) {
@@ -332,7 +328,6 @@ public class MemberController {
     @GetMapping("/changePw")
     public String changePw(Model model, PasswordChangeForm passwordChangeForm, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
         paymentMember(model, principal, page);
-        model.addAttribute("parameter", 2);
 
         return "member/changepw";
     }
@@ -344,7 +339,6 @@ public class MemberController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GrantedAuthority authority = authentication.getAuthorities().iterator().next();
-        model.addAttribute("parameter", 2);
 
         if (bindingResult.hasErrors()) {
             return "member/changepw";
@@ -369,12 +363,6 @@ public class MemberController {
         return "redirect:/member/logout";
     }
 
-//@GetMapping("/find/review")
-//public String memberFindReview(String reviewId, Principal principal, Model model){
-//    Member member = memberService.getMember(principal.getName());
-//    Review review = this.reviewService.findReviewById(Long.valueOf(reviewId));
-//
-//}
 
 
 
@@ -383,7 +371,6 @@ public class MemberController {
 
 
         paymentMember(model, principal, page);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/member_purchase_details";
     }
 
@@ -393,7 +380,6 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidMovieList(member, page);
         model.addAttribute("paging", paging);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/movie_purchase_details";
     }
 
@@ -402,7 +388,6 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidDramaList(member, page);
         model.addAttribute("paging", paging);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/drama_purchase_details";
     }
 
@@ -411,7 +396,6 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidBookList(member, page);
         model.addAttribute("paging", paging);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/book_purchase_details";
     }
 
@@ -420,7 +404,6 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidWebtoonList(member, page);
         model.addAttribute("paging", paging);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/webtoon_purchase_details";
     }
 
@@ -429,7 +412,6 @@ public class MemberController {
     @GetMapping("/deleteForm")
     public String memberDeleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
         paymentMember(model, principal, page);
-        model.addAttribute("parameter", 4);
         return "member/delete_form";
     }
 
@@ -442,7 +424,6 @@ public class MemberController {
             return "member/delete_form";
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("parameter", 4);
 
         if (passwordResetForm.getPassword().equals(passwordResetForm.getPasswordConfirm())) {
             Member member = memberService.findByusername(principal.getName());
