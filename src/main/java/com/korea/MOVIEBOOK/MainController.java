@@ -57,7 +57,6 @@ public class MainController {
         Page<Book> pagingBook = bookService.getBookList(page, kw);
         Page<Webtoon> pagingWebtoon = webtoonService.getWebtoonList(page, kw);
 
-
         model.addAttribute("pagingWebtoon", pagingWebtoon);
         model.addAttribute("pagingmovie", pagingMovie);
         model.addAttribute("pagingDrama", pagingDrama);
