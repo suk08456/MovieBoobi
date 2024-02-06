@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.member;
 
 import com.korea.MOVIEBOOK.book.BookService;
+import com.korea.MOVIEBOOK.customerSupport.answer.Answer;
 import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieService;
@@ -210,8 +211,10 @@ public class MemberController {
             }
         }
         Long reviewCount = reviewService.getReivewCount(member);
+//        List<Review> reviewList = reviewService.getReviewList(member);
 
         model.addAttribute("sum", sum);
+//        model.addAttribute("reviewList", reviewList);
         model.addAttribute("reviewCount", reviewCount);
 
 //        Page<Payment> paging = this.paymentService.getPaymentsByMember(member, page);
@@ -329,8 +332,6 @@ public class MemberController {
         model.addAttribute("member", member);
         return "redirect:/member/logout";
     }
-
-
 
 
     @GetMapping("/purchasedetails")

@@ -31,4 +31,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "ORDER BY reviewCount DESC, reviewRating DESC")
     List<Object[]> findMovieRankings();
 
+//    List<Review> findByReviewList(Member member);
 }

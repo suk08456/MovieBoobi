@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.review;
 
+import com.korea.MOVIEBOOK.customerSupport.answer.Answer;
 import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
@@ -110,6 +111,11 @@ public class ReviewService {
     public Long getReivewCount(Member member) {
         return reviewRepository.countByMember(member);
     }
+
+
+//    public List<Review> getReviewList(Member member) {
+//        return reviewRepository.findByReviewList(member);
+//    }
 
 
     public List<Review> getReviewByBookId(Long BookId) {
