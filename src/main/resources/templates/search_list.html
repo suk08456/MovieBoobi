@@ -136,7 +136,10 @@
 
             <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold">
                 <span style="font-size: 30px; color:black;">웹툰</span>
-                <a th:href="@{/search/webtoon}" style="cursor: pointer; margin-top: 22px;">더보기</a>
+                <form th:action="@{/search/webtoon}" method="get">
+                    <button  style="cursor: pointer; margin-top: 22px;">더보기</button>
+                    <input type="text" name="kw" th:value="${param.kw}" hidden="hidden">
+                </form>
             </div>
             <div style="display: flex; justify-content: center;">
                 <div style="width : 60%;">
