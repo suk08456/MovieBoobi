@@ -244,7 +244,6 @@ public class MemberController {
         Long reviewCount = reviewService.getReivewCount(member);
 
         model.addAttribute("sum", sum);
-
         model.addAttribute("reviewCount", reviewCount);
         model.addAttribute("parameter", 0);
 
@@ -394,6 +393,7 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidMovieList(member, page);
         model.addAttribute("paging", paging);
+        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/movie_purchase_details";
     }
 
@@ -402,6 +402,7 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidDramaList(member, page);
         model.addAttribute("paging", paging);
+        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/drama_purchase_details";
     }
 
@@ -410,6 +411,7 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidBookList(member, page);
         model.addAttribute("paging", paging);
+        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/book_purchase_details";
     }
 
@@ -418,6 +420,7 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidWebtoonList(member, page);
         model.addAttribute("paging", paging);
+        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/webtoon_purchase_details";
     }
 

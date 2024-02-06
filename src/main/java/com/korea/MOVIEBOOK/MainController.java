@@ -56,9 +56,21 @@ public class MainController {
         model.addAttribute("pagingmovie", pagingMovie);
         model.addAttribute("pagingDrama", pagingDrama);
         model.addAttribute("pagingBook", pagingBook);
-        model.addAttribute("spec", kw);
+        model.addAttribute("kw", kw);
 
         return "search_list";
+    }
+
+    @GetMapping("/search/webtoon")
+    public String searchWebtoonList(Model model,
+                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                  @RequestParam(value = "kw", defaultValue = "") String kw){
+
+        Page<Webtoon> pagingWebtoon = webtoonService.getWebtoonList(page, kw);
+
+        model.addAttribute("pagingWebtoon", pagingWebtoon);
+
+        return "webtoon_search_list";
     }
 
     @GetMapping("/")
