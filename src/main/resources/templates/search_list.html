@@ -18,7 +18,7 @@
         <div>
             <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold">
                 <span style="font-size: 30px; color: black;">영화</span>
-                <p class="movie_console" style="cursor: pointer; margin-top: 22px;">더보기</p>
+                <p class="movie_console" style="cursor: pointer; margin-top: 22px;" onclick="moreMovie()">더보기</p>
             </div>
             <div style="display: flex; justify-content: center; margin-bottom: 60px;">
                 <div style="width : 60%; max-height: 820px;">
@@ -217,6 +217,27 @@
             <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
             <script>
+
+                function moreMovie(){
+                    var movieid = [[${pagingmovie}]];
+
+                     $.ajax({
+                        url: '/test',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { // 쿼리 문자열로 변환, URL에 포함시켜 서버로 전달.
+                            input: movieid
+                        },
+                        success: function (data) {
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+
+
+                }
+
                 $(function () {
                     $(".more_movielist").slice(0, 5).show();
                 });

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,10 +37,15 @@ public class MainController {
 
     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
     String date = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-    @GetMapping("/test")
-    public String aaaa() {
-        return "test";
+    @GetMapping(value = "/test", produces = "application/json")
+    @ResponseBody
+    public Movie aaaa(Model model, @RequestParam("input") Long movieid)  {
+
+       Movie movie = this.movieService.getMovieUseId(movieid);
+
+       return movie;
     }
+
     @GetMapping("/search")
     public String searchList(Model model,
                              @RequestParam(value = "page", defaultValue = "0") int page,
