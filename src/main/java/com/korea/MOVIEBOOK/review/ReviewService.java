@@ -1,5 +1,6 @@
 package com.korea.MOVIEBOOK.review;
 
+import com.korea.MOVIEBOOK.customerSupport.answer.Answer;
 import com.korea.MOVIEBOOK.drama.Drama;
 import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
@@ -110,6 +111,9 @@ public class ReviewService {
     public Long getReivewCount(Member member) {
         return reviewRepository.countByMember(member);
     }
+
+
+
     public List<Review> getReviewByBookId(Long BookId) {
         return reviewRepository.findReviewsByBookId(BookId);
     }
@@ -156,6 +160,15 @@ public class ReviewService {
 
 
 
+//    public Page<Review> getReviewsByMember(Member member, int page) {
+//        List<Sort.Order> sorts = new ArrayList<>();
+//        sorts.add(Sort.Order.desc("dateTime"));
+//        Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
+//        return this.reviewRepository.MemberReviewPage(member, pageable);
+//    }
+
+
+
 
     public Long getDramaIdByReviewId(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
@@ -170,5 +183,15 @@ public class ReviewService {
         existingReview.setRating(updateReview.getRating());
         reviewRepository.save(existingReview);
     }
+    public void updateReview(String comment, Long reviewId){
+        Review review = findReviewById(reviewId);
+        review.setComment(comment);
+        review.setDateTime(LocalDateTime.now());
+        this.reviewRepository.save(review);
+    }
 
+    public void deleteReview(Long reviewId){
+        Review review = this.reviewRepository.findById(reviewId).get();
+        this.reviewRepository.delete(review);
+    }
 }

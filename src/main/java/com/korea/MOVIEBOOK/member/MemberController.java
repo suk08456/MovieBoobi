@@ -1,6 +1,7 @@
 package com.korea.MOVIEBOOK.member;
 
 import com.korea.MOVIEBOOK.book.BookService;
+import com.korea.MOVIEBOOK.customerSupport.answer.Answer;
 import com.korea.MOVIEBOOK.drama.DramaService;
 import com.korea.MOVIEBOOK.movie.movie.Movie;
 import com.korea.MOVIEBOOK.movie.movie.MovieService;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -44,12 +46,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -73,6 +77,11 @@ public class MemberController {
             // 검증에 실패한 경우
             return "member/signup_form";
         }
+        // 닉네임 중복 확인
+        if (!memberService.nicknameUnique(memberCreateForm.getNickname())) {
+            bindingResult.rejectValue("nickname", "duplicate", "이미 사용 중인 닉네임입니다.");
+            return "member/signup_form";
+        }
         try {
             Member member = memberService.create(memberCreateForm.getUsername(),
                     memberCreateForm.getPassword1(), memberCreateForm.getNickname(), memberCreateForm.getEmail());
@@ -92,6 +101,7 @@ public class MemberController {
         return "redirect:/member/login";
     }
 
+
     @GetMapping("/verify")
     public String verifyEmail(@RequestParam("userId") long userId) {
         memberService.verifyEmail(userId);  // userId를 사용하여 이메일 인증 처리
@@ -109,13 +119,18 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpServletRequest request) {
 
-//        String referer = request.getHeader("referer");
-//        session.setAttribute("referer", referer);
-//        session.setAttribute("currentPageUrl", currentPageUrl);
+//        String uri = request.getHeader("Referer");
+//        if (uri != null && !uri.contains("/login")) {
+//            request.getSession().setAttribute("prevPage", uri);
+//        }
 
-//        System.out.println("====================refererrefere=====================" + referer);
+        HttpSession session = request.getSession();
+        String referer = request.getHeader("referer");
+        session.setAttribute("referer", referer);
+        session.setAttribute("currentPageUrl", request.getRequestURI());
+
         return "member/login_form";
     }
 
@@ -139,47 +154,66 @@ public class MemberController {
     }
 
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestParam String username, @RequestParam String email, RedirectAttributes redirectAttributes) {
-        Member member = memberService.getMemberByEmail(email);
-        if (member != null && member.getUsername().equals(username)) {
-            try {
-                memberService.resetPassword(member);
-                redirectAttributes.addFlashAttribute("successMessage", "이메일로 임시 비밀번호가 발송되었습니다.");
-            } catch (MessagingException e) {
-                e.printStackTrace();
-                redirectAttributes.addFlashAttribute("errorMessage", "이메일 전송 중 오류가 발생했습니다.");
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일 또는 아이디와 일치하는 회원 정보를 찾을 수 없습니다.");
+    public String resetPassword(@Valid Member member, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "입력한 정보가 올바르지 않습니다.");
+            return "member/reset_password";
         }
+
+        Member member1 = memberService.getMemberByEmail(member.getEmail());
+        if (member1 == null || !member1.getUsername().equals(member.getUsername())) {
+            model.addAttribute("errorMessage", "해당 이메일 또는 아이디와 일치하는 회원 정보를 찾을 수 없습니다.");
+            return "member/reset_password";
+        }
+
+        try {
+            memberService.resetPassword(member1);
+            model.addAttribute("successMessage", "이메일로 임시 비밀번호가 발송되었습니다.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "이메일 전송 중 오류가 발생했습니다.");
+            return "member/login_form";
+        }
+
         return "member/login_form";
     }
 
     @PostMapping("/findUsername")
-    public String findUsername(@RequestParam String email, RedirectAttributes redirectAttributes) {
-        Member member = memberService.getMemberByEmail(email);
-        if (member != null) {
+    public String findUsername(@Valid @ModelAttribute Member member, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "유효하지 않은 이메일 형식입니다.");
+            return "member/find_username";
+        }
+
+        Member member1 = memberService.getMemberByEmail(member.getEmail());
+        if (member1 != null) {
             try {
-                emailService.sendTemporaryUsername(member.getEmail(), member.getUsername());
-                redirectAttributes.addFlashAttribute("successMessage", "이메일로 아이디가 발송되었습니다.");
+                emailService.sendTemporaryUsername(member1.getEmail(), member1.getUsername());
+                model.addAttribute("successMessage", "이메일로 아이디가 발송되었습니다.");
+                return "member/login_form";
             } catch (MessagingException e) {
                 e.printStackTrace();
-                redirectAttributes.addFlashAttribute("errorMessage", "이메일 전송 중 오류 발생");
+                model.addAttribute("errorMessage", "이메일 전송 중 오류 발생");
+                return "member/find_username";
             }
         } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "해당 이메일로 등록된 아이디 없음");
+            model.addAttribute("errorMessage", "해당 이메일로 등록된 아이디 없음");
+            return "member/find_username";
         }
-        return "member/login_form";
     }
+
+
+
+
 
     @GetMapping("/resetPassword")
     public String showResetPasswordPage() {
-        return "member/find_account"; // Thymeleaf 템플릿 이름 (reset_password.html)
+        return "member/reset_password"; // Thymeleaf 템플릿 이름 (reset_password.html)
     }
 
     @GetMapping("/findUsername")
     public String findUsernamePage() {
-        return "member/find_account";
+        return "member/find_username";
     }
 
     @GetMapping("/mypage")
@@ -210,17 +244,25 @@ public class MemberController {
             }
         }
         Long reviewCount = reviewService.getReivewCount(member);
+        List<Review> reviews = member.getReviewList().stream().limit(12).collect(Collectors.toList());
+        List<Review> reviewList = member.getReviewList();
 
+        double avgRating = reviews.stream() // reviews에서 stream 생성
+                .filter(review -> review.getRating() != null) // rating이 null인 review는 제외
+                .mapToDouble(Review::getRating) // 리뷰 객체에서 평점만 추출하여 정수 스트림 생성
+                .average() // 평점의 평균값 계산
+                .orElse(0); // 리뷰가 없을 경우 0.0출력
+
+        Collections.sort(reviews, Comparator.comparing(Review::getDateTime).reversed());
+
+
+        model.addAttribute("avgRating", String.format("%.1f", avgRating));
+        model.addAttribute("reviews", reviews);
         model.addAttribute("sum", sum);
-
+        model.addAttribute("reviewList", reviewList);
         model.addAttribute("reviewCount", reviewCount);
-        model.addAttribute("parameter", 0);
 
 //        Page<Payment> paging = this.paymentService.getPaymentsByMember(member, page);
-
-
-//        List<Review> reviewList = reviewService.getAnswerTop5LatestByUser(user);
-//        model.addAttribute("answerList", answerList);
         return "member/my_page";
     }
 
@@ -237,7 +279,8 @@ public class MemberController {
         MultipartFile mf = mre.getFile("file");
         String uploadPath = "";
 
-        String path = "C:\\" + "Project2\\" + "profileimg\\";
+//        String path = "C:\\" + "Project2\\" + "profileimg\\";
+        String path = System.getProperty("user.dir") + "/Project2/" + "/profileimg/";
 
         File Folder = new File(path);
         if (!Folder.exists()) {
@@ -264,11 +307,17 @@ public class MemberController {
     }
 
 
+//    @GetMapping("/review/list")
+//    public String memberReviewList(Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page){
+//        Member member = memberService.getMember(principal.getName());
+//        Page<Review> paging = reviewService.getReviewsByMember(member, page);
+//        return "";
+//    }
+
     @GetMapping("/changeInformation")
     public String updateNm(Model model, NicknameForm nicknameForm, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
 
         paymentMember(model, principal, page);
-        model.addAttribute("parameter", 1);
         return "member/changeinfor";
     }
 
@@ -277,8 +326,6 @@ public class MemberController {
                                  Principal principal) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        GrantedAuthority authority = authentication.getAuthorities().iterator().next();
-        model.addAttribute("parameter", 1);
 
 
         if (bindingResult.hasErrors()) {
@@ -300,7 +347,6 @@ public class MemberController {
     @GetMapping("/changePw")
     public String changePw(Model model, PasswordChangeForm passwordChangeForm, Principal principal, @RequestParam(value="page", defaultValue="0") int page) {
         paymentMember(model, principal, page);
-        model.addAttribute("parameter", 2);
 
         return "member/changepw";
     }
@@ -312,7 +358,6 @@ public class MemberController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GrantedAuthority authority = authentication.getAuthorities().iterator().next();
-        model.addAttribute("parameter", 2);
 
         if (bindingResult.hasErrors()) {
             return "member/changepw";
@@ -337,21 +382,12 @@ public class MemberController {
         return "redirect:/member/logout";
     }
 
-//@GetMapping("/find/review")
-//public String memberFindReview(String reviewId, Principal principal, Model model){
-//    Member member = memberService.getMember(principal.getName());
-//    Review review = this.reviewService.findReviewById(Long.valueOf(reviewId));
-//
-//}
-
-
 
     @GetMapping("/purchasedetails")
     public String memberPurchaseDetails(PasswordResetForm passwordResetForm, Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
 
 
         paymentMember(model, principal, page);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/member_purchase_details";
     }
 
@@ -361,7 +397,6 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidMovieList(member, page);
         model.addAttribute("paging", paging);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/movie_purchase_details";
     }
 
@@ -370,7 +405,6 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidDramaList(member, page);
         model.addAttribute("paging", paging);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/drama_purchase_details";
     }
 
@@ -379,7 +413,6 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidBookList(member, page);
         model.addAttribute("paging", paging);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/book_purchase_details";
     }
 
@@ -388,7 +421,6 @@ public class MemberController {
         Member member = memberService.getMember(principal.getName());
         Page<Payment> paging = paymentService.getPaidWebtoonList(member, page);
         model.addAttribute("paging", paging);
-        model.addAttribute("parameter", 3);
         return "member/contents_purchase_details/webtoon_purchase_details";
     }
 
@@ -397,7 +429,6 @@ public class MemberController {
     @GetMapping("/deleteForm")
     public String memberDeleteForm(PasswordResetForm passwordResetForm, Principal principal, Model model, @RequestParam(value="page", defaultValue="0") int page) {
         paymentMember(model, principal, page);
-        model.addAttribute("parameter", 4);
         return "member/delete_form";
     }
 
@@ -410,7 +441,6 @@ public class MemberController {
             return "member/delete_form";
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("parameter", 4);
 
         if (passwordResetForm.getPassword().equals(passwordResetForm.getPasswordConfirm())) {
             Member member = memberService.findByusername(principal.getName());

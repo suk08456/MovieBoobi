@@ -35,21 +35,21 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/member/login")
                         .defaultSuccessUrl("/")
-                        .successHandler(savedRequestAwareAuthenticationSuccessHandler()))
-
-//                        .successHandler((request, response, authentication) -> {
-//                            HttpSession session = request.getSession();
-//                            String destination = "/";
-//                            if(session.getAttribute("referer") != null) {
-//                                destination  = (String)session.getAttribute("referer");
-//                            }
-//                            System.out.println(destination);
-//                            response.sendRedirect(destination);
-//                        }))
+//                        .successHandler(savedRequestAwareAuthenticationSuccessHandler()))
+                        .successHandler((request, response, authentication) -> {
+                            HttpSession session = request.getSession();
+                            String destination = "/";
+                            if(session.getAttribute("referer") != null) {
+                                destination  = (String)session.getAttribute("referer");
+                            }
+                            System.out.println(destination);
+                            response.sendRedirect(destination);
+                        }))
 
                 .oauth2Login(oauth2Login -> oauth2Login
                         .loginPage("/member/login")  // OAuth2 로그인 페이지 설정
-                        .defaultSuccessUrl("/"))      // 로그인 성공 후 리다이렉트 URL
+                        .defaultSuccessUrl("/")
+                        .successHandler(savedRequestAwareAuthenticationSuccessHandler()))      // 로그인 성공 후 리다이렉트 URL3
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
                         .logoutSuccessUrl("/")
@@ -78,14 +78,13 @@ public class SecurityConfig {
         handler.setUseReferer(true);
         return handler;
     }
-
     private ClientRegistration googleClientRegistration() {
         return ClientRegistration.withRegistrationId("google")
                 .clientId("286082206804-488g2m1ncjkn87hq3g1c1m406crijhre.apps.googleusercontent.com")
                 .clientSecret("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")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("http://localhost:8888/login/oauth2/code/google")
+                .redirectUri("https://moviebook.site/login/oauth2/code/google")
                 .scope("profile", "email", "address", "phone")
                 .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
                 .tokenUri("https://www.googleapis.com/oauth2/v4/token")

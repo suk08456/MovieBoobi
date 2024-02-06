@@ -18,13 +18,14 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public void create(Member member, String title, String content, Category category) {
+    public void create(Member member, String title, String content, Category category, boolean isPrivate) {
         Question question = new Question();
         question.setTitle(title);
         question.setContent(content);
         question.setCategory(category);
         question.setWriteDate(LocalDateTime.now());
         question.setMember(member);
+        question.setPrivate(isPrivate);
         questionRepository.save(question);
     }
 
