@@ -212,7 +212,6 @@ public class MemberController {
         Long reviewCount = reviewService.getReivewCount(member);
 
         model.addAttribute("sum", sum);
-
         model.addAttribute("reviewCount", reviewCount);
         model.addAttribute("parameter", 0);
 

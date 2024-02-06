@@ -24,6 +24,11 @@
                 <span th:text="${member.getEmail()}" style="color : #868e96;"></span>
             </div>
         </div>
+
+        <p th:text="${member.getNickname() + '님의'}"></p>
+        <p th:text="${type}"></p>
+        <p th:if="${reviewCount ==null}" th:text="${'('+ paging.getTotalElements+')'}"></p>
+        <p th:if="${reviewCount !=null}" th:text="${'('+ reviewCount+')'}"></p>
     </div>
 
 </div>
